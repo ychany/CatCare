@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}홈 - 냐옹노트{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">냐옹노트에 오신 것을 환영합니다</h1>
+        {% if user.is_authenticated %}
+            {% if pets %}
+                <div class="row">
+                    {% for pet in pets %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="pet-avatar me-3">
+                                            <a href="{% url 'pets:edit' pet.id %}" class="text-decoration-none">
+                                                {% if pet.image %}
+                                                    <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="avatar-circle">
+                                                        <span class="avatar-emoji">🐱</span>
+                                                    </div>
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <h5 class="card-title mb-0">
+                                                <a href="{% url 'pets:edit' pet.id %}" class="text-decoration-none text-dark">
+                                                    {{ pet.name }}
+                                                </a>
+                                            </h5>
+                                            <small class="text-muted">{{ pet.get_breed_display }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span>Lv {{ pet.get_age }}</span>
+                                            <span>생일까지 {{ pet.days_until_birthday }}일</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" role="progressbar" 
+                                                data-progress="{{ pet.birthday_progress }}"
+                                                aria-valuenow="{{ pet.birthday_progress }}" 
+                                                aria-valuemin="0" 
+                                                aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pet-stats">
+                                        <div class="d-flex justify-content-between text-muted">
+                                            <small>나이: {{ pet.get_age }}살</small>
+                                            <small>생일: {{ pet.birth_date|date:"Y년 m월 d일" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="lead">등록된 고양이가 없습니다.</p>
+            {% endif %}
+
+            <!-- 최근 게시글 사진 섹션 -->
+            {% if recent_posts %}
+            <div class="mt-4">
+                <h4 class="mb-3">최근 올라온 고양이 사진</h4>
+                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2">
+                    {% for post in recent_posts %}
+                        {% if post.image %}
+                        <div class="col">
+                            <a href="{% url 'board_app:detail' post.id %}" class="text-decoration-none">
+                                <div class="card h-100 border-0">
+                                    <img src="{{ post.image.url }}" class="card-img-top rounded" alt="{{ post.title }}" 
+                                         style="height: 120px; object-fit: cover;">
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <p class="lead">로그인하시면 고양이 정보를 관리할 수 있습니다.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 10px;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+.progress-bar[data-progress] {
+    width: attr(data-progress);
+}
+
+.pet-avatar {
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-emoji {
+    font-size: 24px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.progress-bar').forEach(function(bar) {
+        const progress = bar.getAttribute('data-progress');
+        bar.style.width = progress + '%';
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ post.title }}</h2>
+            {% if user == post.author %}
+            <div>
+                <a href="{% url 'board_app:edit' post.id %}" class="btn btn-outline-primary btn-sm">수정</a>
+                <form action="{% url 'board_app:delete' post.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if post.image %}
+        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" style="max-height: 500px; object-fit: contain;">
+        {% endif %}
+        
+        <div class="card-body">
+            <div class="mb-3">
+                <small class="text-muted">
+                    작성자: {{ post.author.username }} | 
+                    작성일: {{ post.created_at|date:"Y-m-d H:i" }}
+                    {% if post.updated_at != post.created_at %}
+                    | 수정일: {{ post.updated_at|date:"Y-m-d H:i" }}
+                    {% endif %}
+                </small>
+            </div>
+            
+            <p class="card-text">{{ post.content|linebreaksbr }}</p>
+            
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div>
+                    <form action="{% url 'board_app:like' post.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                            {% if user in post.likes.all %}
+                            좋아요 취소
+                            {% else %}
+                            좋아요
+                            {% endif %}
+                            ({{ post.likes.count }})
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 댓글 섹션 -->
+    <div class="mt-4">
+        <h4>댓글 ({{ post.comments.count }})</h4>
+        
+        {% if user.is_authenticated %}
+        <form action="{% url 'board_app:comment_create' post.id %}" method="post" class="mb-4">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">댓글 작성</button>
+        </form>
+        {% else %}
+        <p class="text-muted">댓글을 작성하려면 <a href="{% url 'login' %}">로그인</a>이 필요합니다.</p>
+        {% endif %}
+
+        {% for comment in post.comments.all %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ comment.author.username }}</h6>
+                    <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                </div>
+                <p class="card-text">{{ comment.content }}</p>
+                {% if user == comment.author %}
+                <div class="text-end">
+                    <form action="{% url 'board_app:comment_delete' post.id comment.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('댓글을 삭제하시겠습니까?')">삭제</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">아직 댓글이 없습니다.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

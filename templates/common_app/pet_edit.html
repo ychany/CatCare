@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ pet.name }} 정보 수정 - 고양이 정보 사이트{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="mb-4">{{ pet.name }} 정보 수정</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if pet.image %}
+                <div class="mb-3">
+                    <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="img-thumbnail" style="max-width: 200px;">
+                </div>
+            {% endif %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">수정하기</button>
+            <a href="{% url 'index' %}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+</div>
+{% endblock %} 
