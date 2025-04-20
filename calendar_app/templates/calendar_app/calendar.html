@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}캘린더 - 냐옹노트{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- 좌측 달력 영역 -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측 입력/상세 패널 -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <form id="eventForm">
+                        {% csrf_token %}
+                        <input type="hidden" id="eventId" name="id">
+                        <div class="mb-3">
+                            <label for="date" class="form-label">날짜</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">타입</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="event_type" id="vacc" value="vacc" checked>
+                                <label class="btn btn-outline-primary" for="vacc">예방접종</label>
+                                
+                                <input type="radio" class="btn-check" name="event_type" id="med" value="med">
+                                <label class="btn btn-outline-success" for="med">진료기록</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pet" class="form-label">고양이</label>
+                            <select class="form-select" id="pet" name="pet" required>
+                                {% for pet in pets %}
+                                <option value="{{ pet.id }}">{{ pet.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">설명</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">메모</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3" id="nextDateContainer">
+                            <label for="next_date" class="form-label">다음 접종일</label>
+                            <input type="date" class="form-control" id="next_date" name="next_date">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="saveBtn">저장</button>
+                            <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">
+                                <i class="fas fa-trash-alt"></i> 삭제
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+
+<!-- FullCalendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/ko.js'></script>
+
+<style>
+    #calendar {
+        height: 600px;
+    }
+    .container-fluid {
+        padding: 0 20px;
+    }
+    .card {
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card-body {
+        padding: 20px;
+    }
+    .fc-daygrid-day {
+        min-height: 120px;
+    }
+    .fc-daygrid-day-frame {
+        min-height: 100%;
+    }
+    .fc-view {
+        height: 100% !important;
+    }
+    .fc-event {
+        cursor: pointer;
+    }
+    .fc-event-vacc {
+        background-color: #2196F3;
+        border-color: #2196F3;
+    }
+    .fc-event-med {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+    .fc-daygrid-event {
+        white-space: normal !important;
+        align-items: normal !important;
+        margin: 1px 2px !important;
+        padding: 2px 4px !important;
+    }
+    .fc-event-title {
+        font-weight: normal !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .fc-event-time {
+        font-size: 0.9em !important;
+    }
+    .fc-header-toolbar {
+        margin-bottom: 1.5em !important;
+    }
+    .fc-toolbar-title {
+        font-size: 1.5em !important;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        views: {
+            timeGrid: {
+                dayMaxEvents: 3,
+                eventMaxStack: 2
+            }
+        },
+        eventDidMount: function(info) {
+            // 이벤트에 툴팁 추가
+            info.el.title = `${info.event.extendedProps.petName}\n${info.event.title}\n${info.event.extendedProps.description || ''}`;
+        },
+        events: function(info, successCallback, failureCallback) {
+            fetch('/calendar/api/events/')
+                .then(response => response.json())
+                .then(data => {
+                    const events = data.map(event => ({
+                        id: event.id,
+                        title: `${event.event_type === 'vacc' ? '💉' : '🏥'} ${event.description}`,
+                        start: event.date,
+                        className: `fc-event-${event.event_type}`,
+                        extendedProps: {
+                            petName: event.pet_name,
+                            description: event.description,
+                            notes: event.notes,
+                            next_date: event.next_date,
+                            event_type: event.event_type,
+                            pet: event.pet
+                        }
+                    }));
+                    successCallback(events);
+                });
+        },
+        eventClick: function(info) {
+            loadEventDetails(info.event);
+        },
+        dateClick: function(info) {
+            resetForm();
+            document.getElementById('date').value = info.dateStr;
+        }
+    });
+    calendar.render();
+
+    function resetForm() {
+        document.getElementById('eventForm').reset();
+        document.getElementById('eventId').value = '';
+        document.getElementById('deleteBtn').style.display = 'none';
+        document.getElementById('saveBtn').textContent = '저장';
+    }
+
+    // 이벤트 타입에 따른 다음 접종일 필드 표시/숨김
+    document.querySelectorAll('input[name="event_type"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            document.getElementById('nextDateContainer').style.display = 
+                this.value === 'vacc' ? 'block' : 'none';
+        });
+    });
+
+    // 이벤트 저장
+    function saveEvent() {
+        const formData = new FormData(document.getElementById('eventForm'));
+        const data = {
+            pet: formData.get('pet'),
+            event_type: formData.get('event_type'),
+            date: formData.get('date'),
+            description: formData.get('description'),
+            notes: formData.get('notes'),
+            next_date: formData.get('next_date') || null
+        };
+
+        const eventId = formData.get('id');
+        const method = eventId ? 'PUT' : 'POST';
+        const url = eventId ? `/calendar/api/events/${eventId}/` : '/calendar/api/events/';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
+            return response.json();
+        })
+        .then(data => {
+            calendar.refetchEvents();
+            resetForm();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('저장 중 오류가 발생했습니다.');
+        });
+    }
+
+    // 폼 제출 처리
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveEvent();
+    });
+
+    // 이벤트 상세 로드
+    function loadEventDetails(event) {
+        document.getElementById('eventId').value = event.id;
+        document.getElementById('date').value = event.startStr;
+        document.getElementById(event.extendedProps.event_type).checked = true;
+        document.getElementById('pet').value = event.extendedProps.pet;
+        document.getElementById('description').value = event.extendedProps.description;
+        document.getElementById('notes').value = event.extendedProps.notes;
+        document.getElementById('next_date').value = event.extendedProps.next_date || '';
+        document.getElementById('deleteBtn').style.display = 'block';
+        document.getElementById('saveBtn').textContent = '수정';
+        
+        // 이벤트 타입에 따른 다음 접종일 필드 표시/숨김
+        document.getElementById('nextDateContainer').style.display = 
+            event.extendedProps.event_type === 'vacc' ? 'block' : 'none';
+    }
+
+    // 삭제 버튼 처리
+    document.getElementById('deleteBtn').addEventListener('click', function() {
+        const eventId = document.getElementById('eventId').value;
+        if (!eventId) return;
+
+        if (confirm('정말 삭제하시겠습니까?')) {
+            fetch(`/calendar/events/${eventId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('삭제 중 오류가 발생했습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    calendar.refetchEvents();
+                    resetForm();
+                    alert('삭제되었습니다.');
+                } else {
+                    throw new Error(data.message || '삭제 중 오류가 발생했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
+        }
+    });
+});
+</script>
+{% endblock %} 

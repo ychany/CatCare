@@ -108,6 +108,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'board_app:list' %}">고양이 게시판</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'calendar' %}">건강 캘린더</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'care_calendar:care_calendar' %}">케어 캘린더</a>
+                </li>
                 {% if not user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">로그인</a>

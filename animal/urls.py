@@ -27,4 +27,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('pets/', include('common_app.urls')),
     path('board/', include('board_app.urls')),
+    path('calendar/', include('calendar_app.urls')),
+    path('care/', include('care_calendar.urls', namespace='care_calendar')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
