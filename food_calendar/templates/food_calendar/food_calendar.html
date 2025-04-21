@@ -5,13 +5,12 @@
 <div class="container-fluid">
     {# 미리보기 라벨: 기본 반려동물 표시 #}
     {% if pets %}
-    <h5 class="mb-3">미리보기: {{ pets.0.name }}</h5>
     {% endif %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div id="calendar" data-default-pet-id="{% if pets %}{{ pets.0.id }}{% endif %}"></div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">식사 기록 추가</h5>
@@ -72,27 +71,157 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-
+<style>
+    /* 간식 이벤트 hover 상태에서도 색 변화 방지 */
+    .fc-event-snack:hover {
+        background-color: #FF9800 !important;
+        border-color: #FF9800 !important;
+        color: white !important;
+    }
+    /* 사료: 양치하기(brush) 스타일 */
+    .fc-event-brush { background-color: #4CAF50; border-color: #4CAF50; color: white; }
+    /* 간식: 발톱깎기(nail) 스타일 */
+    .fc-event-nail { background-color: #FF9800; border-color: #FF9800; color: white; }
+    .fc-daygrid-event { white-space: normal !important; align-items: normal !important; }
+    .fc-event-title { font-weight: bold !important; }
+    .fc-event-time { display: none !important; }
+    .fc-event { border-radius: 4px; padding: 2px 4px; margin: 1px 0; font-size: 0.9em; }
+    .fc-event:hover { cursor: pointer; }
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let calendar;
-    let selectedEvent = null;
-    // data attribute에서 기본 반려동물 ID 취득 및 폼 기본값 설정
     const calendarEl = document.getElementById('calendar');
-    const defaultPetId = calendarEl.dataset.defaultPetId || null;
-    let currentPetId = defaultPetId;
-    document.getElementById('petSelect').value = defaultPetId;
-    
-    // --- 별점 위젯 생성 ---
+    const defaultPetId = calendarEl.dataset.defaultPetId;
+    let selectedEvent = null;
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ko',
+        displayEventTime: false,
+        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
+        eventDidMount: function(info) {
+            info.el.title = `${info.event.extendedProps.product_name}\n${info.event.extendedProps.description || ''}`;
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch(`/food/events/${defaultPetId}/?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`)
+                .then(res => res.json())
+                .then(data => {
+                    const mapped = data.map(ev => ({
+                        ...ev,
+                        allDay: true,
+                        className: ev.type === 'feed' ? 'fc-event-brush' : 'fc-event-nail'
+                    }));
+                    successCallback(mapped);
+                })
+                .catch(err => failureCallback(err));
+        },
+        dateClick: function(info) {
+            resetForm();
+            document.getElementById('openDate').value = info.dateStr;
+        },
+        eventClick: function(info) {
+            selectedEvent = info.event;
+            loadEventDetails(selectedEvent.id);
+        }
+    });
+    calendar.render();
+
+    function resetForm() {
+        document.getElementById('eventForm').reset();
+        document.getElementById('submitButton').textContent = '저장';
+        document.getElementById('deleteButton').style.display = 'none';
+        document.getElementById('endButton').style.display = 'none';
+        document.getElementById('stats').innerHTML = '';
+        ['openDate','quantityKg','description'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+        document.querySelectorAll('#ratingStars span').forEach(s => s.textContent = '☆');
+        selectedEvent = null;
+    }
+
+    function loadEventDetails(eventId) {
+        fetch(`/food/event/${eventId}/`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('submitButton').textContent = '수정';
+                document.getElementById('eventForm').dataset.selectedEventId = eventId;
+                document.getElementById('petSelect').value = data.pet_id;
+                document.getElementById('openDate').value = data.start.substr(0,10);
+                document.getElementById('typeSelect').value = data.type;
+                document.getElementById('productName').value = data.product_name;
+                document.getElementById('purchaseLink').value = data.purchase_link;
+                document.getElementById('quantityKg').value = data.quantity_kg;
+                document.getElementById('description').value = data.description;
+                const ratingInput = document.getElementById('rating');
+                const starElems = document.querySelectorAll('#ratingStars span');
+                ratingInput.value = data.rating;
+                starElems.forEach(s => s.textContent = s.dataset.value <= data.rating ? '★' : '☆');
+                document.getElementById('deleteButton').style.display = 'inline-block';
+                if (data.type === 'feed' && !data.end) {
+                    document.getElementById('endButton').style.display = 'inline-block';
+                    document.getElementById('stats').innerHTML = '<p>섭취중</p>';
+                } else {
+                    document.getElementById('endButton').style.display = 'none';
+                    const startDate = new Date(data.start);
+                    const endDate = data.end ? new Date(data.end) : new Date();
+                    const days = Math.floor((endDate - startDate)/(1000*60*60*24))+1;
+                    const avg = data.quantity_kg ? (data.quantity_kg/days).toFixed(2) : 0;
+                    document.getElementById('stats').innerHTML = `<p>소비기간: ${days}일</p><p>총 ${data.quantity_kg}kg</p><p>일일평균: ${avg}kg</p>`;
+                }
+            })
+            .catch(e => console.error(e));
+    }
+
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = {
+            pet_id: document.getElementById('petSelect').value,
+            type: document.getElementById('typeSelect').value,
+            product_name: document.getElementById('productName').value,
+            purchase_link: document.getElementById('purchaseLink').value,
+            rating: parseInt(document.getElementById('rating').value)||0,
+            quantity_kg: parseFloat(document.getElementById('quantityKg').value)||0,
+            description: document.getElementById('description').value,
+            start: document.getElementById('openDate').value ? new Date(document.getElementById('openDate').value).toISOString() : new Date().toISOString(),
+            end: document.getElementById('typeSelect').value==='feed'?null:new Date().toISOString()
+        };
+        const url = selectedEvent ? `/food/event/${selectedEvent.id}/update/` : '/food/event/create/';
+        fetch(url, {
+            method: selectedEvent?'PUT':'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},
+            body: JSON.stringify(formData)
+        })
+        .then(r=>r.json()).then(()=>{calendar.refetchEvents();resetForm();}).catch(console.error);
+    });
+
+    document.getElementById('deleteButton').addEventListener('click', function(){
+        if (selectedEvent && confirm('삭제?')) {
+            fetch(`/food/event/${selectedEvent.id}/delete/`,{method:'DELETE',headers:{'X-CSRFToken':getCookie('csrftoken')}})
+            .then(r=>r.json()).then(()=>{calendar.refetchEvents();resetForm();}).catch(console.error);
+        }
+    });
+
+    document.getElementById('endButton').addEventListener('click', function(){
+        if (selectedEvent && confirm('종료?')) {
+            fetch(`/food/event/${selectedEvent.id}/end/`,{method:'POST',headers:{'X-CSRFToken':getCookie('csrftoken')}})
+            .then(r=>r.json()).then(data=>{
+                calendar.refetchEvents();
+                document.getElementById('endButton').style.display='none';
+                document.getElementById('stats').innerHTML=`<p>소비기간: ${data.days}일</p><p>총 ${data.total_kg}kg</p><p>일일평균: ${data.avg_daily}kg</p>`;
+            }).catch(console.error);
+        }
+    });
+
+    function getCookie(name){
+        let c=null;document.cookie.split(';').forEach(v=>{let kv=v.trim().split('=');if(kv[0]===name)c=decodeURIComponent(kv[1]);});return c;
+    }
+
+    // 별점 위젯 생성 (만족도)
     const ratingContainer = document.getElementById('ratingStars');
     const ratingInput = document.getElementById('rating');
     const starElems = [];
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('span');
-        star.textContent = '☆';
-        star.dataset.value = i;
-        star.style.cursor = 'pointer';
-        star.style.fontSize = '1.5rem';
+        star.textContent = '☆'; star.dataset.value = i;
+        star.style.cursor = 'pointer'; star.style.fontSize = '1.5rem';
         ratingContainer.appendChild(star);
         starElems.push(star);
         star.addEventListener('click', function() {
@@ -101,190 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
             starElems.forEach(s => s.textContent = s.dataset.value <= val ? '★' : '☆');
         });
     }
-    // --- 별점 위젯 생성 끝 ---
-
-    function initializeCalendar() {
-        const calendarEl = document.getElementById('calendar');
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            selectable: true,
-            select: function(info) {
-                resetForm();
-                selectedEvent = null;
-                document.getElementById('deleteButton').style.display = 'none';
-            },
-            eventClick: function(info) {
-                selectedEvent = info.event;
-                loadEventDetails(selectedEvent.id);
-            },
-            events: function(fetchInfo, successCallback, failureCallback) {
-                // petSelect 필드와 무관하게 항상 기본 반려동물의 이벤트를 미리보기
-                const pid = currentPetId;
-                fetch(`/food/events/${pid}/?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`)
-                    .then(response => response.json())
-                    .then(data => successCallback(data))
-                    .catch(error => failureCallback(error));
-            }
-        });
-        calendar.render();
-    }
-
-    function resetForm() {
-        document.getElementById('eventForm').reset();
-        document.getElementById('deleteButton').style.display = 'none';
-        document.getElementById('endButton').style.display = 'none';
-        document.getElementById('submitButton').textContent = '저장';
-        // 입력 필드 초기화: 개봉일, 패키지 무게, 메모
-        document.getElementById('openDate').value = '';
-        const qtyInput = document.getElementById('quantityKg'); if (qtyInput) qtyInput.value = '';
-        document.getElementById('description').value = '';
-        // 별점 초기화
-        const ratingInput = document.getElementById('rating'); if (ratingInput) ratingInput.value = 0;
-        document.querySelectorAll('#ratingStars span').forEach(s => s.textContent = '☆');
-        // 통계 초기화
-        document.getElementById('stats').innerHTML = '';
-        selectedEvent = null;
-    }
-
-    function loadEventDetails(eventId) {
-        fetch(`/food/event/${eventId}/`)
-            .then(response => response.json())
-            .then(data => {
-                // 수정 모드 전환
-                document.getElementById('submitButton').textContent = '수정';
-                currentPetId = data.pet_id;
-                // 폼 필드 채우기
-                document.getElementById('petSelect').value = data.pet_id;
-                document.getElementById('typeSelect').value = data.type;
-                document.getElementById('productName').value = data.product_name;
-                document.getElementById('purchaseLink').value = data.purchase_link;
-                // 별점 표시 업데이트
-                const ratingSpans = document.querySelectorAll('#ratingStars span');
-                ratingSpans.forEach(s => s.textContent = s.dataset.value <= data.rating ? '★' : '☆');
-                // 패키지 무게 표시
-                document.getElementById('quantityKg').value = data.quantity_kg;
-                // 개봉일, 메모
-                document.getElementById('openDate').value = data.start ? data.start.substr(0, 10) : '';
-                document.getElementById('description').value = data.description;
-                // 버튼 표시
-                document.getElementById('deleteButton').style.display = 'block';
-                if (data.type === 'feed' && !data.end) {
-                    document.getElementById('endButton').style.display = 'inline-block';
-                } else {
-                    document.getElementById('endButton').style.display = 'none';
-                }
-                // 통계 표시
-                const statsEl = document.getElementById('stats');
-                if (data.end) {
-                    // 소비기간 및 일일평균 계산
-                    const startDate = new Date(data.start);
-                    const endDate = new Date(data.end);
-                    const diffTime = endDate - startDate;
-                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                    const avgDaily = data.quantity_kg ? (data.quantity_kg / diffDays).toFixed(2) : 0;
-                    statsEl.innerHTML = `
-                        <p>소비기간: ${diffDays}일</p>
-                        <p>총 ${data.quantity_kg}kg</p>
-                        <p>일일평균: ${avgDaily}kg</p>
-                    `;
-                } else {
-                    statsEl.innerHTML = '<p>섭취중</p>';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    document.getElementById('petSelect').addEventListener('change', function() {
-        currentPetId = this.value;
-        calendar.refetchEvents();
-    });
-
-    document.getElementById('eventForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const typeVal = document.getElementById('typeSelect').value;
-        const openDateVal = document.getElementById('openDate').value;
-        const startISO = openDateVal ? new Date(openDateVal).toISOString() : new Date().toISOString();
-        const endISO = typeVal === 'feed' ? null : new Date().toISOString();
-        const formData = {
-            pet_id: document.getElementById('petSelect').value,
-            type: typeVal,
-            product_name: document.getElementById('productName').value,
-            purchase_link: document.getElementById('purchaseLink').value,
-            rating: parseInt(document.getElementById('rating').value) || 0,
-            quantity_kg: parseFloat(document.getElementById('quantityKg').value) || 0,
-            description: document.getElementById('description').value,
-            start: startISO,
-            end: endISO
-        };
-        const url = selectedEvent ? `/food/event/${selectedEvent.id}/update/` : '/food/event/create/';
-        const method = selectedEvent ? 'PUT' : 'POST';
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(res => res.json())
-        .then(data => { calendar.refetchEvents(); resetForm(); })
-        .catch(err => console.error(err));
-    });
-
-    document.getElementById('deleteButton').addEventListener('click', function() {
-        if (selectedEvent && confirm('정말로 이 기록을 삭제하시겠습니까?')) {
-            fetch(`/food/event/${selectedEvent.id}/delete/`, {
-                method: 'DELETE',
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
-            })
-            .then(r => r.json())
-            .then(d => { calendar.refetchEvents(); resetForm(); })
-            .catch(err => console.error(err));
-        }
-    });
-
-    document.getElementById('endButton').addEventListener('click', function() {
-        if (selectedEvent && confirm('섭취를 종료하시겠습니까?')) {
-            fetch(`/food/event/${selectedEvent.id}/end/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
-            })
-            .then(res => res.json())
-            .then(data => {
-                // 종료 통계 표시: 소비기간, 총 kg, 일일 평균
-                document.getElementById('stats').innerHTML = `
-                    <p>소비기간: ${data.days}일</p>
-                    <p>총 ${data.total_kg}kg</p>
-                    <p>일일평균: ${data.avg_daily}kg</p>
-                `;
-                calendar.refetchEvents();
-                document.getElementById('endButton').style.display = 'none';
-            })
-            .catch(err => console.error(err));
-        }
-    });
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    initializeCalendar();
 });
 </script>
 {% endblock %} 

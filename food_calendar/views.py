@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from .models import FoodEvent
 from common_app.models import Pet
 from django.utils import timezone
@@ -43,14 +43,18 @@ def get_events(request, pet_id):
     )
     event_list = []
     for event in events:
-        # 사료 이벤트: 개봉일부터 오늘 또는 종료일까지 표시하고, 섭취중이면 제목에 표시
         if event.type == 'feed':
+            # 사료 이벤트: 개봉일부터 오늘 또는 종료일까지 표시하고, 섭취중이면 제목에 표시
             if event.end_time:
                 end_iso = event.end_time.isoformat()
                 title = f"🥣 {event.product_name}"
             else:
                 end_iso = timezone.now().isoformat()
                 title = f"🥣 {event.product_name} (섭취중)"
+        elif event.type == 'snack':
+            # 간식 이벤트: 개봉일에만 표시하도록 end를 start_time으로 설정
+            end_iso = event.start_time.isoformat()
+            title = f"🍖 {event.product_name}"
         else:
             end_iso = event.end_time.isoformat() if event.end_time else None
             title = f"🍖 {event.product_name}"
