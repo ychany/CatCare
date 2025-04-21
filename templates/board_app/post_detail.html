@@ -37,17 +37,11 @@
             
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <div>
-                    <form action="{% url 'board_app:like' post.id %}" method="post" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-primary btn-sm">
-                            {% if user in post.likes.all %}
-                            좋아요 취소
-                            {% else %}
-                            좋아요
-                            {% endif %}
-                            ({{ post.likes.count }})
-                        </button>
-                    </form>
+                    {% comment %}AJAX 처리용 버튼만 남김{% endcomment %}
+                    <button type="button" id="like-button" class="btn btn-outline-primary btn-sm"
+                        data-url="{% url 'board_app:like' post.id %}">
+                        {% if user in post.likes.all %}좋아요 취소{% else %}좋아요{% endif %} ({{ post.likes.count }})
+                    </button>
                 </div>
             </div>
         </div>
@@ -90,4 +84,34 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // CSRF 쿠키 읽기 함수
+    function getCookie(name) {
+        let cookieValue = null;
+        document.cookie.split(';').forEach(function(item) {
+            const parts = item.trim().split('=');
+            if (parts[0] === name) cookieValue = decodeURIComponent(parts[1]);
+        });
+        return cookieValue;
+    }
+    const likeBtn = document.getElementById('like-button');
+    likeBtn.addEventListener('click', function() {
+        const url = this.dataset.url;
+        fetch(url, {
+            method: 'POST',
+            headers: {'X-CSRFToken': getCookie('csrftoken')},
+            credentials: 'same-origin'
+        })
+        .then(res => res.json())
+        .then(data => {
+            likeBtn.textContent = (data.liked ? '좋아요 취소' : '좋아요') + ' (' + data.count + ')';
+        })
+        .catch(console.error);
+    });
+});
+</script>
 {% endblock %} 
