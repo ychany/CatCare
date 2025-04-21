@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'board_app',
     'calendar_app',
     'care_calendar',
+    'food_calendar',
 ]
 
 MIDDLEWARE = [

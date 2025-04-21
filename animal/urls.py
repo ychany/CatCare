@@ -29,4 +29,5 @@ urlpatterns = [
     path('board/', include('board_app.urls')),
     path('calendar/', include('calendar_app.urls')),
     path('care/', include('care_calendar.urls', namespace='care_calendar')),
+    path('food/', include('food_calendar.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
