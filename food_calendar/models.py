@@ -26,6 +26,8 @@ class FoodEvent(models.Model):
     duration_days = models.PositiveIntegerField(verbose_name='소비 기간(일)', default=0)
     start_time = models.DateTimeField(verbose_name='시작 시간')
     end_time = models.DateTimeField(verbose_name='종료 시간', null=True, blank=True)
+    purchase_date = models.DateField(null=True, blank=True)
+    price = models.DecimalField(verbose_name='가격', max_digits=10, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='생성일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
 

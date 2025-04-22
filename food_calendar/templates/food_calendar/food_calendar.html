@@ -29,6 +29,14 @@
                             <input type="date" id="openDate" name="open_date" class="form-control" required />
                         </div>
                         <div class="mb-3">
+                            <label for="purchaseDate" class="form-label">구매일</label>
+                            <input type="date" id="purchaseDate" name="purchase_date" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">가격</label>
+                            <input type="number" step="0.01" id="price" name="price" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
                             <label for="typeSelect" class="form-label">타입</label>
                             <select class="form-select" id="typeSelect" name="type">
                                 <option value="feed">사료</option>
@@ -132,7 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('deleteButton').style.display = 'none';
         document.getElementById('endButton').style.display = 'none';
         document.getElementById('stats').innerHTML = '';
-        ['openDate','quantityKg','description'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+        ['openDate','purchaseDate','price','quantityKg','description'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.value = '';
+        });
         document.querySelectorAll('#ratingStars span').forEach(s => s.textContent = '☆');
         selectedEvent = null;
     }
@@ -145,6 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('eventForm').dataset.selectedEventId = eventId;
                 document.getElementById('petSelect').value = data.pet_id;
                 document.getElementById('openDate').value = data.start.substr(0,10);
+                document.getElementById('purchaseDate').value = data.purchase_date || '';
+                document.getElementById('price').value = data.price || '';
                 document.getElementById('typeSelect').value = data.type;
                 document.getElementById('productName').value = data.product_name;
                 document.getElementById('purchaseLink').value = data.purchase_link;
@@ -177,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
             type: document.getElementById('typeSelect').value,
             product_name: document.getElementById('productName').value,
             purchase_link: document.getElementById('purchaseLink').value,
+            purchase_date: document.getElementById('purchaseDate').value,
+            price: parseFloat(document.getElementById('price').value) || 0,
             rating: parseInt(document.getElementById('rating').value)||0,
             quantity_kg: parseFloat(document.getElementById('quantityKg').value)||0,
             description: document.getElementById('description').value,

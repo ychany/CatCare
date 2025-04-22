@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 from .models import FoodEvent
 from common_app.models import Pet
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, F, ExpressionWrapper, FloatField, Sum, Value, DecimalField
+from django.db.models.functions import Coalesce
 
 # Create your views here.
 
@@ -93,6 +94,8 @@ def create_event(request):
             previous_food=data.get('previous_food', ''),
             quantity_kg=data.get('quantity_kg', 0),
             duration_days=data.get('duration_days', 0),
+            purchase_date=datetime.fromisoformat(data.get('purchase_date')).date() if data.get('purchase_date') else None,
+            price=data.get('price', 0),
             start_time=datetime.fromisoformat(data.get('start').replace('Z', '+00:00')),
             end_time=datetime.fromisoformat(data.get('end').replace('Z', '+00:00')) if data.get('end') else None
         )
@@ -106,6 +109,8 @@ def create_event(request):
             'previous_food': event.previous_food,
             'quantity_kg': event.quantity_kg,
             'duration_days': event.duration_days,
+            'purchase_date': event.purchase_date.isoformat() if event.purchase_date else None,
+            'price': event.price,
             'start': event.start_time.isoformat(),
             'end': event.end_time.isoformat() if event.end_time else None,
             'pet_id': event.pet.id,
@@ -126,6 +131,8 @@ def get_event_details(request, event_id):
         'previous_food': event.previous_food,
         'quantity_kg': event.quantity_kg,
         'duration_days': event.duration_days,
+        'purchase_date': event.purchase_date.isoformat() if event.purchase_date else None,
+        'price': event.price,
         'start': event.start_time.isoformat(),
         'end': event.end_time.isoformat() if event.end_time else None,
         'pet_id': event.pet.id,
@@ -162,6 +169,10 @@ def update_food_event(request, event_id):
             event.quantity_kg = data['quantity_kg']
         if 'duration_days' in data:
             event.duration_days = data['duration_days']
+        if 'purchase_date' in data:
+            event.purchase_date = datetime.fromisoformat(data['purchase_date']).date() if data['purchase_date'] else None
+        if 'price' in data:
+            event.price = data['price']
         if 'start_time' in data:
             event.start_time = datetime.fromisoformat(data['start_time'].replace('Z', '+00:00'))
         if 'end_time' in data:
@@ -179,6 +190,8 @@ def update_food_event(request, event_id):
             'previous_food': event.previous_food,
             'quantity_kg': event.quantity_kg,
             'duration_days': event.duration_days,
+            'purchase_date': event.purchase_date.isoformat() if event.purchase_date else None,
+            'price': event.price,
             'start_time': event.start_time.isoformat(),
             'end_time': event.end_time.isoformat(),
             'pet_id': event.pet_id
@@ -218,3 +231,66 @@ def end_event(request, event_id):
         'total_kg': event.quantity_kg,
         'avg_daily': round(avg_daily, 2),
     })
+
+def purchase_management(request):
+    # 월별 필터링
+    month = request.GET.get('month')
+    if month:
+        year, mon = map(int, month.split('-'))
+        start_date = datetime(year, mon, 1)
+        if mon == 12:
+            end_date = datetime(year+1, 1, 1)
+        else:
+            end_date = datetime(year, mon+1, 1)
+    else:
+        today = datetime.now()
+        start_date = datetime(today.year, today.month, 1)
+        if today.month == 12:
+            end_date = datetime(today.year+1, 1, 1)
+        else:
+            end_date = datetime(today.year, today.month+1, 1)
+
+    # 검색 필터링
+    search = request.GET.get('search', '')
+    
+    # 일일 평균 섭취량 계산
+    events = FoodEvent.objects.filter(
+        user=request.user,
+        purchase_date__isnull=False,
+        purchase_date__gte=start_date,
+        purchase_date__lt=end_date
+    )
+    
+    if search:
+        events = events.filter(product_name__icontains=search)
+    
+    # 일일 평균 섭취량 계산
+    events = events.annotate(
+        computed_duration_days=Coalesce(
+            ExpressionWrapper(
+                F('end_time') - F('start_time'),
+                output_field=FloatField()
+            ) / (24*60*60*1000000),
+            1.0
+        ),
+        daily_amount=ExpressionWrapper(
+            F('quantity_kg') / F('computed_duration_days'),
+            output_field=FloatField()
+        )
+    ).order_by('-purchase_date')
+
+    # 월 총 합계(가격) 계산
+    total_price = events.aggregate(
+        total_price=Coalesce(
+            Sum('price'),
+            Value(0),
+            output_field=DecimalField(max_digits=12, decimal_places=2)
+        )
+    )['total_price']
+    context = {
+        'events': events,
+        'current_month': start_date.strftime('%Y-%m'),
+        'search': search,
+        'total_price': total_price,
+    }
+    return render(request, 'food_calendar/purchase_management.html', context)
