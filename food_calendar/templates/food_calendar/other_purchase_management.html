@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}기타 구매 관리{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- 필터 및 총 합계 -->
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-3">
+            <form method="get" class="d-flex">
+                <input type="month" name="month" value="{{ current_month }}" class="form-control me-2">
+        </div>
+        <div class="col-md-4">
+                <input type="text" name="search" value="{{ search }}" placeholder="상품명 검색" class="form-control me-2">
+        </div>
+        <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">검색</button>
+            </form>
+        </div>
+        <div class="col-md-3 text-end">
+            <strong>총 합계:</strong> {{ total_price|floatformat:0|intcomma }}원
+        </div>
+    </div>
+
+    <!-- 추가 버튼 -->
+    <div class="mb-3">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#otherPurchaseModal">추가</button>
+    </div>
+
+    <!-- 구매 내역 테이블 -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>구매일</th>
+                    <th>가격</th>
+                    <th>타입</th>
+                    <th>상품명</th>
+                    <th>구매처 링크</th>
+                    <th>만족도</th>
+                    <th>메모</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in purchases %}
+                <tr>
+                    <td>{{ p.purchase_date|date:"Y-m-d" }}</td>
+                    <td>{{ p.price|floatformat:0|intcomma }}원</td>
+                    <td>{{ p.type }}</td>
+                    <td>{{ p.product_name }}</td>
+                    <td>{% if p.purchase_link %}<a href="{{ p.purchase_link }}" target="_blank">링크</a>{% endif %}</td>
+                    <td>{{ p.rating }}</td>
+                    <td>{{ p.memo }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center">기타 구매 내역이 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 모달 -->
+<div class="modal fade" id="otherPurchaseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="otherPurchaseForm">
+        <div class="modal-header">
+          <h5 class="modal-title">기타 구매 추가</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">구매일</label>
+            <input type="date" name="purchase_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">가격</label>
+            <input type="number" name="price" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">타입</label>
+            <input type="text" name="type" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">상품명</label>
+            <input type="text" name="product_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">구매처 링크</label>
+            <input type="url" name="purchase_link" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">만족도</label>
+            <select name="rating" class="form-select">
+              {% for i in '12345'|make_list %}<option value="{{ forloop.counter }}">{{ forloop.counter }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">메모</label>
+            <textarea name="memo" class="form-control"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="submit" class="btn btn-primary">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name){let v=null;document.cookie.split(';').forEach(c=>{let p=c.trim().split('=');if(p[0]===name)v=decodeURIComponent(p[1]);});return v;}
+
+// 모달 폼 제출
+document.getElementById('otherPurchaseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formEl = this;
+    const formDataObj = new FormData(formEl);
+    // csrf token 제거
+    formDataObj.delete('csrfmiddlewaretoken');
+    const data = {};
+    formDataObj.forEach((v, k) => { data[k] = v; });
+    fetch('/food/api/purchases/other/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(json => {
+        if (json.id) {
+            // 성공 시 모달 닫고 새로고침
+            var modal = bootstrap.Modal.getInstance(document.getElementById('otherPurchaseModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            console.error('Error saving:', json);
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+{% endblock %} 

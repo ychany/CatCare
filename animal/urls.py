@@ -30,4 +30,5 @@ urlpatterns = [
     path('calendar/', include('calendar_app.urls')),
     path('care/', include('care_calendar.urls', namespace='care_calendar')),
     path('food/', include('food_calendar.urls')),
+    path('items/', include('item_purchase_app.urls', namespace='item_purchase_app')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

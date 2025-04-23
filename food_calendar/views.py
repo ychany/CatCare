@@ -294,3 +294,29 @@ def purchase_management(request):
         'total_price': total_price,
     }
     return render(request, 'food_calendar/purchase_management.html', context)
+
+@login_required
+def other_purchase_management(request):
+    # 기타 구매 관리
+    month = request.GET.get('month')
+    if month:
+        year, mon = map(int, month.split('-'))
+        start_date = datetime(year, mon, 1)
+        end_date = datetime(year if mon<12 else year+1, mon%12+1, 1)
+    else:
+        today = datetime.now()
+        start_date = datetime(today.year, today.month, 1)
+        end_date = datetime(today.year if today.month<12 else today.year+1, today.month%12+1, 1)
+    search = request.GET.get('search', '')
+    qs = OtherPurchase.objects.filter(user=request.user, purchase_date__gte=start_date, purchase_date__lt=end_date)
+    if search:
+        qs = qs.filter(product_name__icontains=search)
+    # 총합
+    total_price = qs.aggregate(total_price=Coalesce(Sum('price'), Value(0), output_field=DecimalField()))['total_price']
+    context = {
+        'purchases': qs.order_by('-purchase_date'),
+        'current_month': start_date.strftime('%Y-%m'),
+        'search': search,
+        'total_price': total_price,
+    }
+    return render(request, 'food_calendar/other_purchase_management.html', context)

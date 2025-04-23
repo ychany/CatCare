@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'calendar_app',
     'care_calendar',
     'food_calendar',
+    'item_purchase_app',
 ]
 
 MIDDLEWARE = [
