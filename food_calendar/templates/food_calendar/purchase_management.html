@@ -5,79 +5,74 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card">
-        <div class="card-header">
-            <h2 class="mb-0">구매 관리</h2>
-        </div>
-        <div class="card-body">
-            <!-- 필터 섹션 -->
-            <div class="row mb-3">
-                <form method="get" class="row g-2 w-100 align-items-center">
-                    <div class="col-md-3">
-                        <input type="month" name="month" value="{{ current_month }}" class="form-control">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" name="search" value="{{ search }}" placeholder="상품명 검색" class="form-control">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">검색</button>
-                    </div>
-                    <div class="col-md-3 text-end">
-                        <strong>총 합계:</strong> {{ total_price|floatformat:0|intcomma }}원
-                    </div>
-                </form>
+    <!-- 필터 섹션 -->
+    <div class="row mb-3">
+        <form method="get" class="row g-2 w-100 align-items-center">
+            <div class="col-md-3">
+                <input type="month" name="month" value="{{ current_month }}" class="form-control">
             </div>
-
-            <!-- 구매 내역 테이블 -->
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>구매일</th>
-                            <th>개봉일</th>
-                            <th>가격</th>
-                            <th>타입</th>
-                            <th>상품명</th>
-                            <th>구매처 링크</th>
-                            <th>만족도</th>
-                            <th>무게(kg)</th>
-                            <th>메모</th>
-                            <th>일일 섭취량(kg/day)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for event in events %}
-                        <tr>
-                            <td>{{ event.purchase_date|date:"Y-m-d" }}</td>
-                            <td>{{ event.start_time|date:"Y-m-d" }}</td>
-                            <td>
-                                {{ event.price|floatformat:0|intcomma }}원
-                            </td>
-                            <td>{{ event.get_type_display }}</td>
-                            <td>{{ event.product_name }}</td>
-                            <td>
-                                {% if event.purchase_link %}
-                                <a href="{{ event.purchase_link }}" target="_blank">링크</a>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% for i in "12345"|make_list %}
-                                    {% if forloop.counter <= event.rating %}★{% else %}☆{% endif %}
-                                {% endfor %}
-                            </td>
-                            <td>{{ event.quantity_kg }}</td>
-                            <td>{{ event.description }}</td>
-                            <td>{{ event.daily_amount|floatformat:3 }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="10" class="text-center">구매 내역이 없습니다.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="col-md-4">
+                <input type="text" name="search" value="{{ search }}" placeholder="상품명 검색" class="form-control">
             </div>
-        </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">검색</button>
+            </div>
+            <div class="col-md-3 text-end">
+                <strong>총 합계:</strong> {{ total_price|floatformat:0|intcomma }}원
+            </div>
+        </form>
     </div>
+
+    <!-- 구매 내역 테이블 -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>구매일</th>
+                    <th>개봉일</th>
+                    <th>가격</th>
+                    <th>타입</th>
+                    <th>상품명</th>
+                    <th>구매처 링크</th>
+                    <th>만족도</th>
+                    <th>무게(kg)</th>
+                    <th>메모</th>
+                    <th>일일 섭취량(kg/day)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.purchase_date|date:"Y-m-d" }}</td>
+                    <td>{{ event.start_time|date:"Y-m-d" }}</td>
+                    <td>
+                        {{ event.price|floatformat:0|intcomma }}원
+                    </td>
+                    <td>{{ event.get_type_display }}</td>
+                    <td>{{ event.product_name }}</td>
+                    <td>
+                        {% if event.purchase_link %}
+                        <a href="{{ event.purchase_link }}" target="_blank">링크</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= event.rating %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ event.quantity_kg }}</td>
+                    <td>{{ event.description }}</td>
+                    <td>{{ event.daily_amount|floatformat:3 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center">구매 내역이 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- /container -->
 </div>
 {% endblock %} 
