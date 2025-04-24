@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'care_calendar',
     'food_calendar',
     'item_purchase_app',
+    'weight_tracker_app',
 ]
 
 MIDDLEWARE = [

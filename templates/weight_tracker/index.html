@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>체중 관리</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">체중 기록</h5>
+                    <form id="weightForm">
+                        <div class="mb-3">
+                            <label for="date" class="form-label">날짜</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">체중 (kg)</label>
+                            <input type="number" step="0.1" class="form-control" id="weight" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">체중 변화</h5>
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">체중 기록 목록</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>체중 (kg)</th>
+                                    <th>변화량 (kg)</th>
+                                    <th>이전 측정일</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weightTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const weightForm = document.getElementById('weightForm');
+    const ctx = document.getElementById('weightChart').getContext('2d');
+    const weightTableBody = document.getElementById('weightTableBody');
+    let weightChart;
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR');
+    }
+
+    function updateTable(data) {
+        weightTableBody.innerHTML = '';
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            
+            const dateCell = document.createElement('td');
+            dateCell.textContent = formatDate(item.date);
+            
+            const weightCell = document.createElement('td');
+            weightCell.textContent = item.weight.toFixed(1);
+            
+            const changeCell = document.createElement('td');
+            if (item.change !== null) {
+                const change = item.change.toFixed(1);
+                changeCell.textContent = change > 0 ? `+${change}` : change;
+                changeCell.className = change > 0 ? 'text-danger' : 'text-success';
+            } else {
+                changeCell.textContent = '-';
+            }
+            
+            const daysCell = document.createElement('td');
+            daysCell.textContent = item.days_since_last ? `${item.days_since_last}일 전` : '-';
+            
+            row.appendChild(dateCell);
+            row.appendChild(weightCell);
+            row.appendChild(changeCell);
+            row.appendChild(daysCell);
+            
+            weightTableBody.appendChild(row);
+        });
+    }
+
+    // 차트 초기화
+    function initChart() {
+        fetch('/weight-tracker/api/weights/')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.date).reverse();
+                const weights = data.map(item => item.weight).reverse();
+
+                if (weightChart) {
+                    weightChart.destroy();
+                }
+
+                weightChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '체중 (kg)',
+                            data: weights,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `체중: ${context.parsed.y}kg`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                updateTable(data);
+            });
+    }
+
+    // 체중 기록 제출
+    weightForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const data = {
+            date: document.getElementById('date').value,
+            weight: parseFloat(document.getElementById('weight').value)
+        };
+
+        fetch('/weight-tracker/api/weights/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                weightForm.reset();
+                initChart();
+            }
+        });
+    });
+
+    // 초기 차트 로드
+    initChart();
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 

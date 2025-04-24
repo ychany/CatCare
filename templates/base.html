@@ -140,6 +140,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'item_purchase_app:management' %}">기타 구매</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'weight_tracker' %}">체중 관리</a>
+                </li>
                 {% if not user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">로그인</a>
