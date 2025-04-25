@@ -72,8 +72,8 @@
                     <h5 class="card-title mb-0">보험사 정보</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>보험사 평점:</strong> {{ product.company.rating }}/5.0</p>
-                    <p><strong>고객 만족도:</strong> {{ product.company.customer_satisfaction }}/5.0</p>
+                    <p><strong>보험사 평점:</strong> {{ product.company.rating }}/100.0</p>
+                    <p><strong>고객 만족도:</strong> {{ product.company.customer_satisfaction }}/100.0</p>
                     <p><strong>웹사이트:</strong> <a href="{{ product.company.website }}" target="_blank">{{ product.company.website }}</a></p>
                     <hr>
                     <a href="{% url 'insurance:main' %}" class="btn btn-outline-primary w-100">목록으로 돌아가기</a>

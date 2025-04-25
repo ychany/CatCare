@@ -26,15 +26,10 @@ class Command(BaseCommand):
 
         # 보험사 및 기본 상품 생성
         for item in insurance_data:
-            # 보험사 평점과 고객 만족도를 랜덤하게 생성 (3.5 ~ 5.0 사이)
-            rating = round(random.uniform(3.5, 5.0), 1)
-            satisfaction = round(random.uniform(3.5, 5.0), 1)
 
             company, created = InsuranceCompany.objects.get_or_create(
                 name=item['fields']['company_name'],
                 defaults={
-                    'rating': rating,
-                    'customer_satisfaction': satisfaction,
                     'website': item['fields']['company_url'],
                     'description': item['fields'].get('content', '') + '\n' + item['fields'].get('etc', ''),
                 }
