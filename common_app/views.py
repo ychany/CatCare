@@ -57,3 +57,17 @@ def pet_update(request, pet_id):
             messages.success(request, '반려동물 정보가 수정되었습니다.')
             return redirect('index')
     return redirect('pets:edit', pet_id=pet_id)
+
+@login_required
+def pet_register(request):
+    if request.method == 'POST':
+        form = PetForm(request.POST, request.FILES)
+        if form.is_valid():
+            pet = form.save(commit=False)
+            pet.owner = request.user
+            pet.save()
+            messages.success(request, '반려동물이 등록되었습니다.')
+            return redirect('index')
+    else:
+        form = PetForm()
+    return render(request, 'common_app/pet_register.html', {'form': form})

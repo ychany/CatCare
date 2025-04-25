@@ -1,19 +1,84 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load insurance_tags %}
 
 {% block content %}
-<div class="container">
-    <h1>{{ product.name }}</h1>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">상품 정보</h5>
-            <p><strong>보험사:</strong> {{ product.company.name }}</p>
-            <p><strong>기본 보험료:</strong> {{ product.base_price }}원</p>
-            <h5 class="mt-4">보장 내역</h5>
-            <ul>
-                {% for key, value in product.coverage_details.items %}
-                <li><strong>{{ key }}:</strong> {{ value }}</li>
-                {% endfor %}
-            </ul>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">{{ product.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-subtitle mb-3 text-muted">{{ product.company.name }}</h5>
+                    
+                    <div class="mb-4">
+                        <h5>보장 내용</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>보장 항목</th>
+                                        <th>보장 내용</th>
+                                        <th>보장 한도</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, value in product.coverage_details.items %}
+                                        <tr>
+                                            <td>{{ key }}</td>
+                                            <td>{{ value }}</td>
+                                            <td>{{ product.coverage_limits|get_item:key }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>특별 혜택</h5>
+                        <ul class="list-group">
+                            {% for benefit in product.special_benefits %}
+                                <li class="list-group-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    {{ benefit }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>기본 정보</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>월 보험료:</strong> {{ product.base_price|floatformat:0 }}원</p>
+                                <p><strong>보장기간:</strong> {{ product.coverage_period }}년</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>적용 연령:</strong> {{ product.min_age }}세 - {{ product.max_age }}세</p>
+                                <p><strong>적용 체중:</strong> {{ product.min_weight }}kg - {{ product.max_weight }}kg</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">보험사 정보</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>보험사 평점:</strong> {{ product.company.rating }}/5.0</p>
+                    <p><strong>고객 만족도:</strong> {{ product.company.customer_satisfaction }}/5.0</p>
+                    <p><strong>웹사이트:</strong> <a href="{{ product.company.website }}" target="_blank">{{ product.company.website }}</a></p>
+                    <hr>
+                    <a href="{% url 'insurance:main' %}" class="btn btn-outline-primary w-100">목록으로 돌아가기</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

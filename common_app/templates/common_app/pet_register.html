@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">반려동물 등록</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">이름</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_species" class="form-label">종류</label>
+                            {{ form.species }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_age" class="form-label">나이</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_gender" class="form-label">성별</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_neutered" class="form-label">중성화 여부</label>
+                            {{ form.neutered }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_weight" class="form-label">체중 (kg)</label>
+                            {{ form.weight }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_notes" class="form-label">특이사항</label>
+                            {{ form.notes }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label">사진</label>
+                            {{ form.image }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">등록하기</button>
+                            <a href="{% url 'index' %}" class="btn btn-secondary">취소</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

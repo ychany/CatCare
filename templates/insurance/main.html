@@ -2,23 +2,86 @@
 
 {% block content %}
 <div class="container">
-    <h1>반려동물 보험 추천 시스템</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">빠른 보험 추천</h5>
-                    <p class="card-text">반려동물의 기본 정보만으로 보험을 추천받으세요.</p>
-                    <a href="{% url 'insurance:recommend' %}" class="btn btn-primary">시작하기</a>
+    <h1 class="mb-4">펫보험 서비스</h1>
+    
+    {% if pet_profiles %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">내 반려동물</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for profile in pet_profiles %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ profile.name }}</h5>
+                                        <p class="card-text">
+                                            <strong>종류:</strong> {{ profile.get_pet_type_display }}<br>
+                                            <strong>품종:</strong> {{ profile.breed }}<br>
+                                            <strong>나이:</strong> {{ profile.birth_date|timesince }} 개월<br>
+                                            {% if profile.weight %}
+                                            <strong>체중:</strong> {{ profile.weight }}kg<br>
+                                            {% endif %}
+                                        </p>
+                                        <a href="{% url 'insurance:recommend' profile.id %}" class="btn btn-primary">
+                                            <i class="fas fa-search me-2"></i>맞춤 보험 찾기
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">보험 상품 비교</h5>
-                    <p class="card-text">다양한 보험 상품을 비교해보세요.</p>
-                    <a href="{% url 'insurance:compare' %}" class="btn btn-primary">비교하기</a>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            반려동물 프로필을 먼저 등록해주세요.
+            <a href="{% url 'pets:pet_register' %}" class="alert-link">등록하러 가기</a>
+        </div>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-search fa-3x mb-3 text-primary"></i>
+                    <h5 class="card-title">보험 추천받기</h5>
+                    <p class="card-text">내 반려동물에게 맞는 보험을 찾아보세요.</p>
+                    <a href="{% url 'insurance:select_pet_profile' %}" class="btn btn-outline-primary">
+                        추천받기
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-balance-scale fa-3x mb-3 text-success"></i>
+                    <h5 class="card-title">상품 비교하기</h5>
+                    <p class="card-text">보험 상품을 비교해보세요.</p>
+                    <a href="{% url 'insurance:compare' %}" class="btn btn-outline-success">
+                        상품 비교하기
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-question-circle fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">보험 가이드</h5>
+                    <p class="card-text">펫보험에 대해 알아보세요.</p>
+                    <a href="#" class="btn btn-outline-info">
+                        가이드 보기
+                    </a>
                 </div>
             </div>
         </div>

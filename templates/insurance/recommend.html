@@ -1,26 +1,60 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load insurance_tags %}
 
 {% block content %}
-<div class="container">
-    <h1>맞춤 보험 추천</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label>반려동물 이름</label>
-            <input type="text" class="form-control" name="pet_name" required>
+<div class="container mt-4">
+    <h2 class="mb-4">보험 추천 결과</h2>
+    
+    {% if recommended_products %}
+        <div class="row">
+            {% for product in recommended_products %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">{{ product.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-3 text-muted">{{ product.company.name }}</h6>
+                            
+                            <div class="mb-3">
+                                <h6>보장 내용</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for key, value in product.coverage_details.items %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ key }}
+                                            <span class="badge bg-primary rounded-pill">{{ product.coverage_limits|get_item:key }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6>특별 혜택</h6>
+                                <ul class="list-group list-group-flush">
+                                    {% for benefit in product.special_benefits %}
+                                        <li class="list-group-item">{{ benefit }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-0">월 보험료: {{ product.base_price|floatformat:0 }}원</p>
+                                    <small class="text-muted">보장기간: {{ product.coverage_period }}년</small>
+                                </div>
+                                <a href="{% url 'insurance:product_detail' product.id %}" class="btn btn-outline-primary">상세보기</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <div class="form-group">
-            <label>반려동물 종류</label>
-            <select class="form-control" name="pet_type" required>
-                <option value="dog">강아지</option>
-                <option value="cat">고양이</option>
-            </select>
+    {% else %}
+        <div class="alert alert-info">
+            <p>추천할 수 있는 보험 상품이 없습니다.</p>
+            <a href="{% url 'insurance:main' %}" class="btn btn-primary">메인으로 돌아가기</a>
         </div>
-        <div class="form-group">
-            <label>반려동물 생년월일</label>
-            <input type="date" class="form-control" name="pet_birth" required>
-        </div>
-        <button type="submit" class="btn btn-primary">추천받기</button>
-    </form>
+    {% endif %}
 </div>
 {% endblock %} 

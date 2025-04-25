@@ -1,51 +1,111 @@
 {% extends 'base.html' %}
+{% load insurance_tags %}
 
 {% block content %}
 <div class="container">
-    <h1>보험 상품 비교</h1>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">상품 선택</h5>
-                    <select class="form-control" id="product1">
-                        <option value="">상품을 선택하세요</option>
-                        {% for product in products %}
-                        <option value="{{ product.id }}">{{ product.name }}</option>
+    <h1 class="mb-4">보험 상품 비교</h1>
+    
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>항목</th>
+                            {% for product in products %}
+                            <th class="text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <h5 class="mb-2">{{ product.name }}</h5>
+                                    <span class="badge bg-primary mb-2">{{ product.company.name }}</span>
+                                    <span class="badge bg-success">SURE 지수: {{ product.sure_index|floatformat:2 }}</span>
+                                </div>
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>기본 보험료</th>
+                            {% for product in products %}
+                            <td class="text-center">{{ product.base_price|floatformat:0 }}원</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <th>가입 가능 연령</th>
+                            {% for product in products %}
+                            <td class="text-center">{{ product.min_age }}세 ~ {{ product.max_age }}세</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <th>보장 기간</th>
+                            {% for product in products %}
+                            <td class="text-center">{{ product.coverage_period }}년</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <th>갱신 주기</th>
+                            {% for product in products %}
+                            <td class="text-center">{{ product.renewal_cycle }}년</td>
+                            {% endfor %}
+                        </tr>
+                        
+                        {% for key in coverage_keys %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            {% for product in products %}
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ product.coverage_details|get_item:key }}</span>
+                                    <span class="badge bg-info">{{ product.coverage_limits|get_item:key }}</span>
+                                </div>
+                            </td>
+                            {% endfor %}
+                        </tr>
                         {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">상품 선택</h5>
-                    <select class="form-control" id="product2">
-                        <option value="">상품을 선택하세요</option>
-                        {% for product in products %}
-                        <option value="{{ product.id }}">{{ product.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">상품 선택</h5>
-                    <select class="form-control" id="product3">
-                        <option value="">상품을 선택하세요</option>
-                        {% for product in products %}
-                        <option value="{{ product.id }}">{{ product.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                        
+                        <tr>
+                            <th>특별 보장</th>
+                            {% for product in products %}
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    {% for benefit in product.special_benefits %}
+                                    <li>
+                                        <i class="fas fa-star text-warning me-2"></i>
+                                        {{ benefit }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <div id="comparison-result" class="mt-4">
-        <!-- 비교 결과가 여기에 표시됩니다 -->
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">{{ product.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'insurance:product_detail' product.pk %}" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle me-2"></i>
+                            상세 정보
+                        </a>
+                        <a href="{% url 'insurance:inquiry' product.pk %}" class="btn btn-outline-success">
+                            <i class="fas fa-envelope me-2"></i>
+                            문의하기
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %} 

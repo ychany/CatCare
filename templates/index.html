@@ -15,7 +15,7 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="pet-avatar me-3">
-                                            <a href="{% url 'pets:edit' pet.id %}" class="text-decoration-none">
+                                            <a href="{% url 'pets:pet_edit' pet.id %}" class="text-decoration-none">
                                                 {% if pet.image %}
                                                     <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
                                                 {% else %}
@@ -27,7 +27,7 @@
                                         </div>
                                         <div>
                                             <h5 class="card-title mb-0">
-                                                <a href="{% url 'pets:edit' pet.id %}" class="text-decoration-none text-dark">
+                                                <a href="{% url 'pets:pet_edit' pet.id %}" class="text-decoration-none text-dark">
                                                     {{ pet.name }}
                                                 </a>
                                             </h5>

@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from datetime import date
 
 class Pet(models.Model):
+    PET_TYPE_CHOICES = [
+        ('dog', '강아지'),
+        ('cat', '고양이'),
+    ]
+
     CAT_BREEDS = [
         ('persian', '페르시안'),
         ('siamese', '샴'),
@@ -17,16 +22,32 @@ class Pet(models.Model):
         ('etc', '기타'),
     ]
 
+    DOG_BREEDS = [
+        ('poodle', '푸들'),
+        ('chihuahua', '치와와'),
+        ('shih_tzu', '시츄'),
+        ('maltese', '말티즈'),
+        ('pomeranian', '포메라니안'),
+        ('yorkshire', '요크셔테리어'),
+        ('dachshund', '닥스훈트'),
+        ('beagle', '비글'),
+        ('golden_retriever', '골든 리트리버'),
+        ('labrador', '래브라도 리트리버'),
+        ('etc', '기타'),
+    ]
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pets')
     name = models.CharField(max_length=100, verbose_name='이름')
-    breed = models.CharField(max_length=20, choices=CAT_BREEDS, verbose_name='종')
+    pet_type = models.CharField(max_length=10, choices=PET_TYPE_CHOICES, verbose_name='종류', default='cat')
+    breed = models.CharField(max_length=20, verbose_name='품종')
     birth_date = models.DateField(verbose_name='생년월일')
+    weight = models.FloatField(verbose_name='체중(kg)', null=True, blank=True)
     image = models.ImageField(upload_to='pet_images/', verbose_name='프로필 사진', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} ({self.get_breed_display()})"
+        return f"{self.name} ({self.get_pet_type_display()})"
 
     def get_age(self):
         today = date.today()
