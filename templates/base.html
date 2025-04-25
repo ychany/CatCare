@@ -143,6 +143,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'weight_tracker' %}">체중 관리</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInsurance"
+                        aria-expanded="true" aria-controls="collapseInsurance">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>펫보험</span>
+                    </a>
+                    <div id="collapseInsurance" class="collapse" aria-labelledby="headingInsurance"
+                        data-bs-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">보험 서비스:</h6>
+                            <a class="collapse-item" href="{% url 'insurance:main' %}">메인</a>
+                            <a class="collapse-item" href="{% url 'insurance:recommend' %}">보험 추천</a>
+                            <a class="collapse-item" href="{% url 'insurance:product_list' %}">보험 상품</a>
+                            <a class="collapse-item" href="{% url 'insurance:compare' %}">보험 비교</a>
+                        </div>
+                    </div>
+                </li>
                 {% if not user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">로그인</a>

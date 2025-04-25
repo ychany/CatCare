@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ product.name }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">상품 정보</h5>
+            <p><strong>보험사:</strong> {{ product.company.name }}</p>
+            <p><strong>기본 보험료:</strong> {{ product.base_price }}원</p>
+            <h5 class="mt-4">보장 내역</h5>
+            <ul>
+                {% for key, value in product.coverage_details.items %}
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %} 
