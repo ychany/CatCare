@@ -13,19 +13,28 @@ from .utils import recommend_insurance, calculate_sure_index
 from .knn_utils import predict_insurance, update_user_choice
 
 @login_required
-def insurance_main(request):
-    return render(request, 'insurance/main.html')
+def main(request):
+    user_pets = Pet.objects.filter(owner=request.user)
+    context = {
+        'user_pets': user_pets
+    }
+    return render(request, 'insurance/main.html', context)
 
 @login_required
 def select_pet_profile(request):
-    pets = Pet.objects.filter(owner=request.user)
-    if not pets.exists():
-        messages.info(request, '반려동물을 먼저 등록해주세요.')
-        return redirect('pets:pet_register')
-    elif pets.count() == 1:
-        return redirect('insurance:recommend', pet_profile_id=pets.first().id)
+    user_pets = Pet.objects.filter(owner=request.user)
     
-    return render(request, 'insurance/select_pet_profile.html', {'pets': pets})
+    if not user_pets.exists():
+        messages.info(request, '보험 추천을 받으시려면 먼저 반려동물을 등록해주세요.')
+        return redirect('pets:pet_register')
+    
+    if user_pets.count() == 1:
+        return redirect('insurance:recommend', pet_profile_id=user_pets.first().id)
+    
+    context = {
+        'user_pets': user_pets
+    }
+    return render(request, 'insurance/select_pet_profile.html', context)
 
 def product_list(request):
     products = InsuranceProduct.objects.all().select_related('company')
@@ -39,19 +48,16 @@ def product_detail(request, pk):
 def insurance_recommend(request, pet_profile_id):
     pet = get_object_or_404(Pet, id=pet_profile_id, owner=request.user)
     
-    # KNN을 사용하여 보험 추천
-    recommended_products = predict_insurance(pet)
-    
-    # 추천된 보험 상품이 없는 경우 기본 추천 로직 사용
-    if not recommended_products:
-        recommended_products = InsuranceProduct.objects.filter(
-            min_age__lte=pet.get_age(),
-            max_age__gte=pet.get_age()
-        ).order_by('-sure_index')[:5]
+    # 펫 정보를 기반으로 보험 추천
+    recommended_products = recommend_insurance(
+        pet_type=pet.pet_type,
+        birth_date=pet.birth_date,
+        weight=pet.weight
+    )
     
     context = {
         'pet': pet,
-        'recommended_products': recommended_products,
+        'recommended_products': recommended_products
     }
     return render(request, 'insurance/recommend.html', context)
 

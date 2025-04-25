@@ -46,13 +46,19 @@ def calculate_sure_index(product, pet_type, age):
     
     return sure_index
 
-def recommend_insurance(pet_type, birth_date):
+def recommend_insurance(pet_type, birth_date, weight=None):
     age = calculate_age(birth_date)
     products = InsuranceProduct.objects.all()
     
     # 각 상품의 SURE 지수 계산
     product_scores = []
     for product in products:
+        # 나이와 체중 조건 확인
+        if (product.min_age and age < product.min_age) or (product.max_age and age > product.max_age):
+            continue
+        if weight and ((product.min_weight and weight < product.min_weight) or (product.max_weight and weight > product.max_weight)):
+            continue
+            
         sure_index = calculate_sure_index(product, pet_type, age)
         product_scores.append((product, sure_index))
     

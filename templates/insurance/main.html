@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="mb-4">펫보험 서비스</h1>
     
-    {% if pet_profiles %}
+    {% if user_pets %}
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
@@ -13,26 +13,15 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            {% for profile in pet_profiles %}
                             <div class="col-md-4 mb-3">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ profile.name }}</h5>
-                                        <p class="card-text">
-                                            <strong>종류:</strong> {{ profile.get_pet_type_display }}<br>
-                                            <strong>품종:</strong> {{ profile.breed }}<br>
-                                            <strong>나이:</strong> {{ profile.birth_date|timesince }} 개월<br>
-                                            {% if profile.weight %}
-                                            <strong>체중:</strong> {{ profile.weight }}kg<br>
-                                            {% endif %}
-                                        </p>
-                                        <a href="{% url 'insurance:recommend' profile.id %}" class="btn btn-primary">
-                                            <i class="fas fa-search me-2"></i>맞춤 보험 찾기
-                                        </a>
-                                    </div>
-                                </div>
+                                <select class="form-select" id="petSelect">
+                                    <option value="">반려동물 선택</option>
+                                    {% for pet in user_pets %}
+                                    <option value="{% url 'insurance:recommend' pet.id %}">{{ pet.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-primary mt-2" onclick="goToRecommend()">추천받기</button>
                             </div>
-                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -87,4 +76,14 @@
         </div>
     </div>
 </div>
+
+<script>
+function goToRecommend() {
+    var select = document.getElementById('petSelect');
+    var url = select.value;
+    if (url) {
+        window.location.href = url;
+    }
+}
+</script>
 {% endblock %} 
