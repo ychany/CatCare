@@ -2,34 +2,39 @@ from django.core.management.base import BaseCommand
 from insurance_app.models import InsuranceCompany, InsuranceProduct
 import json
 import os
+import random
 
 class Command(BaseCommand):
-    help = 'Import insurance data from Petsure project'
+    help = 'Import insurance data from local fixtures'
 
     def handle(self, *args, **kwargs):
         # 파일 경로 설정
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        petsure_dir = os.path.join(base_dir, 'Petsure', 'backend', 'insurance', 'fixtures')
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        fixtures_dir = os.path.join(base_dir, 'insurance_app', 'fixtures')
 
         # 보험사 데이터 가져오기
-        with open(os.path.join(petsure_dir, 'insurance.json'), 'r', encoding='utf-8') as f:
+        with open(os.path.join(fixtures_dir, 'insurance.json'), 'r', encoding='utf-8') as f:
             insurance_data = json.load(f)
 
         # 보험 상세 데이터 가져오기
-        with open(os.path.join(petsure_dir, 'insurance_detail.json'), 'r', encoding='utf-8') as f:
+        with open(os.path.join(fixtures_dir, 'insurance_detail.json'), 'r', encoding='utf-8') as f:
             insurance_detail_data = json.load(f)
 
         # 질병 데이터 가져오기
-        with open(os.path.join(petsure_dir, 'disease.json'), 'r', encoding='utf-8') as f:
+        with open(os.path.join(fixtures_dir, 'disease.json'), 'r', encoding='utf-8') as f:
             disease_data = json.load(f)
 
         # 보험사 및 기본 상품 생성
         for item in insurance_data:
+            # 보험사 평점과 고객 만족도를 랜덤하게 생성 (3.5 ~ 5.0 사이)
+            rating = round(random.uniform(3.5, 5.0), 1)
+            satisfaction = round(random.uniform(3.5, 5.0), 1)
+
             company, created = InsuranceCompany.objects.get_or_create(
                 name=item['fields']['company_name'],
                 defaults={
-                    'rating': item['fields']['company_score'],
-                    'customer_satisfaction': item['fields']['company_score'],  # 회사 점수를 고객 만족도로 사용
+                    'rating': rating,
+                    'customer_satisfaction': satisfaction,
                     'website': item['fields']['company_url'],
                     'description': item['fields'].get('content', '') + '\n' + item['fields'].get('etc', ''),
                 }
@@ -41,7 +46,7 @@ class Command(BaseCommand):
                 name=item['fields']['insurance_name'],
                 defaults={
                     'pet_type': 'dog' if item['fields']['species'] == 1 else 'cat',
-                    'base_price': 50000,  # 기본값 설정
+                    'base_price': 50000,
                     'min_age': 0,
                     'max_age': 20,
                     'coverage_period': item['fields']['payment_period'],
