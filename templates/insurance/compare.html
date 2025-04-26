@@ -12,12 +12,12 @@
                     <thead class="table-light">
                         <tr>
                             <th>항목</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <th class="text-center">
                                 <div class="d-flex flex-column align-items-center">
                                     <h5 class="mb-2">{{ product.name }}</h5>
                                     <span class="badge bg-primary mb-2">{{ product.company.name }}</span>
-                                    <span class="badge bg-success">SURE 지수: {{ product.sure_index|floatformat:2 }}</span>
+                                    <span class="badge bg-success">SURE 지수: {{ sure_index|floatformat:2 }}</span>
                                 </div>
                             </th>
                             {% endfor %}
@@ -26,25 +26,25 @@
                     <tbody>
                         <tr>
                             <th>기본 보험료</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td class="text-center">{{ product.base_price|floatformat:0 }}원</td>
                             {% endfor %}
                         </tr>
                         <tr>
                             <th>가입 가능 연령</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td class="text-center">{{ product.min_age }}세 ~ {{ product.max_age }}세</td>
                             {% endfor %}
                         </tr>
                         <tr>
                             <th>보장 기간</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td class="text-center">{{ product.coverage_period }}년</td>
                             {% endfor %}
                         </tr>
                         <tr>
                             <th>갱신 주기</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td class="text-center">{{ product.renewal_cycle }}년</td>
                             {% endfor %}
                         </tr>
@@ -52,7 +52,7 @@
                         {% for key in coverage_keys %}
                         <tr>
                             <th>{{ key }}</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td>
                                 <div class="d-flex justify-content-between">
                                     <span>
@@ -71,7 +71,7 @@
                         
                         <tr>
                             <th>특별 보장</th>
-                            {% for product in products %}
+                            {% for product, sure_index in products %}
                             <td>
                                 <ul class="list-unstyled mb-0">
                                     {% for benefit in product.special_benefits %}
@@ -91,7 +91,7 @@
     </div>
     
     <div class="row">
-        {% for product in products %}
+        {% for product, sure_index in products %}
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
@@ -99,11 +99,11 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{% url 'insurance:product_detail' product.pk %}" class="btn btn-outline-primary">
+                        <a href="{% url 'insurance:product_detail' product.id %}" class="btn btn-outline-primary">
                             <i class="fas fa-info-circle me-2"></i>
                             상세 정보
                         </a>
-                        <a href="{% url 'insurance:inquiry' product.pk %}" class="btn btn-outline-success">
+                        <a href="{% url 'insurance:inquiry' product.id %}" class="btn btn-outline-success">
                             <i class="fas fa-envelope me-2"></i>
                             문의하기
                         </a>

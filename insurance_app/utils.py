@@ -65,5 +65,5 @@ def recommend_insurance(pet_type, birth_date, weight=None):
     # SURE 지수 기준으로 정렬
     product_scores.sort(key=lambda x: x[1], reverse=True)
     
-    # 상위 3개 상품 반환
-    return [product for product, _ in product_scores[:3]] 
+    # 상위 3개 상품 (상품, sure_index) 튜플로 반환
+    return product_scores[:3] 

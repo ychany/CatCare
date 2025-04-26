@@ -8,11 +8,12 @@
     
     {% if recommended_products %}
         <div class="row">
-            {% for product in recommended_products %}
+            {% for product, sure_index in recommended_products %}
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">{{ product.name }}</h5>
+                            <span class="badge bg-success">SURE 지수: {{ sure_index|floatformat:2 }}</span>
                         </div>
                         <div class="card-body">
                             <h6 class="card-subtitle mb-3 text-muted">{{ product.company.name }}</h6>

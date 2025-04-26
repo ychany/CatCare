@@ -73,7 +73,8 @@ def insurance_recommend(request, pet_profile_id):
     # -----------------------------------------------------------------------------------
 
     # 추천 상품의 보장 id를 이름/설명으로 변환
-    for product in recommended_products:
+    processed = []
+    for product, sure_index in recommended_products:
         # coverage_details: {'기본보장': [6,7,8], '특별보장': [12], ...}
         product.coverage_details_verbose = {}
         for key, value in product.coverage_details.items():
@@ -84,10 +85,11 @@ def insurance_recommend(request, pet_profile_id):
         # special_benefits(특별 혜택) 숫자 리스트를 이름 리스트로 변환
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
             product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
+        processed.append((product, sure_index))
 
     context = {
         'pet': pet,
-        'recommended_products': recommended_products
+        'recommended_products': processed
     }
     return render(request, 'insurance/recommend.html', context)
 
@@ -123,8 +125,9 @@ def insurance_compare(request):
             for item in json.load(f):
                 disease_map[item['pk']] = item['fields']['name']
 
-    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환
+    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환 + SURE 지수 계산
     coverage_keys = set()
+    processed = []
     for product in products:
         coverage_keys.update(product.coverage_details.keys())
         # 보장 항목 이름 리스트로 변환
@@ -139,9 +142,12 @@ def insurance_compare(request):
             product.special_benefits = []
         else:
             product.special_benefits = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
+        # SURE 지수 계산 (기본값: 강아지, 3세)
+        sure_index = calculate_sure_index(product, 'dog', 3)
+        processed.append((product, sure_index))
 
     context = {
-        'products': products,
+        'products': processed,
         'coverage_keys': sorted(coverage_keys)
     }
     return render(request, 'insurance/compare.html', context)
