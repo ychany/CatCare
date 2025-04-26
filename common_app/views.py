@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm, PetForm
 from .models import Pet
 from board_app.models import Post
+from weight_tracker_app.models import Weight
 
 # Create your views here.
 
@@ -37,6 +38,10 @@ def register(request):
 @login_required
 def pet_edit(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id, owner=request.user)
+    latest_weight = Weight.objects.filter(pet=pet).order_by('-date').first()
+    initial = {}
+    if latest_weight:
+        initial['weight'] = latest_weight.weight
     if request.method == 'POST':
         form = PetForm(request.POST, request.FILES, instance=pet)
         if form.is_valid():
@@ -44,7 +49,7 @@ def pet_edit(request, pet_id):
             messages.success(request, '반려동물 정보가 수정되었습니다.')
             return redirect('index')
     else:
-        form = PetForm(instance=pet)
+        form = PetForm(instance=pet, initial=initial)
     return render(request, 'common_app/pet_edit.html', {'form': form, 'pet': pet})
 
 @login_required

@@ -187,8 +187,9 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(data)
         })
-        .then(response => {
-            if (response.ok) {
+        .then(response => response.json())
+        .then(result => {
+            if (result.id) {
                 weightForm.reset();
                 initChart();
             }
