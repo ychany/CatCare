@@ -189,10 +189,39 @@ def inquiry(request, product_id):
 @login_required
 def insurance_detail(request, product_id):
     product = get_object_or_404(InsuranceProduct, id=product_id)
+
+    # cover_map, disease_map 생성 (recommend와 동일)
+    cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
+    disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
+    cover_map = {}
+    disease_map = {}
+    if cover_path.exists():
+        with open(cover_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                cover_map[item['pk']] = item['fields']['detail']
+    if disease_path.exists():
+        with open(disease_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                disease_map[item['pk']] = item['fields']['name']
+
+    # 보장 id를 이름/설명으로 변환하여 context에 전달
+    coverage_details_verbose = {}
+    for key, value in product.coverage_details.items():
+        if isinstance(value, list):
+            coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
+        else:
+            coverage_details_verbose[key] = value
+    if not isinstance(product.special_benefits, list):
+        special_benefits_verbose = []
+    else:
+        special_benefits_verbose = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
+
     context = {
-        'product': product
+        'product': product,
+        'coverage_details_verbose': coverage_details_verbose,
+        'special_benefits_verbose': special_benefits_verbose
     }
-    return render(request, 'insurance/detail.html', context)
+    return render(request, 'insurance/product_detail.html', context)
 
 @login_required
 def choose_insurance(request, pet_profile_id, product_id):

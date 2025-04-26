@@ -25,10 +25,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for key, value in product.coverage_details.items %}
+                                    {% for key, value in coverage_details_verbose.items %}
                                         <tr>
                                             <td>{{ key }}</td>
-                                            <td>{{ value }}</td>
+                                            <td>
+                                                {% if value %}
+                                                    {% for v in value %}
+                                                        {{ v }}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                {% else %}-{% endif %}
+                                            </td>
                                             <td>{{ product.coverage_limits|get_item:key }}</td>
                                         </tr>
                                     {% endfor %}
@@ -40,7 +46,7 @@
                     <div class="mb-4">
                         <h5>특별 혜택</h5>
                         <ul class="list-group">
-                            {% for benefit in product.special_benefits %}
+                            {% for benefit in special_benefits_verbose %}
                                 <li class="list-group-item">
                                     <i class="fas fa-check-circle text-success me-2"></i>
                                     {{ benefit }}
