@@ -108,12 +108,38 @@ def recommend_result(request):
 def insurance_compare(request):
     # 모든 보험 상품 가져오기
     products = InsuranceProduct.objects.all()
-    
-    # 보장 내용 키 추출
+
+    # cover_map, disease_map 생성 (추천/상세와 동일)
+    cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
+    disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
+    cover_map = {}
+    disease_map = {}
+    if cover_path.exists():
+        with open(cover_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                cover_map[item['pk']] = item['fields']['detail']
+    if disease_path.exists():
+        with open(disease_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                disease_map[item['pk']] = item['fields']['name']
+
+    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환
     coverage_keys = set()
     for product in products:
         coverage_keys.update(product.coverage_details.keys())
-    
+        # 보장 항목 이름 리스트로 변환
+        product.coverage_details_verbose = {}
+        for key, value in product.coverage_details.items():
+            if isinstance(value, list):
+                product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
+            else:
+                product.coverage_details_verbose[key] = value
+        # 특별보장(특별혜택) 이름 리스트로 변환
+        if not isinstance(product.special_benefits, list):
+            product.special_benefits = []
+        else:
+            product.special_benefits = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
+
     context = {
         'products': products,
         'coverage_keys': sorted(coverage_keys)

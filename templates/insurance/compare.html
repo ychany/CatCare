@@ -55,7 +55,13 @@
                             {% for product in products %}
                             <td>
                                 <div class="d-flex justify-content-between">
-                                    <span>{{ product.coverage_details|get_item:key }}</span>
+                                    <span>
+                                        {% if product.coverage_details_verbose|get_item:key %}
+                                            {% for v in product.coverage_details_verbose|get_item:key %}
+                                                {{ v }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        {% else %}-{% endif %}
+                                    </span>
                                     <span class="badge bg-info">{{ product.coverage_limits|get_item:key }}</span>
                                 </div>
                             </td>

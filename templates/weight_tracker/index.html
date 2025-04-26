@@ -19,6 +19,12 @@
                             <label for="weight" class="form-label">체중 (kg)</label>
                             <input type="number" step="0.1" class="form-control" id="weight" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="pet" class="form-label">반려동물</label>
+                            <select class="form-control" id="pet" name="pet" required>
+                                <!-- JS에서 동적으로 옵션 추가 예정 -->
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-primary">저장</button>
                     </form>
                 </div>
@@ -66,6 +72,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 반려동물 목록을 드롭다운에 추가
+    const pets = JSON.parse('{{ user_pets|safe|escapejs }}');
+    const petSelect = document.getElementById('pet');
+    pets.forEach(function(pet) {
+        const option = document.createElement('option');
+        option.value = pet.id;
+        option.textContent = pet.name;
+        petSelect.appendChild(option);
+    });
+
     const weightForm = document.getElementById('weightForm');
     const ctx = document.getElementById('weightChart').getContext('2d');
     const weightTableBody = document.getElementById('weightTableBody');
@@ -158,12 +174,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 체중 기록 제출
     weightForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const data = {
             date: document.getElementById('date').value,
-            weight: parseFloat(document.getElementById('weight').value)
+            weight: parseFloat(document.getElementById('weight').value),
+            pet: parseInt(document.getElementById('pet').value)
         };
-
         fetch('/weight-tracker/api/weights/', {
             method: 'POST',
             headers: {
