@@ -11,6 +11,8 @@ from .models import InsuranceProduct, InsuranceCompany, InsuranceInquiry, PetPro
 from common_app.models import Pet
 from .utils import recommend_insurance, calculate_sure_index
 from .knn_utils import predict_insurance, update_user_choice
+import json
+from pathlib import Path
 
 @login_required
 def main(request):
@@ -54,7 +56,35 @@ def insurance_recommend(request, pet_profile_id):
         birth_date=pet.birth_date,
         weight=pet.weight
     )
-    
+
+    # --- 보장항목 id -> 이름/설명 매핑 (간단 예시, 실제로는 DB에서 가져오거나 fixture 전체를 dict로 변환 필요) ---
+    cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
+    disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
+    cover_map = {}
+    disease_map = {}
+    if cover_path.exists():
+        with open(cover_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                cover_map[item['pk']] = item['fields']['detail']
+    if disease_path.exists():
+        with open(disease_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                disease_map[item['pk']] = item['fields']['name']
+    # -----------------------------------------------------------------------------------
+
+    # 추천 상품의 보장 id를 이름/설명으로 변환
+    for product in recommended_products:
+        # coverage_details: {'기본보장': [6,7,8], '특별보장': [12], ...}
+        product.coverage_details_verbose = {}
+        for key, value in product.coverage_details.items():
+            if isinstance(value, list):
+                product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
+            else:
+                product.coverage_details_verbose[key] = value
+        # special_benefits(특별 혜택) 숫자 리스트를 이름 리스트로 변환
+        if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
+            product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
+
     context = {
         'pet': pet,
         'recommended_products': recommended_products
