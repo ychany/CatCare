@@ -80,16 +80,30 @@ class OtherPurchaseViewSet(ModelViewSet):
     queryset = OtherPurchase.objects.all().order_by('-purchase_date')
     serializer_class = OtherPurchaseSerializer
     permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         qs = super().get_queryset().filter(user=self.request.user)
         month = self.request.query_params.get('month')
         if month:
             y, m = map(int, month.split('-'))
             qs = qs.filter(purchase_date__year=y, purchase_date__month=m)
+        pet = self.request.query_params.get('pet')
+        if pet:
+            qs = qs.filter(cat_id=pet)
         search = self.request.query_params.get('search')
         if search:
             qs = qs.filter(product_name__icontains=search)
         return qs
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        total_price = queryset.aggregate(total_price=Coalesce(Sum('price'), Value(0), output_field=DecimalField()))['total_price']
+        return JsonResponse({
+            'purchases': serializer.data,
+            'total_price': int(total_price) if total_price is not None else 0
+        }, safe=False)
+
     def perform_create(self, serializer):
         default_cat = Pet.objects.filter(owner=self.request.user).first()
         serializer.save(user=self.request.user, cat=default_cat)

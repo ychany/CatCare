@@ -102,4 +102,63 @@
 
     <!-- /container -->
 </div>
-{% endblock %} 
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.querySelector('form');
+    const tableBody = document.querySelector('table tbody');
+    const totalPriceElem = document.querySelector('.text-end strong').nextSibling;
+
+    function renderEvents(events) {
+        tableBody.innerHTML = '';
+        if (!events.length) {
+            tableBody.innerHTML = '<tr><td colspan="11" class="text-center">구매 내역이 없습니다.</td></tr>';
+            return;
+        }
+        events.forEach(e => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${e.purchase_date ? e.purchase_date.substr(0,10) : ''}</td>
+                    <td>${e.start_time ? e.start_time.substr(0,10) : ''}</td>
+                    <td>${e.pet && e.pet.name ? e.pet.name : ''}</td>
+                    <td>${Number(e.price).toLocaleString()}원</td>
+                    <td>${e.type === 'feed' ? '사료' : (e.type === 'snack' ? '간식' : e.type)}</td>
+                    <td>${e.product_name}</td>
+                    <td>${e.purchase_link ? `<a href="${e.purchase_link}" target="_blank">링크</a>` : ''}</td>
+                    <td>${'★'.repeat(e.rating)}${'☆'.repeat(5-e.rating)}</td>
+                    <td>${e.quantity_kg ?? ''}</td>
+                    <td>${e.description ?? ''}</td>
+                    <td>
+                        ${e.type === 'feed' && !e.end_time ? '<span class="text-primary">섭취중</span>' :
+                            (e.type === 'feed' ? (e.daily_amount ? Number(e.daily_amount).toFixed(3) : '') : '')}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function fetchEventsAJAX() {
+        const params = new URLSearchParams(new FormData(filterForm)).toString();
+        fetch('/food/api/purchases/management/?' + params)
+            .then(res => res.json())
+            .then(data => {
+                renderEvents(data.events);
+                if (totalPriceElem) totalPriceElem.textContent = ` ${Number(data.total_price).toLocaleString()}원`;
+            });
+    }
+
+    // 필터 변경 시 AJAX
+    filterForm.querySelectorAll('input, select').forEach(function(el) {
+        el.addEventListener('change', function(e) {
+            e.preventDefault();
+            fetchEventsAJAX();
+        });
+    });
+    // 검색 버튼 클릭 시만 submit 허용
+    filterForm.addEventListener('submit', function(e) {
+        // 아무것도 입력하지 않고 엔터 등으로 submit할 때만 허용
+        // (검색 버튼 클릭 시에는 기본 동작)
+    });
+});
+</script> 

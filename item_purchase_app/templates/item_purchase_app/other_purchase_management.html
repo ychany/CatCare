@@ -179,5 +179,55 @@ document.getElementById('otherPurchaseForm').addEventListener('submit', function
     })
     .catch(err => console.error(err));
 });
+
+// 필터 AJAX 동적 조회
+const filterForm = document.querySelector('form');
+const tableBody = document.querySelector('table tbody');
+const totalPriceElem = document.querySelector('.text-end strong').nextSibling;
+
+function renderPurchases(purchases) {
+    tableBody.innerHTML = '';
+    if (!purchases.length) {
+        tableBody.innerHTML = '<tr><td colspan="8" class="text-center">기타 구매 내역이 없습니다.</td></tr>';
+        return;
+    }
+    purchases.forEach(p => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${p.purchase_date}</td>
+                <td>${p.cat && p.cat.name ? p.cat.name : ''}</td>
+                <td>${Number(p.price).toLocaleString()}원</td>
+                <td>${p.type}</td>
+                <td>${p.product_name}</td>
+                <td>${p.purchase_link ? `<a href="${p.purchase_link}" target="_blank">링크</a>` : ''}</td>
+                <td>${'★'.repeat(p.rating)}${'☆'.repeat(5-p.rating)}</td>
+                <td>${p.memo || ''}</td>
+            </tr>
+        `;
+    });
+}
+
+function fetchPurchasesAJAX() {
+    const params = new URLSearchParams(new FormData(filterForm)).toString();
+    fetch('/items/api/otherpurchase/?' + params)
+        .then(res => res.json())
+        .then(data => {
+            renderPurchases(data.purchases);
+            if (totalPriceElem) totalPriceElem.textContent = ` ${Number(data.total_price).toLocaleString()}원`;
+        });
+}
+
+// 필터 변경 시 AJAX
+filterForm.querySelectorAll('input, select').forEach(function(el) {
+    el.addEventListener('change', function(e) {
+        e.preventDefault();
+        fetchPurchasesAJAX();
+    });
+});
+// 검색 버튼 클릭 시만 submit 허용
+filterForm.addEventListener('submit', function(e) {
+    // 아무것도 입력하지 않고 엔터 등으로 submit할 때만 허용
+    // (검색 버튼 클릭 시에는 기본 동작)
+});
 </script>
 {% endblock %} 

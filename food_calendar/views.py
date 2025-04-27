@@ -9,6 +9,9 @@ from common_app.models import Pet
 from django.utils import timezone
 from django.db.models import Q, F, ExpressionWrapper, FloatField, Sum, Value, DecimalField
 from django.db.models.functions import Coalesce
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from .serializers import FoodEventSerializer
 
 # Create your views here.
 
@@ -400,3 +403,68 @@ def get_events_all(request):
             'description': event.description,
         })
     return JsonResponse(event_list, safe=False)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def purchase_management_api(request):
+    month = request.GET.get('month')
+    if month:
+        year, mon = map(int, month.split('-'))
+        start_date = datetime(year, mon, 1)
+        if mon == 12:
+            end_date = datetime(year+1, 1, 1)
+        else:
+            end_date = datetime(year, mon+1, 1)
+    else:
+        today = datetime.now()
+        start_date = datetime(today.year, today.month, 1)
+        if today.month == 12:
+            end_date = datetime(today.year+1, 1, 1)
+        else:
+            end_date = datetime(today.year, today.month+1, 1)
+
+    selected_pet_id = request.GET.get('pet')
+    search = request.GET.get('search', '')
+    selected_type = request.GET.get('type', '')
+
+    events = FoodEvent.objects.filter(
+        user=request.user,
+        purchase_date__isnull=False,
+        purchase_date__gte=start_date,
+        purchase_date__lt=end_date
+    )
+    if selected_pet_id:
+        events = events.filter(pet_id=selected_pet_id)
+    if search:
+        events = events.filter(product_name__icontains=search)
+    if selected_type:
+        events = events.filter(type=selected_type)
+
+    # 일일 평균 섭취량 계산
+    events = events.annotate(
+        computed_duration_days=Coalesce(
+            ExpressionWrapper(
+                F('end_time') - F('start_time'),
+                output_field=FloatField()
+            ) / (24*60*60*1000000),
+            1.0
+        ),
+        daily_amount=ExpressionWrapper(
+            F('quantity_kg') / F('computed_duration_days'),
+            output_field=FloatField()
+        )
+    ).order_by('-purchase_date')
+
+    total_price = events.aggregate(
+        total_price=Coalesce(
+            Sum('price'),
+            Value(0),
+            output_field=DecimalField(max_digits=12, decimal_places=2)
+        )
+    )['total_price']
+
+    serializer = FoodEventSerializer(events, many=True)
+    return JsonResponse({
+        'events': serializer.data,
+        'total_price': float(total_price) if total_price is not None else 0
+    })
