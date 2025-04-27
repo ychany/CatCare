@@ -68,9 +68,9 @@
                     <i class="fas fa-question-circle fa-3x mb-3 text-info"></i>
                     <h5 class="card-title">보험 가이드</h5>
                     <p class="card-text">펫보험에 대해 알아보세요.</p>
-                    <a href="#" class="btn btn-outline-info">
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#insuranceGuideModal">
                         가이드 보기
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -101,4 +101,64 @@ function goToCompare() {
     }
 }
 </script>
+
+<!-- 보험 가이드 모달 -->
+<div class="modal fade" id="insuranceGuideModal" tabindex="-1" aria-labelledby="insuranceGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="insuranceGuideModalLabel">펫보험 가이드</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
+        <h4 class="mb-3">1. SURE지수 기반 펫보험 추천이란?</h4>
+        <ul>
+          <li><b>SURE지수</b>는 보험 상품의 보장 내용, 보험사 신뢰도, 반려동물의 나이·체중 등 다양한 요소를 종합적으로 평가한 맞춤형 지표입니다.</li>
+          <li>사용자가 선택한 반려동물의 정보(종, 나이, 체중 등)를 바탕으로 각 보험 상품의 SURE지수를 계산하여, 내 반려동물에게 가장 적합한 보험을 추천해줍니다.</li>
+          <li>보험 상품 비교 시에도 선택한 반려동물 기준으로 SURE지수가 다르게 산출되어, 내 동물에게 더 유리한 상품을 쉽게 찾을 수 있습니다.</li>
+        </ul>
+        <hr>
+        <h4 class="mb-3">2. 고양이와 강아지 건강관리 꿀팁</h4>
+        <b>고양이 건강관리</b>
+        <ul>
+          <li>정기적인 예방접종과 건강검진을 챙기세요.</li>
+          <li>실내 생활 시에도 적절한 운동과 놀이가 필요합니다.</li>
+          <li>스트레스 관리와 깨끗한 화장실 환경 유지가 중요합니다.</li>
+          <li>비만 예방을 위해 적정량의 사료와 간식만 급여하세요.</li>
+          <li>구강 건강(치석, 치은염 등)도 신경 써주세요.</li>
+        </ul>
+        <b>강아지 건강관리</b>
+        <ul>
+          <li>산책과 운동을 꾸준히 시켜주세요.</li>
+          <li>정기적인 구충, 예방접종, 건강검진이 필수입니다.</li>
+          <li>귀, 눈, 피부 등 청결 관리에 신경 써주세요.</li>
+          <li>사회성 교육과 충분한 교감도 건강에 도움이 됩니다.</li>
+          <li>나이에 따라 맞춤형 사료와 영양제를 선택하세요.</li>
+        </ul>
+        <hr>
+        <h4 class="mb-3">3. 펫보험 활용 꿀팁</h4>
+        <ul>
+          <li>내 반려동물의 건강상태와 생활습관을 고려해 보장 항목을 꼼꼼히 비교하세요.</li>
+          <li>특별 보장(슬관절, 피부병, 비뇨기 등)도 꼭 확인하세요.</li>
+          <li>보험 가입 전 면책기간, 자기부담금, 보장 한도 등도 체크!</li>
+          <li>보험 가입 후에는 정기적으로 보장 내역을 확인하고, 필요시 상품을 변경하세요.</li>
+        </ul>
+        <hr>
+        <h4 class="mb-3">4. 이런 기능도 있어요!</h4>
+        <ul>
+          <li>반려동물별로 보험 추천/비교가 가능해, 다둥이 집사도 걱정 끝!</li>
+          <li>구매·건강·체중 등 다양한 기록을 한 번에 관리할 수 있어요.</li>
+          <li>보험 상품별 상세 정보와 문의 기능도 제공됩니다.</li>
+        </ul>
+        <hr>
+        <div class="alert alert-info mt-3">
+          <b>Tip!</b> 펫보험은 갑작스러운 질병·사고에 대비하는 든든한 안전망입니다. 우리 아이의 건강과 가족의 경제적 안정을 위해 꼭 비교·가입해보세요!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %} 
