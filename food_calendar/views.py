@@ -330,3 +330,57 @@ def other_purchase_management(request):
         'total_price': total_price,
     }
     return render(request, 'food_calendar/other_purchase_management.html', context)
+
+@login_required
+def get_events_all(request):
+    start_str = request.GET.get('start')
+    end_str = request.GET.get('end')
+    if start_str:
+        start_str = start_str.replace(' ', '+')
+    if end_str:
+        end_str = end_str.replace(' ', '+')
+    try:
+        start_dt = datetime.fromisoformat(start_str)
+        end_dt = datetime.fromisoformat(end_str)
+    except Exception:
+        return JsonResponse({'error': 'Invalid date format'}, status=400)
+    # 전체 반려동물의 이벤트 필터링
+    events = FoodEvent.objects.filter(
+        user=request.user
+    ).filter(
+        Q(type='feed', end_time__isnull=True, start_time__lte=end_dt)
+        | Q(type='feed', end_time__isnull=False, end_time__gte=start_dt, start_time__lte=end_dt)
+        | Q(type='snack', start_time__gte=start_dt, start_time__lte=end_dt)
+    )
+    event_list = []
+    for event in events:
+        if event.type == 'feed':
+            if event.end_time:
+                end_iso = event.end_time.isoformat()
+                title = f"🥣 {event.product_name}"
+            else:
+                end_iso = timezone.now().isoformat()
+                title = f"🥣 {event.product_name} (섭취중)"
+        elif event.type == 'snack':
+            end_iso = event.start_time.isoformat()
+            title = f"🍖 {event.product_name}"
+        else:
+            end_iso = event.end_time.isoformat() if event.end_time else None
+            title = f"🍖 {event.product_name}"
+        event_list.append({
+            'id': event.id,
+            'title': title,
+            'start': event.start_time.isoformat(),
+            'end': end_iso,
+            'pet_id': event.pet.id,
+            'pet_name': event.pet.name,
+            'type': event.type,
+            'product_name': event.product_name,
+            'purchase_link': event.purchase_link,
+            'rating': event.rating,
+            'previous_food': event.previous_food,
+            'quantity_kg': event.quantity_kg,
+            'duration_days': event.duration_days,
+            'description': event.description,
+        })
+    return JsonResponse(event_list, safe=False)
