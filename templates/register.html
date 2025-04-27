@@ -6,14 +6,93 @@
 <div class="row">
     <div class="col-md-6">
         <h2 class="mb-4">회원가입</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data" id="registerForm">
             {% csrf_token %}
             <h4 class="mb-3">사용자 정보</h4>
             {{ user_form.as_p }}
             <h4 class="mb-3 mt-4">고양이 정보</h4>
-            {{ pet_form.as_p }}
+            <div id="pet-forms">
+                <!-- JS로 고양이 입력란이 반복 생성됨 -->
+            </div>
+            <button type="button" class="btn btn-secondary mb-3" id="add-pet-btn">+ 고양이 추가</button>
             <button type="submit" class="btn btn-primary mt-3">가입하기</button>
         </form>
     </div>
 </div>
+
+<script>
+// 고양이 입력란 템플릿
+const petFormTemplate = (idx) => `
+<div class="card mb-3 pet-form" data-idx="${idx}">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">고양이 #${idx+1}</h5>
+      <button type="button" class="btn btn-danger btn-sm remove-pet-btn">삭제</button>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">이름</label>
+      <input type="text" name="pet_name_${idx}" class="form-control" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">품종</label>
+      <input type="text" name="pet_breed_${idx}" class="form-control" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">생년월일</label>
+      <input type="date" name="pet_birth_date_${idx}" class="form-control" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">성별</label>
+      <select name="pet_gender_${idx}" class="form-select" required>
+        <option value="male">수컷</option>
+        <option value="female">암컷</option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">중성화 여부</label>
+      <select name="pet_neutered_${idx}" class="form-select" required>
+        <option value="True">예</option>
+        <option value="False">아니오</option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">체중(kg)</label>
+      <input type="number" step="0.01" name="pet_weight_${idx}" class="form-control">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">특이사항</label>
+      <input type="text" name="pet_notes_${idx}" class="form-control">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">사진</label>
+      <input type="file" name="pet_image_${idx}" class="form-control">
+    </div>
+  </div>
+</div>`;
+
+let petIdx = 0;
+function renderPetForms() {
+  const petFormsDiv = document.getElementById('pet-forms');
+  petFormsDiv.innerHTML = '';
+  for (let i = 0; i < petIdx; i++) {
+    petFormsDiv.innerHTML += petFormTemplate(i);
+  }
+  // 삭제 버튼 이벤트
+  document.querySelectorAll('.remove-pet-btn').forEach(btn => {
+    btn.onclick = function() {
+      const idx = parseInt(this.closest('.pet-form').getAttribute('data-idx'));
+      petIdx--;
+      renderPetForms();
+    };
+  });
+}
+
+document.getElementById('add-pet-btn').onclick = function() {
+  petIdx++;
+  renderPetForms();
+};
+// 최초 1개 입력란
+petIdx = 1;
+renderPetForms();
+</script>
 {% endblock %} 

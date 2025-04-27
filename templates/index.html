@@ -7,6 +7,9 @@
     <div class="col-md-12">
         <h1 class="mb-4">냐옹노트에 오신 것을 환영합니다</h1>
         {% if user.is_authenticated %}
+            <div class="mb-3 text-end">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPetModal">+ 고양이 추가</button>
+            </div>
             {% if pets %}
                 <div class="row">
                     {% for pet in pets %}
@@ -89,6 +92,69 @@
             <p class="lead">로그인하시면 고양이 정보를 관리할 수 있습니다.</p>
         {% endif %}
     </div>
+</div>
+
+<!-- 고양이 추가 모달 -->
+<div class="modal fade" id="addPetModal" tabindex="-1" aria-labelledby="addPetModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data" action="{% url 'pets:pet_register' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPetModalLabel">고양이 추가</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">이름</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">품종</label>
+            <select name="breed" class="form-select" required>
+              {% for value, label in cat_breeds %}
+                <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">생년월일</label>
+            <input type="date" name="birth_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">성별</label>
+            <select name="gender" class="form-select" required>
+              <option value="male">수컷</option>
+              <option value="female">암컷</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">중성화 여부</label>
+            <select name="neutered" class="form-select" required>
+              <option value="True">예</option>
+              <option value="False">아니오</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">체중(kg)</label>
+            <input type="number" step="0.01" name="weight" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">특이사항</label>
+            <input type="text" name="notes" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">사진</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="submit" class="btn btn-primary">추가하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <style>

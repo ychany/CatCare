@@ -15,25 +15,44 @@ def index(request):
         recent_posts = Post.objects.filter(image__isnull=False).order_by('-created_at')[:12]
         context.update({
             'pets': pets,
-            'recent_posts': recent_posts
+            'recent_posts': recent_posts,
+            'cat_breeds': Pet.CAT_BREEDS,
         })
     return render(request, 'index.html', context)
 
 def register(request):
     if request.method == 'POST':
         user_form = UserRegisterForm(request.POST)
-        pet_form = PetForm(request.POST, request.FILES)
-        if user_form.is_valid() and pet_form.is_valid():
+        if user_form.is_valid():
             user = user_form.save()
-            pet = pet_form.save(commit=False)
-            pet.owner = user
-            pet.save()
+            # 여러 마리 고양이 정보 저장
+            pet_idx = 0
+            while True:
+                name = request.POST.get(f'pet_name_{pet_idx}')
+                breed = request.POST.get(f'pet_breed_{pet_idx}')
+                birth_date = request.POST.get(f'pet_birth_date_{pet_idx}')
+                gender = request.POST.get(f'pet_gender_{pet_idx}')
+                neutered = request.POST.get(f'pet_neutered_{pet_idx}')
+                weight = request.POST.get(f'pet_weight_{pet_idx}')
+                notes = request.POST.get(f'pet_notes_{pet_idx}')
+                image = request.FILES.get(f'pet_image_{pet_idx}')
+                if not name:
+                    break
+                Pet.objects.create(
+                    owner=user,
+                    name=name,
+                    pet_type='cat',
+                    breed=breed,
+                    birth_date=birth_date,
+                    weight=weight or None,
+                    image=image,
+                )
+                pet_idx += 1
             messages.success(request, '회원가입이 완료되었습니다!')
             return redirect('login')
     else:
         user_form = UserRegisterForm()
-        pet_form = PetForm()
-    return render(request, 'register.html', {'user_form': user_form, 'pet_form': pet_form})
+    return render(request, 'register.html', {'user_form': user_form})
 
 @login_required
 def pet_edit(request, pet_id):
@@ -66,13 +85,25 @@ def pet_update(request, pet_id):
 @login_required
 def pet_register(request):
     if request.method == 'POST':
-        form = PetForm(request.POST, request.FILES)
-        if form.is_valid():
-            pet = form.save(commit=False)
-            pet.owner = request.user
-            pet.save()
-            messages.success(request, '반려동물이 등록되었습니다.')
-            return redirect('index')
+        name = request.POST.get('name')
+        breed = request.POST.get('breed')
+        birth_date = request.POST.get('birth_date')
+        gender = request.POST.get('gender')
+        neutered = request.POST.get('neutered')
+        weight = request.POST.get('weight')
+        notes = request.POST.get('notes')
+        image = request.FILES.get('image')
+        Pet.objects.create(
+            owner=request.user,
+            name=name,
+            pet_type='cat',
+            breed=breed,
+            birth_date=birth_date,
+            weight=weight or None,
+            image=image,
+        )
+        messages.success(request, '반려동물이 등록되었습니다.')
+        return redirect('index')
     else:
         form = PetForm()
     return render(request, 'common_app/pet_register.html', {'form': form})
