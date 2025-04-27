@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     const mapped = data.map(ev => ({
                         ...ev,
-                        title: `${ev.product_name} (${ev.pet_name})`,
                         allDay: true,
                         className: ev.type === 'feed' ? 'fc-event-brush' : 'fc-event-nail'
                     }));
@@ -209,13 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.type === 'feed' && !data.end) {
                     document.getElementById('endButton').style.display = 'inline-block';
                     document.getElementById('stats').innerHTML = '<p>섭취중</p>';
-                } else {
+                } else if (data.type === 'feed') {
                     document.getElementById('endButton').style.display = 'none';
                     const startDate = new Date(data.start);
                     const endDate = data.end ? new Date(data.end) : new Date();
                     const days = Math.floor((endDate - startDate)/(1000*60*60*24))+1;
                     const avg = data.quantity_kg ? (data.quantity_kg/days).toFixed(2) : 0;
                     document.getElementById('stats').innerHTML = `<p>소비기간: ${days}일</p><p>총 ${data.quantity_kg}kg</p><p>일일평균: ${avg}kg</p>`;
+                } else {
+                    document.getElementById('endButton').style.display = 'none';
+                    document.getElementById('stats').innerHTML = '';
                 }
             })
             .catch(e => console.error(e));

@@ -48,17 +48,17 @@ def get_events(request, pet_id):
             # 사료 이벤트: 개봉일부터 오늘 또는 종료일까지 표시하고, 섭취중이면 제목에 표시
             if event.end_time:
                 end_iso = event.end_time.isoformat()
-                title = f"🥣 {event.product_name}"
+                title = f"🥣 {event.product_name} ({event.pet.name})"
             else:
                 end_iso = timezone.now().isoformat()
-                title = f"🥣 {event.product_name} (섭취중)"
+                title = f"🥣 {event.product_name} (섭취중) ({event.pet.name})"
         elif event.type == 'snack':
             # 간식 이벤트: 개봉일에만 표시하도록 end를 start_time으로 설정
             end_iso = event.start_time.isoformat()
-            title = f"🍖 {event.product_name}"
+            title = f"🍖 {event.product_name} ({event.pet.name})"
         else:
             end_iso = event.end_time.isoformat() if event.end_time else None
-            title = f"🍖 {event.product_name}"
+            title = f"🍖 {event.product_name} ({event.pet.name})"
         event_list.append({
             'id': event.id,
             'title': title,
@@ -180,6 +180,8 @@ def update_food_event(request, event_id):
             event.end_time = datetime.fromisoformat(data['end_time'].replace('Z', '+00:00'))
         if 'pet_id' in data:
             event.pet_id = data['pet_id']
+        if 'start' in data:
+            event.start_time = datetime.fromisoformat(data['start'].replace('Z', '+00:00'))
             
         event.save()
         return JsonResponse({
@@ -295,6 +297,19 @@ def purchase_management(request):
         )
     )['total_price']
     
+    selected_type = request.GET.get('type', '')
+    if selected_type:
+        events = events.filter(type=selected_type)
+    
+    # 모든 필터 적용 후에 합계 계산
+    total_price = events.aggregate(
+        total_price=Coalesce(
+            Sum('price'),
+            Value(0),
+            output_field=DecimalField(max_digits=12, decimal_places=2)
+        )
+    )['total_price']
+
     context = {
         'events': events,
         'current_month': start_date.strftime('%Y-%m'),
@@ -302,6 +317,7 @@ def purchase_management(request):
         'total_price': total_price,
         'pets': pets,
         'selected_pet_id': selected_pet_id,
+        'selected_type': selected_type,
     }
     return render(request, 'food_calendar/purchase_management.html', context)
 
@@ -357,16 +373,16 @@ def get_events_all(request):
         if event.type == 'feed':
             if event.end_time:
                 end_iso = event.end_time.isoformat()
-                title = f"🥣 {event.product_name}"
+                title = f"🥣 {event.product_name} ({event.pet.name})"
             else:
                 end_iso = timezone.now().isoformat()
-                title = f"🥣 {event.product_name} (섭취중)"
+                title = f"🥣 {event.product_name} (섭취중) ({event.pet.name})"
         elif event.type == 'snack':
             end_iso = event.start_time.isoformat()
-            title = f"🍖 {event.product_name}"
+            title = f"🍖 {event.product_name} ({event.pet.name})"
         else:
             end_iso = event.end_time.isoformat() if event.end_time else None
-            title = f"🍖 {event.product_name}"
+            title = f"🍖 {event.product_name} ({event.pet.name})"
         event_list.append({
             'id': event.id,
             'title': title,

@@ -25,6 +25,13 @@
                 <input type="text" name="search" value="{{ search }}" placeholder="상품명 검색" class="form-control">
             </div>
             <div class="col-md-2">
+                <select name="type" class="form-select">
+                    <option value="">전체 타입</option>
+                    <option value="feed" {% if selected_type == 'feed' %}selected{% endif %}>사료</option>
+                    <option value="snack" {% if selected_type == 'snack' %}selected{% endif %}>간식</option>
+                </select>
+            </div>
+            <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">검색</button>
             </div>
             <div class="col-md-3 text-end">
@@ -74,7 +81,15 @@
                     </td>
                     <td>{{ event.quantity_kg }}</td>
                     <td>{{ event.description }}</td>
-                    <td>{{ event.daily_amount|floatformat:3 }}</td>
+                    <td>
+                        {% if event.type == 'feed' and not event.end_time %}
+                            <span class="text-primary">섭취중</span>
+                        {% elif event.type == 'feed' %}
+                            {{ event.daily_amount|floatformat:3 }}
+                        {% else %}
+                            <!-- 간식이면 공란 -->
+                        {% endif %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
