@@ -218,6 +218,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // 펫 변경 시에는 이전 기록을 업데이트하지 않음
     });
 
+    // 필터 이벤트 리스너 추가
+    document.getElementById('lastEventPetFilter').addEventListener('change', function() {
+        const selectedPetId = this.value;
+        fetchAllPreviousCare(selectedPetId); // 필터 변경 시마다 해당 고양이 기록만 불러오기
+    });
+
     function resetForm() {
         document.getElementById('careForm').reset();
         document.getElementById('eventId').value = '';
@@ -369,20 +375,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // 필터 이벤트 리스너 추가
-    document.getElementById('lastEventPetFilter').addEventListener('change', function() {
-        const selectedPetId = this.value;
-        if (selectedPetId === 'all') {
-            document.querySelectorAll('#allPreviousCareRecords > div').forEach(div => {
-                div.style.display = '';
-            });
-        } else {
-            document.querySelectorAll('#allPreviousCareRecords > div').forEach(div => {
-                div.style.display = div.getAttribute('data-pet-id') === selectedPetId ? '' : 'none';
-            });
-        }
-    });
 
     document.getElementById('deleteBtn').addEventListener('click', function() {
         const eventId = document.getElementById('eventId').value;
