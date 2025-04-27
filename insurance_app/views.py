@@ -108,6 +108,24 @@ def recommend_result(request):
 
 @login_required
 def insurance_compare(request):
+    # pet_id 쿼리파라미터로 받기
+    pet_id = request.GET.get('pet_id')
+    pet = None
+    pet_type = 'dog'
+    age = 3
+    weight = None
+    if pet_id:
+        try:
+            pet = Pet.objects.get(id=pet_id, owner=request.user)
+            pet_type = pet.pet_type if hasattr(pet, 'pet_type') else (pet.species if hasattr(pet, 'species') else 'dog')
+            if hasattr(pet, 'birth_date') and pet.birth_date:
+                from .utils import calculate_age
+                age = calculate_age(pet.birth_date)
+            if hasattr(pet, 'weight') and pet.weight:
+                weight = pet.weight
+        except Pet.DoesNotExist:
+            pass
+
     # 모든 보험 상품 가져오기
     products = InsuranceProduct.objects.all()
 
@@ -142,13 +160,15 @@ def insurance_compare(request):
             product.special_benefits = []
         else:
             product.special_benefits = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
-        # SURE 지수 계산 (기본값: 강아지, 3세)
-        sure_index = calculate_sure_index(product, 'dog', 3)
+        # SURE 지수 계산 (동물 정보 기준)
+        from .utils import calculate_sure_index
+        sure_index = calculate_sure_index(product, pet_type, age)
         processed.append((product, sure_index))
 
     context = {
         'products': processed,
-        'coverage_keys': sorted(coverage_keys)
+        'coverage_keys': sorted(coverage_keys),
+        'pet': pet,
     }
     return render(request, 'insurance/compare.html', context)
 
