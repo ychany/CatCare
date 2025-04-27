@@ -26,6 +26,7 @@ def weight_list(request):
             weight_data = {
                 'id': weight.id,
                 'pet': weight.pet_id,
+                'pet_name': weight.pet.name if weight.pet else '',
                 'date': weight.date,
                 'weight': float(weight.weight),
                 'change': None,
