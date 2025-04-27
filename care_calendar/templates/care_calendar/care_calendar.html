@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     const events = data.map(event => ({
                         id: event.id,
-                        title: event.title,
+                        title: event.title + ` (${event.pet_name})`,
                         start: event.start,
                         className: `fc-event-${event.category}`,
                         extendedProps: {

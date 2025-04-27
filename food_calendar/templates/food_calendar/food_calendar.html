@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     const mapped = data.map(ev => ({
                         ...ev,
+                        title: `${ev.product_name} (${ev.pet_name})`,
                         allDay: true,
                         className: ev.type === 'feed' ? 'fc-event-brush' : 'fc-event-nail'
                     }));

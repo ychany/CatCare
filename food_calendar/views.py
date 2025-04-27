@@ -65,6 +65,7 @@ def get_events(request, pet_id):
             'start': event.start_time.isoformat(),
             'end': end_iso,
             'pet_id': event.pet.id,
+            'pet_name': event.pet.name,
             'type': event.type,
             'product_name': event.product_name,
             'purchase_link': event.purchase_link,
