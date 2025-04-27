@@ -66,6 +66,14 @@
             <div class="card mt-3">
                 <div class="card-body">
                     <h6 class="card-title">마지막 케어 기록</h6>
+                    <div class="mb-3">
+                        <select class="form-select" id="lastEventPetFilter">
+                            <option value="all">전체 보기</option>
+                            {% for pet in pets %}
+                            <option value="{{ pet.id }}">{{ pet.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <div id="allPreviousCareRecords"></div>
                 </div>
             </div>
@@ -301,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             results.forEach(({ category, data }) => {
                 const recordDiv = document.createElement('div');
                 recordDiv.className = 'mb-3';
+                recordDiv.setAttribute('data-pet-id', petId); // 필터링을 위한 속성 추가
                 
                 if (data.status === 'success') {
                     if (data.previous_care) {
@@ -341,6 +350,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 필터 이벤트 리스너 추가
+    document.getElementById('lastEventPetFilter').addEventListener('change', function() {
+        const selectedPetId = this.value;
+        if (selectedPetId === 'all') {
+            document.querySelectorAll('#allPreviousCareRecords > div').forEach(div => {
+                div.style.display = '';
+            });
+        } else {
+            document.querySelectorAll('#allPreviousCareRecords > div').forEach(div => {
+                div.style.display = div.getAttribute('data-pet-id') === selectedPetId ? '' : 'none';
+            });
+        }
+    });
+
     document.getElementById('deleteBtn').addEventListener('click', function() {
         const eventId = document.getElementById('eventId').value;
         if (!eventId) return;
@@ -371,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 alert(error.message || '삭제 중 오류가 발생했습니다.');
             });
+
         }
     });
 });

@@ -37,4 +37,9 @@ class EventViewSet(viewsets.ModelViewSet):
 @login_required
 def calendar_view(request):
     pets = Pet.objects.filter(owner=request.user)
-    return render(request, 'calendar_app/calendar.html', {'pets': pets})
+    # 각 반려동물별 최신 이벤트(진료/접종) 조회
+    last_events = {}
+    for pet in pets:
+        last_event = Event.objects.filter(pet=pet).order_by('-date').first()
+        last_events[pet.id] = last_event
+    return render(request, 'calendar_app/calendar.html', {'pets': pets, 'last_events': last_events})

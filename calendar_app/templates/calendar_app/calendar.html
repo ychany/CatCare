@@ -71,6 +71,34 @@
                     </form>
                 </div>
             </div>
+            <!-- 마지막 케어 기록 카드 -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">마지막 케어 기록</h6>
+                    <div class="mb-2">
+                        <select id="lastEventPetFilter" class="form-select">
+                            <option value="all">전체 반려동물</option>
+                            {% for pet in pets %}
+                            <option value="{{ pet.id }}">{{ pet.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="lastEventRecords">
+                        {% for pet in pets %}
+                        <div class="last-event-row" data-pet-id="{{ pet.id }}">
+                            <strong>{{ pet.name }}</strong><br>
+                            {% if last_events|get_item:pet.id %}
+                                <span>{{ last_events|get_item:pet.id.date }}</span>
+                                <span>({{ last_events|get_item:pet.id.get_event_type_display }})</span><br>
+                                <span>{{ last_events|get_item:pet.id.description }}</span>
+                            {% else %}
+                                <span class="text-muted">기록 없음</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -300,6 +328,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(error.message);
             });
         }
+    });
+
+    // 마지막 케어 기록 필터링
+    document.getElementById('lastEventPetFilter').addEventListener('change', function() {
+        var selected = this.value;
+        document.querySelectorAll('.last-event-row').forEach(function(row) {
+            if (selected === 'all' || row.getAttribute('data-pet-id') === selected) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     });
 });
 </script>
