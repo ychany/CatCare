@@ -250,6 +250,10 @@ def purchase_management(request):
         else:
             end_date = datetime(today.year, today.month+1, 1)
 
+    # 반려동물 필터링
+    selected_pet_id = request.GET.get('pet')
+    pets = Pet.objects.filter(owner=request.user)
+
     # 검색 필터링
     search = request.GET.get('search', '')
     
@@ -261,6 +265,8 @@ def purchase_management(request):
         purchase_date__lt=end_date
     )
     
+    if selected_pet_id:
+        events = events.filter(pet_id=selected_pet_id)
     if search:
         events = events.filter(product_name__icontains=search)
     
@@ -287,11 +293,14 @@ def purchase_management(request):
             output_field=DecimalField(max_digits=12, decimal_places=2)
         )
     )['total_price']
+    
     context = {
         'events': events,
         'current_month': start_date.strftime('%Y-%m'),
         'search': search,
         'total_price': total_price,
+        'pets': pets,
+        'selected_pet_id': selected_pet_id,
     }
     return render(request, 'food_calendar/purchase_management.html', context)
 

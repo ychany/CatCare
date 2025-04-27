@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
-{% load humanize %}
+{% load static humanize %}
 
-{% block title %}구매 관리{% endblock %}
+{% block title %}사료 구매 관리{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <!-- 필터 섹션 -->
-    <div class="row mb-3">
+    <!-- 필터 및 총 합계 -->
+    <div class="row mb-3 align-items-center">
         <form method="get" class="row g-2 w-100 align-items-center">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="month" name="month" value="{{ current_month }}" class="form-control">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
+                <select name="pet" class="form-select">
+                    <option value="">전체 반려동물</option>
+                    {% for pet in pets %}
+                    <option value="{{ pet.id }}" {% if selected_pet_id == pet.id|stringformat:"i" %}selected{% endif %}>
+                        {{ pet.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
                 <input type="text" name="search" value="{{ search }}" placeholder="상품명 검색" class="form-control">
             </div>
             <div class="col-md-2">
@@ -30,6 +40,7 @@
                 <tr>
                     <th>구매일</th>
                     <th>개봉일</th>
+                    <th>반려동물</th>
                     <th>가격</th>
                     <th>타입</th>
                     <th>상품명</th>
@@ -45,6 +56,7 @@
                 <tr>
                     <td>{{ event.purchase_date|date:"Y-m-d" }}</td>
                     <td>{{ event.start_time|date:"Y-m-d" }}</td>
+                    <td>{{ event.pet.name }}</td>
                     <td>
                         {{ event.price|floatformat:0|intcomma }}원
                     </td>
@@ -66,7 +78,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="10" class="text-center">구매 내역이 없습니다.</td>
+                    <td colspan="11" class="text-center">구매 내역이 없습니다.</td>
                 </tr>
                 {% endfor %}
             </tbody>

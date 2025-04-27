@@ -28,18 +28,30 @@ def other_purchase_management(request):
         today = datetime.now()
         start_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year if today.month<12 else today.year+1, today.month%12+1, 1)
+    
+    # 반려동물 필터링
+    selected_pet_id = request.GET.get('pet')
+    pets = Pet.objects.filter(owner=request.user)
+    
     # 검색 필터링
     search = request.GET.get('search', '')
     qs = OtherPurchase.objects.filter(user=request.user, purchase_date__gte=start_date, purchase_date__lt=end_date)
+    
+    if selected_pet_id:
+        qs = qs.filter(cat_id=selected_pet_id)
     if search:
         qs = qs.filter(product_name__icontains=search)
+    
     # 총 합계
     total_price = qs.aggregate(total_price=Coalesce(Sum('price'), Value(0), output_field=DecimalField()))['total_price']
+    
     context = {
         'purchases': qs.order_by('-purchase_date'),
         'current_month': start_date.strftime('%Y-%m'),
         'search': search,
         'total_price': total_price,
+        'pets': pets,
+        'selected_pet_id': selected_pet_id,
     }
     return render(request, 'item_purchase_app/other_purchase_management.html', context)
 
