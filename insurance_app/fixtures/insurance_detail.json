@@ -1,6 +1,6 @@
 [
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 1,
         "fields": {
             "insurance": 3,
@@ -30,7 +30,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 2,
         "fields": {
             "insurance": 3,
@@ -63,7 +63,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 3,
         "fields": {
             "insurance": 3,
@@ -96,7 +96,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 4,
         "fields": {
             "insurance": 3,
@@ -130,7 +130,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 5,
         "fields": {
             "insurance": 4,
@@ -160,7 +160,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 6,
         "fields": {
             "insurance": 4,
@@ -193,7 +193,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 7,
         "fields": {
             "insurance": 2,
@@ -223,7 +223,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 8,
         "fields": {
             "insurance": 2,
@@ -256,7 +256,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 9,
         "fields": {
             "insurance": 1,
@@ -283,7 +283,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 10,
         "fields": {
             "insurance": 1,
@@ -313,7 +313,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 11,
         "fields": {
             "insurance": 1,
@@ -343,7 +343,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 12,
         "fields": {
             "insurance": 1,
@@ -374,7 +374,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 13,
         "fields": {
             "insurance": 1,
@@ -401,7 +401,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 14,
         "fields": {
             "insurance": 1,
@@ -431,7 +431,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 15,
         "fields": {
             "insurance": 1,
@@ -461,7 +461,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 16,
         "fields": {
             "insurance": 1,
@@ -492,7 +492,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 17,
         "fields": {
             "insurance": 1,
@@ -519,7 +519,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 18,
         "fields": {
             "insurance": 1,
@@ -549,7 +549,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 19,
         "fields": {
             "insurance": 1,
@@ -579,7 +579,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 20,
         "fields": {
             "insurance": 1,
@@ -610,7 +610,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 21,
         "fields": {
             "insurance": 5,
@@ -637,7 +637,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 22,
         "fields": {
             "insurance": 5,
@@ -667,7 +667,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 23,
         "fields": {
             "insurance": 6,
@@ -693,7 +693,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 24,
         "fields": {
             "insurance": 6,
@@ -722,7 +722,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 25,
         "fields": {
             "insurance": 6,
@@ -751,7 +751,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 26,
         "fields": {
             "insurance": 6,
@@ -781,7 +781,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 27,
         "fields": {
             "insurance": 8,
@@ -809,7 +809,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 28,
         "fields": {
             "insurance": 9,
@@ -834,7 +834,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 29,
         "fields": {
             "insurance": 12,
@@ -861,7 +861,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 30,
         "fields": {
             "insurance": 12,
@@ -891,7 +891,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 31,
         "fields": {
             "insurance": 12,
@@ -921,7 +921,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 32,
         "fields": {
             "insurance": 12,
@@ -951,7 +951,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 33,
         "fields": {
             "insurance": 12,
@@ -981,7 +981,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 34,
         "fields": {
             "insurance": 12,
@@ -1012,7 +1012,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 35,
         "fields": {
             "insurance": 12,
@@ -1043,7 +1043,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 36,
         "fields": {
             "insurance": 12,
@@ -1074,7 +1074,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 37,
         "fields": {
             "insurance": 12,
@@ -1105,7 +1105,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 38,
         "fields": {
             "insurance": 12,
@@ -1136,7 +1136,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 39,
         "fields": {
             "insurance": 12,
@@ -1167,7 +1167,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 40,
         "fields": {
             "insurance": 12,
@@ -1199,7 +1199,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 41,
         "fields": {
             "insurance": 12,
@@ -1231,7 +1231,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 42,
         "fields": {
             "insurance": 12,
@@ -1263,7 +1263,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 43,
         "fields": {
             "insurance": 12,
@@ -1296,7 +1296,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 44,
         "fields": {
             "insurance": 13,
@@ -1321,7 +1321,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 45,
         "fields": {
             "insurance": 14,
@@ -1346,7 +1346,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 46,
         "fields": {
             "insurance": 10,
@@ -1373,7 +1373,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 47,
         "fields": {
             "insurance": 10,
@@ -1403,7 +1403,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 48,
         "fields": {
             "insurance": 10,
@@ -1433,7 +1433,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 49,
         "fields": {
             "insurance": 10,
@@ -1463,7 +1463,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 50,
         "fields": {
             "insurance": 10,
@@ -1493,7 +1493,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 51,
         "fields": {
             "insurance": 10,
@@ -1524,7 +1524,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 52,
         "fields": {
             "insurance": 10,
@@ -1555,7 +1555,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 53,
         "fields": {
             "insurance": 10,
@@ -1586,7 +1586,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 54,
         "fields": {
             "insurance": 10,
@@ -1617,7 +1617,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 55,
         "fields": {
             "insurance": 10,
@@ -1648,7 +1648,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 56,
         "fields": {
             "insurance": 10,
@@ -1679,7 +1679,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 57,
         "fields": {
             "insurance": 10,
@@ -1711,7 +1711,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 58,
         "fields": {
             "insurance": 10,
@@ -1743,7 +1743,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 59,
         "fields": {
             "insurance": 10,
@@ -1775,7 +1775,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 60,
         "fields": {
             "insurance": 10,
@@ -1807,7 +1807,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 61,
         "fields": {
             "insurance": 10,
@@ -1840,7 +1840,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 62,
         "fields": {
             "insurance": 3,
@@ -1870,7 +1870,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 63,
         "fields": {
             "insurance": 3,
@@ -1903,7 +1903,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 64,
         "fields": {
             "insurance": 3,
@@ -1936,7 +1936,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 65,
         "fields": {
             "insurance": 3,
@@ -1970,7 +1970,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 66,
         "fields": {
             "insurance": 3,
@@ -2000,7 +2000,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 67,
         "fields": {
             "insurance": 3,
@@ -2033,7 +2033,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 68,
         "fields": {
             "insurance": 3,
@@ -2066,7 +2066,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 69,
         "fields": {
             "insurance": 3,
@@ -2100,7 +2100,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 70,
         "fields": {
             "insurance": 4,
@@ -2130,7 +2130,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 71,
         "fields": {
             "insurance": 4,
@@ -2163,7 +2163,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 72,
         "fields": {
             "insurance": 4,
@@ -2193,7 +2193,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 73,
         "fields": {
             "insurance": 4,
@@ -2226,7 +2226,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 74,
         "fields": {
             "insurance": 10,
@@ -2253,7 +2253,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 75,
         "fields": {
             "insurance": 10,
@@ -2283,7 +2283,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 76,
         "fields": {
             "insurance": 10,
@@ -2313,7 +2313,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 77,
         "fields": {
             "insurance": 10,
@@ -2344,7 +2344,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 78,
         "fields": {
             "insurance": 10,
@@ -2375,7 +2375,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 79,
         "fields": {
             "insurance": 10,
@@ -2406,7 +2406,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 80,
         "fields": {
             "insurance": 10,
@@ -2437,7 +2437,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 81,
         "fields": {
             "insurance": 7,
@@ -2467,7 +2467,7 @@
         }
     },
     {
-        "model": "insurance.Insurance_detail",
+        "model": "insurance_app.InsuranceDetail",
         "pk": 82,
         "fields": {
             "insurance": 7,

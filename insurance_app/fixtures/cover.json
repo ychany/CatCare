@@ -1,6 +1,6 @@
 [
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 1,
         "fields": {
             "cover_type": 1,
@@ -11,7 +11,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 2,
         "fields": {
             "cover_type": 3,
@@ -22,7 +22,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 3,
         "fields": {
             "cover_type": 4,
@@ -33,7 +33,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 4,
         "fields": {
             "cover_type": 5,
@@ -44,7 +44,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 5,
         "fields": {
             "cover_type": 8,
@@ -55,7 +55,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 6,
         "fields": {
             "cover_type": 1,
@@ -66,7 +66,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 7,
         "fields": {
             "cover_type": 3,
@@ -77,7 +77,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 8,
         "fields": {
             "cover_type": 4,
@@ -88,7 +88,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 9,
         "fields": {
             "cover_type": 5,
@@ -99,7 +99,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 10,
         "fields": {
             "cover_type": 6,
@@ -110,7 +110,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 11,
         "fields": {
             "cover_type": 7,
@@ -121,7 +121,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 12,
         "fields": {
             "cover_type": 2,
@@ -132,7 +132,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 13,
         "fields": {
             "cover_type": 8,
@@ -143,7 +143,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 14,
         "fields": {
             "cover_type": 1,
@@ -154,7 +154,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 15,
         "fields": {
             "cover_type": 3,
@@ -165,7 +165,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 16,
         "fields": {
             "cover_type": 4,
@@ -176,7 +176,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 17,
         "fields": {
             "cover_type": 5,
@@ -187,7 +187,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 18,
         "fields": {
             "cover_type": 6,
@@ -198,7 +198,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 19,
         "fields": {
             "cover_type": 7,
@@ -209,7 +209,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 20,
         "fields": {
             "cover_type": 2,
@@ -220,7 +220,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 21,
         "fields": {
             "cover_type": 1,
@@ -231,7 +231,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 22,
         "fields": {
             "cover_type": 2,
@@ -242,7 +242,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 23,
         "fields": {
             "cover_type": 3,
@@ -253,7 +253,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 24,
         "fields": {
             "cover_type": 5,
@@ -264,7 +264,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 25,
         "fields": {
             "cover_type": 6,
@@ -275,7 +275,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 26,
         "fields": {
             "cover_type": 4,
@@ -286,7 +286,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 27,
         "fields": {
             "cover_type": 1,
@@ -297,7 +297,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 28,
         "fields": {
             "cover_type": 2,
@@ -308,7 +308,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 29,
         "fields": {
             "cover_type": 3,
@@ -319,7 +319,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 30,
         "fields": {
             "cover_type": 5,
@@ -330,7 +330,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 31,
         "fields": {
             "cover_type": 6,
@@ -341,7 +341,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 32,
         "fields": {
             "cover_type": 4,
@@ -352,7 +352,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 33,
         "fields": {
             "cover_type": 8,
@@ -363,7 +363,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 34,
         "fields": {
             "cover_type": 1,
@@ -374,7 +374,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 35,
         "fields": {
             "cover_type": 2,
@@ -385,7 +385,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 36,
         "fields": {
             "cover_type": 3,
@@ -396,7 +396,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 37,
         "fields": {
             "cover_type": 7,
@@ -407,7 +407,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 38,
         "fields": {
             "cover_type": 1,
@@ -418,7 +418,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 39,
         "fields": {
             "cover_type": 3,
@@ -429,7 +429,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 40,
         "fields": {
             "cover_type": 8,
@@ -440,7 +440,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 41,
         "fields": {
             "cover_type": 8,
@@ -451,7 +451,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 42,
         "fields": {
             "cover_type": 1,
@@ -462,7 +462,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 43,
         "fields": {
             "cover_type": 2,
@@ -473,7 +473,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 44,
         "fields": {
             "cover_type": 3,
@@ -484,7 +484,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 45,
         "fields": {
             "cover_type": 8,
@@ -495,7 +495,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 46,
         "fields": {
             "cover_type": 1,
@@ -506,7 +506,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 47,
         "fields": {
             "cover_type": 2,
@@ -517,7 +517,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 48,
         "fields": {
             "cover_type": 3,
@@ -528,7 +528,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 49,
         "fields": {
             "cover_type": 1,
@@ -539,7 +539,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 50,
         "fields": {
             "cover_type": 2,
@@ -550,7 +550,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 51,
         "fields": {
             "cover_type": 3,
@@ -561,7 +561,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 52,
         "fields": {
             "cover_type": 8,
@@ -572,7 +572,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 53,
         "fields": {
             "cover_type": 8,
@@ -583,7 +583,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 54,
         "fields": {
             "cover_type": 1,
@@ -594,7 +594,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 55,
         "fields": {
             "cover_type": 2,
@@ -605,7 +605,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 56,
         "fields": {
             "cover_type": 3,
@@ -616,7 +616,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 57,
         "fields": {
             "cover_type": 8,
@@ -627,7 +627,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 58,
         "fields": {
             "cover_type": 4,
@@ -638,7 +638,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 59,
         "fields": {
             "cover_type": 5,
@@ -649,7 +649,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 60,
         "fields": {
             "cover_type": 6,
@@ -660,7 +660,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 61,
         "fields": {
             "cover_type": 8,
@@ -671,7 +671,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 62,
         "fields": {
             "cover_type": 8,
@@ -682,7 +682,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 63,
         "fields": {
             "cover_type": 1,
@@ -693,7 +693,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 64,
         "fields": {
             "cover_type": 2,
@@ -704,7 +704,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 65,
         "fields": {
             "cover_type": 3,
@@ -715,7 +715,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 66,
         "fields": {
             "cover_type": 4,
@@ -726,7 +726,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 67,
         "fields": {
             "cover_type": 5,
@@ -737,7 +737,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 68,
         "fields": {
             "cover_type": 6,
@@ -748,7 +748,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 69,
         "fields": {
             "cover_type": 8,
@@ -759,51 +759,51 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 70,
         "fields": {
             "cover_type": 1,
             "insurance": 1,
             "price": 15,
             "wild": true,
-            "detail": "1일당 15만원 (연간 1500만원): 1일당 자기부담금 1만원 공제 후 70% 보상"
+            "detail": "1일당 15만원 (연간 1500만원): 1일당 자기부담금 1만원 공제 후 80% 보상"
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 71,
         "fields": {
             "cover_type": 3,
             "insurance": 1,
             "price": 250,
             "wild": true,
-            "detail": "1일당 250만원 (연간 2회): 질병상해의료비 초과분 70%보상"
+            "detail": "1일당 250만원 (연간 2회): 질병상해의료비 초과분 80%보상"
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 72,
         "fields": {
             "cover_type": 4,
             "insurance": 1,
             "price": 250,
             "wild": true,
-            "detail": "치료시 1일당 15만원 (연간 1500만원) 수술시 1일당 250만원 (연간 2회): 자기부담금 1만원 공제 후70% 보상"
+            "detail": "치료시 1일당 15만원 (연간 1500만원) 수술시 1일당 250만원 (연간 2회): 자기부담금 1만원 공제 후 80% 보상"
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 73,
         "fields": {
             "cover_type": 5,
             "insurance": 1,
             "price": 15,
             "wild": true,
-            "detail": "치료시 1일당 15만원 (연간 1500만원) 수술시 1일당 250만원 (연간 2회): 자기부담금 1만원 공제 후70% 보상"
+            "detail": "치료시 1일당 15만원 (연간 1500만원) 수술시 1일당 250만원 (연간 2회): 자기부담금 1만원 공제 후 80% 보상"
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 74,
         "fields": {
             "cover_type": 8,
@@ -814,7 +814,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 75,
         "fields": {
             "cover_type": 1,
@@ -825,7 +825,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 76,
         "fields": {
             "cover_type": 3,
@@ -836,7 +836,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 77,
         "fields": {
             "cover_type": 4,
@@ -847,7 +847,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 78,
         "fields": {
             "cover_type": 5,
@@ -858,7 +858,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 79,
         "fields": {
             "cover_type": 6,
@@ -869,7 +869,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 80,
         "fields": {
             "cover_type": 7,
@@ -880,7 +880,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 81,
         "fields": {
             "cover_type": 2,
@@ -891,7 +891,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 82,
         "fields": {
             "cover_type": 8,
@@ -902,7 +902,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 83,
         "fields": {
             "cover_type": 1,
@@ -913,7 +913,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 84,
         "fields": {
             "cover_type": 3,
@@ -924,7 +924,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 85,
         "fields": {
             "cover_type": 4,
@@ -935,7 +935,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 86,
         "fields": {
             "cover_type": 5,
@@ -946,7 +946,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 87,
         "fields": {
             "cover_type": 6,
@@ -957,7 +957,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 88,
         "fields": {
             "cover_type": 7,
@@ -968,7 +968,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 89,
         "fields": {
             "cover_type": 2,
@@ -979,7 +979,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 90,
         "fields": {
             "cover_type": 8,
@@ -990,7 +990,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 91,
         "fields": {
             "cover_type": 1,
@@ -1001,7 +1001,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 92,
         "fields": {
             "cover_type": 3,
@@ -1012,7 +1012,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 93,
         "fields": {
             "cover_type": 4,
@@ -1023,7 +1023,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 94,
         "fields": {
             "cover_type": 5,
@@ -1034,7 +1034,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 95,
         "fields": {
             "cover_type": 6,
@@ -1045,7 +1045,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 96,
         "fields": {
             "cover_type": 7,
@@ -1056,7 +1056,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 97,
         "fields": {
             "cover_type": 2,
@@ -1067,7 +1067,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 98,
         "fields": {
             "cover_type": 1,
@@ -1078,7 +1078,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 99,
         "fields": {
             "cover_type": 3,
@@ -1089,7 +1089,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 100,
         "fields": {
             "cover_type": 4,
@@ -1100,7 +1100,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 101,
         "fields": {
             "cover_type": 5,
@@ -1111,7 +1111,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 102,
         "fields": {
             "cover_type": 6,
@@ -1122,7 +1122,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 103,
         "fields": {
             "cover_type": 7,
@@ -1133,7 +1133,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 104,
         "fields": {
             "cover_type": 2,
@@ -1144,7 +1144,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 105,
         "fields": {
             "cover_type": 1,
@@ -1155,7 +1155,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 106,
         "fields": {
             "cover_type": 2,
@@ -1166,7 +1166,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 107,
         "fields": {
             "cover_type": 3,
@@ -1177,7 +1177,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 108,
         "fields": {
             "cover_type": 4,
@@ -1188,7 +1188,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 109,
         "fields": {
             "cover_type": 5,
@@ -1199,7 +1199,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 110,
         "fields": {
             "cover_type": 6,
@@ -1210,7 +1210,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 111,
         "fields": {
             "cover_type": 8,
@@ -1221,7 +1221,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 112,
         "fields": {
             "cover_type": 1,
@@ -1232,7 +1232,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 113,
         "fields": {
             "cover_type": 2,
@@ -1243,7 +1243,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 114,
         "fields": {
             "cover_type": 3,
@@ -1254,7 +1254,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 115,
         "fields": {
             "cover_type": 7,
@@ -1265,7 +1265,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 116,
         "fields": {
             "cover_type": 1,
@@ -1276,7 +1276,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 117,
         "fields": {
             "cover_type": 3,
@@ -1287,7 +1287,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 118,
         "fields": {
             "cover_type": 4,
@@ -1298,7 +1298,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 119,
         "fields": {
             "cover_type": 5,
@@ -1309,7 +1309,7 @@
         }
     },
     {
-        "model": "insurance.Cover",
+        "model": "insurance_app.Cover",
         "pk": 120,
         "fields": {
             "cover_type": 8,

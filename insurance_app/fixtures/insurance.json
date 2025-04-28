@@ -1,6 +1,6 @@
 [
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 1,
         "fields": {
             "company_name": "삼성화재",
@@ -15,7 +15,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 2,
         "fields": {
             "company_name": "한화손해보험",
@@ -31,7 +31,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 3,
         "fields": {
             "company_name": "메리츠화재",
@@ -46,7 +46,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 4,
         "fields": {
             "company_name": "메리츠화재",
@@ -61,7 +61,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 5,
         "fields": {
             "company_name": "삼성화재",
@@ -77,7 +77,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 6,
         "fields": {
             "company_name": "KB손해보험",
@@ -92,7 +92,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 7,
         "fields": {
             "company_name": "현대해상",
@@ -108,7 +108,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 8,
         "fields": {
             "company_name": "롯데손해보험",
@@ -122,7 +122,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 9,
         "fields": {
             "company_name": "에이스손해보험",
@@ -137,7 +137,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 10,
         "fields": {
             "company_name": "DB손해보험",
@@ -153,7 +153,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 11,
         "fields": {
             "company_name": "교보라이프플래닛생명",
@@ -167,7 +167,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 12,
         "fields": {
             "company_name": "하나손해보험",
@@ -182,7 +182,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 13,
         "fields": {
             "company_name": "하나손해보험",
@@ -196,7 +196,7 @@
         }
     },
     {
-        "model": "insurance.Insurance",
+        "model": "insurance_app.InsuranceProduct",
         "pk": 14,
         "fields": {
             "company_name": "캐롯손해보험",

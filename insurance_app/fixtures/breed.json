@@ -1,6 +1,6 @@
 [
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 1,
         "fields": {
             "disease": [
@@ -14,7 +14,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 2,
         "fields": {
             "disease": [
@@ -32,7 +32,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 3,
         "fields": {
             "disease": [
@@ -44,7 +44,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 4,
         "fields": {
             "disease": [
@@ -59,7 +59,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 5,
         "fields": {
             "disease": [
@@ -73,7 +73,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 6,
         "fields": {
             "disease": [
@@ -88,7 +88,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 7,
         "fields": {
             "disease": [
@@ -104,7 +104,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 8,
         "fields": {
             "disease": [
@@ -117,7 +117,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 9,
         "fields": {
             "disease": [
@@ -129,7 +129,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 10,
         "fields": {
             "disease": [
@@ -145,7 +145,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 11,
         "fields": {
             "disease": [
@@ -162,7 +162,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 12,
         "fields": {
             "disease": [
@@ -178,7 +178,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 13,
         "fields": {
             "disease": [
@@ -190,7 +190,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 14,
         "fields": {
             "disease": [
@@ -207,7 +207,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 15,
         "fields": {
             "disease": [
@@ -224,7 +224,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 16,
         "fields": {
             "disease": [
@@ -237,7 +237,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 17,
         "fields": {
             "disease": [
@@ -249,7 +249,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 18,
         "fields": {
             "disease": [
@@ -263,7 +263,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 19,
         "fields": {
             "disease": [
@@ -277,7 +277,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 20,
         "fields": {
             "disease": [
@@ -289,7 +289,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 21,
         "fields": {
             "disease": [
@@ -301,7 +301,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 22,
         "fields": {
             "disease": [
@@ -315,7 +315,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 23,
         "fields": {
             "disease": [
@@ -333,7 +333,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 24,
         "fields": {
             "disease": [
@@ -348,7 +348,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 25,
         "fields": {
             "disease": [
@@ -363,7 +363,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 26,
         "fields": {
             "disease": [
@@ -379,7 +379,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 27,
         "fields": {
             "disease": [
@@ -392,7 +392,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 28,
         "fields": {
             "disease": [
@@ -407,7 +407,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 29,
         "fields": {
             "disease": [
@@ -425,7 +425,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 30,
         "fields": {
             "disease": [
@@ -440,7 +440,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 31,
         "fields": {
             "disease": [
@@ -453,7 +453,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 32,
         "fields": {
             "disease": [
@@ -468,7 +468,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 33,
         "fields": {
             "disease": [
@@ -482,7 +482,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 34,
         "fields": {
             "disease": [
@@ -494,7 +494,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 35,
         "fields": {
             "disease": [
@@ -507,7 +507,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 36,
         "fields": {
             "disease": [
@@ -520,7 +520,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 37,
         "fields": {
             "disease": [
@@ -534,7 +534,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 38,
         "fields": {
             "disease": [
@@ -550,7 +550,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 39,
         "fields": {
             "disease": [
@@ -563,7 +563,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 40,
         "fields": {
             "disease": [
@@ -576,7 +576,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 41,
         "fields": {
             "disease": [
@@ -590,7 +590,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 42,
         "fields": {
             "disease": [
@@ -604,7 +604,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 43,
         "fields": {
             "disease": [
@@ -621,7 +621,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 44,
         "fields": {
             "disease": [
@@ -633,7 +633,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 45,
         "fields": {
             "disease": [
@@ -647,7 +647,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 46,
         "fields": {
             "disease": [
@@ -660,7 +660,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 47,
         "fields": {
             "disease": [
@@ -672,7 +672,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 48,
         "fields": {
             "disease": [
@@ -684,7 +684,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 49,
         "fields": {
             "disease": [
@@ -696,7 +696,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 50,
         "fields": {
             "disease": [
@@ -709,7 +709,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 51,
         "fields": {
             "disease": [
@@ -722,7 +722,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 52,
         "fields": {
             "disease": [
@@ -737,7 +737,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 53,
         "fields": {
             "disease": [
@@ -749,7 +749,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 54,
         "fields": {
             "disease": [
@@ -766,7 +766,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 55,
         "fields": {
             "disease": [
@@ -781,7 +781,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 56,
         "fields": {
             "disease": [
@@ -794,7 +794,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 57,
         "fields": {
             "disease": [
@@ -811,7 +811,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 58,
         "fields": {
             "disease": [
@@ -825,7 +825,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 59,
         "fields": {
             "disease": [
@@ -840,7 +840,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 60,
         "fields": {
             "disease": [
@@ -852,7 +852,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 61,
         "fields": {
             "disease": [
@@ -865,7 +865,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 62,
         "fields": {
             "disease": [
@@ -877,7 +877,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 63,
         "fields": {
             "disease": [
@@ -893,7 +893,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 64,
         "fields": {
             "disease": [
@@ -905,7 +905,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 65,
         "fields": {
             "disease": [
@@ -924,7 +924,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 66,
         "fields": {
             "disease": [
@@ -937,7 +937,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 67,
         "fields": {
             "disease": [
@@ -949,7 +949,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 68,
         "fields": {
             "disease": [
@@ -961,7 +961,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 69,
         "fields": {
             "disease": [
@@ -974,7 +974,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 70,
         "fields": {
             "disease": [
@@ -987,7 +987,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 71,
         "fields": {
             "disease": [
@@ -999,7 +999,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 72,
         "fields": {
             "disease": [
@@ -1012,7 +1012,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 73,
         "fields": {
             "disease": [
@@ -1030,7 +1030,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 74,
         "fields": {
             "disease": [
@@ -1042,7 +1042,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 75,
         "fields": {
             "disease": [
@@ -1059,7 +1059,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 76,
         "fields": {
             "disease": [
@@ -1071,7 +1071,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 77,
         "fields": {
             "disease": [
@@ -1089,7 +1089,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 78,
         "fields": {
             "disease": [
@@ -1102,7 +1102,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 79,
         "fields": {
             "disease": [
@@ -1114,7 +1114,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 80,
         "fields": {
             "disease": [
@@ -1129,7 +1129,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 81,
         "fields": {
             "disease": [
@@ -1141,7 +1141,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 82,
         "fields": {
             "disease": [],
@@ -1151,7 +1151,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 83,
         "fields": {
             "disease": [
@@ -1165,7 +1165,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 84,
         "fields": {
             "disease": [
@@ -1179,7 +1179,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 85,
         "fields": {
             "disease": [
@@ -1193,7 +1193,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 86,
         "fields": {
             "disease": [
@@ -1207,7 +1207,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 87,
         "fields": {
             "disease": [
@@ -1221,7 +1221,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 88,
         "fields": {
             "disease": [
@@ -1235,7 +1235,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 89,
         "fields": {
             "disease": [
@@ -1249,7 +1249,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 90,
         "fields": {
             "disease": [
@@ -1263,7 +1263,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 91,
         "fields": {
             "disease": [
@@ -1277,7 +1277,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 92,
         "fields": {
             "disease": [
@@ -1291,7 +1291,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 93,
         "fields": {
             "disease": [
@@ -1305,7 +1305,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 94,
         "fields": {
             "disease": [
@@ -1319,7 +1319,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 95,
         "fields": {
             "disease": [
@@ -1333,7 +1333,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 96,
         "fields": {
             "disease": [
@@ -1347,7 +1347,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 97,
         "fields": {
             "disease": [
@@ -1361,7 +1361,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 98,
         "fields": {
             "disease": [
@@ -1375,7 +1375,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 99,
         "fields": {
             "disease": [
@@ -1389,7 +1389,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 100,
         "fields": {
             "disease": [
@@ -1403,7 +1403,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 101,
         "fields": {
             "disease": [
@@ -1417,7 +1417,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 102,
         "fields": {
             "disease": [
@@ -1431,7 +1431,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 103,
         "fields": {
             "disease": [
@@ -1445,7 +1445,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 104,
         "fields": {
             "disease": [
@@ -1459,7 +1459,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 105,
         "fields": {
             "disease": [
@@ -1473,7 +1473,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 106,
         "fields": {
             "disease": [
@@ -1487,7 +1487,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 107,
         "fields": {
             "disease": [
@@ -1501,7 +1501,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 108,
         "fields": {
             "disease": [
@@ -1515,7 +1515,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 109,
         "fields": {
             "disease": [
@@ -1529,7 +1529,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 110,
         "fields": {
             "disease": [
@@ -1543,7 +1543,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 111,
         "fields": {
             "disease": [
@@ -1557,7 +1557,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 112,
         "fields": {
             "disease": [
@@ -1571,7 +1571,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 113,
         "fields": {
             "disease": [
@@ -1585,7 +1585,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 114,
         "fields": {
             "disease": [
@@ -1599,7 +1599,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 115,
         "fields": {
             "disease": [
@@ -1613,7 +1613,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 116,
         "fields": {
             "disease": [
@@ -1627,7 +1627,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 117,
         "fields": {
             "disease": [
@@ -1641,7 +1641,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 118,
         "fields": {
             "disease": [
@@ -1655,7 +1655,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 119,
         "fields": {
             "disease": [
@@ -1669,7 +1669,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 120,
         "fields": {
             "disease": [
@@ -1683,7 +1683,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 121,
         "fields": {
             "disease": [
@@ -1697,7 +1697,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 122,
         "fields": {
             "disease": [
@@ -1711,7 +1711,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 123,
         "fields": {
             "disease": [
@@ -1725,7 +1725,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 124,
         "fields": {
             "disease": [
@@ -1739,7 +1739,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 125,
         "fields": {
             "disease": [
@@ -1753,7 +1753,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 126,
         "fields": {
             "disease": [
@@ -1767,7 +1767,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 127,
         "fields": {
             "disease": [
@@ -1781,7 +1781,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 128,
         "fields": {
             "disease": [
@@ -1795,7 +1795,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 129,
         "fields": {
             "disease": [
@@ -1810,7 +1810,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 130,
         "fields": {
             "disease": [
@@ -1824,7 +1824,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 131,
         "fields": {
             "disease": [
@@ -1838,7 +1838,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 132,
         "fields": {
             "disease": [
@@ -1852,7 +1852,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 133,
         "fields": {
             "disease": [
@@ -1866,7 +1866,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 134,
         "fields": {
             "disease": [
@@ -1880,7 +1880,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 135,
         "fields": {
             "disease": [
@@ -1894,7 +1894,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 136,
         "fields": {
             "disease": [
@@ -1908,7 +1908,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 137,
         "fields": {
             "disease": [
@@ -1922,7 +1922,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 138,
         "fields": {
             "disease": [
@@ -1936,7 +1936,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 139,
         "fields": {
             "disease": [
@@ -1950,7 +1950,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 140,
         "fields": {
             "disease": [
@@ -1964,7 +1964,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 141,
         "fields": {
             "disease": [
@@ -1978,7 +1978,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 142,
         "fields": {
             "disease": [
@@ -1992,7 +1992,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 143,
         "fields": {
             "disease": [
@@ -2006,7 +2006,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 144,
         "fields": {
             "disease": [
@@ -2022,7 +2022,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 145,
         "fields": {
             "disease": [
@@ -2036,7 +2036,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 146,
         "fields": {
             "disease": [
@@ -2050,7 +2050,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 147,
         "fields": {
             "disease": [
@@ -2064,7 +2064,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 148,
         "fields": {
             "disease": [
@@ -2077,7 +2077,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 149,
         "fields": {
             "disease": [
@@ -2091,7 +2091,7 @@
         }
     },
     {
-        "model": "insurance.breed",
+        "model": "insurance_app.Breed",
         "pk": 150,
         "fields": {
             "disease": [],

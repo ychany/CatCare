@@ -1,6 +1,6 @@
 [
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 1,
         "fields": {
             "name": "각막염",
@@ -10,7 +10,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 2,
         "fields": {
             "name": "간질",
@@ -20,7 +20,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 3,
         "fields": {
             "name": "결막염",
@@ -30,7 +30,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 4,
         "fields": {
             "cover_type": 4,
@@ -41,7 +41,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 5,
         "fields": {
             "cover_type": 4,
@@ -52,7 +52,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 6,
         "fields": {
             "name": "구내염",
@@ -62,7 +62,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 7,
         "fields": {
             "name": "구토",
@@ -72,7 +72,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 8,
         "fields": {
             "name": "급성기관지염",
@@ -82,7 +82,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 9,
         "fields": {
             "name": "당뇨",
@@ -92,7 +92,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 10,
         "fields": {
             "cover_type": 7,
@@ -103,7 +103,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 11,
         "fields": {
             "name": "백내장",
@@ -113,7 +113,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 12,
         "fields": {
             "cover_type": 5,
@@ -124,7 +124,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 13,
         "fields": {
             "name": "비만",
@@ -134,7 +134,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 14,
         "fields": {
             "name": "설사",
@@ -144,7 +144,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 15,
         "fields": {
             "cover_type": 7,
@@ -155,7 +155,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 16,
         "fields": {
             "name": "심장마비",
@@ -165,7 +165,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 17,
         "fields": {
             "name": "심장판막증",
@@ -175,7 +175,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 18,
         "fields": {
             "name": "안구탈출",
@@ -185,7 +185,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 19,
         "fields": {
             "name": "외이염",
@@ -195,7 +195,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 20,
         "fields": {
             "name": "유루증",
@@ -205,7 +205,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 21,
         "fields": {
             "cover_type": 5,
@@ -216,7 +216,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 22,
         "fields": {
             "cover_type": 5,
@@ -227,7 +227,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 23,
         "fields": {
             "cover_type": 4,
@@ -238,7 +238,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 24,
         "fields": {
             "cover_type": 6,
@@ -249,7 +249,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 25,
         "fields": {
             "cover_type": 5,
@@ -260,7 +260,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 26,
         "fields": {
             "name": "폐렴",
@@ -270,7 +270,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 27,
         "fields": {
             "cover_type": 4,
@@ -281,7 +281,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 28,
         "fields": {
             "name": "갑자기 절뚝거려요",
@@ -291,7 +291,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 29,
         "fields": {
             "name": "털이 많이 빠지고 자주 긁어요",
@@ -301,7 +301,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 30,
         "fields": {
             "name": "입냄새가 심해졌어요",
@@ -311,7 +311,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 31,
         "fields": {
             "name": "배뇨가 잦거나 피가 섞여 나와요",
@@ -321,7 +321,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 32,
         "fields": {
             "name": "소극적이고 무기력해요",
@@ -331,7 +331,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 33,
         "fields": {
             "name": "이상한 호흡",
@@ -341,7 +341,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 34,
         "fields": {
             "name": "구토와 설사를 해요",
@@ -351,7 +351,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 35,
         "fields": {
             "name": "갑작스러운 혹이나 덩어리",
@@ -361,7 +361,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 36,
         "fields": {
             "name": "눈물이 많고 눈곱이 자주 껴요",
@@ -371,7 +371,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 37,
         "fields": {
             "name": "귀 분비물 또는 악취",
@@ -381,7 +381,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 38,
         "fields": {
             "name": "눈동자가 희고 자주 부딛혀요",
@@ -391,7 +391,7 @@
         }
     },
     {
-        "model": "insurance.disease",
+        "model": "insurance_app.disease",
         "pk": 39,
         "fields": {
             "name": "거품을 물고 경련을 일으켜요",
