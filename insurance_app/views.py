@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
@@ -14,6 +14,9 @@ from .knn_utils import predict_insurance, update_user_choice
 import json
 from pathlib import Path
 from django.db import models
+from numpy import dot
+from numpy.linalg import norm
+from django.urls import reverse
 
 @login_required
 def main(request):
@@ -48,31 +51,136 @@ def product_detail(request, pk):
     return render(request, 'insurance/product_detail.html', {'product': product})
 
 @login_required
+def recommend_form(request, pet_profile_id):
+    # preference_fields 정의 (label, key)
+    preference_fields = [
+        ('통원치료비', 'outpatient'),
+        ('입원치료비', 'inpatient'),
+        ('수술치료비', 'surgery'),
+        ('배상책임', 'liability'),
+        ('슬관절', 'joint'),
+        ('피부병', 'skin'),
+        ('구강질환', 'oral'),
+        ('비뇨기질환', 'urinary'),
+    ]
+    preference_dict = {key: 3 for label, key in preference_fields}
+    context = {
+        'pet_profile_id': pet_profile_id,
+        'preference_fields': preference_fields,
+        'preference_dict': preference_dict,
+    }
+    return render(request, 'insurance/recommend_form.html', context)
+
+@login_required
 def insurance_recommend(request, pet_profile_id):
+    # POST 데이터가 없으면 폼으로 리다이렉트
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('insurance:recommend_form', args=[pet_profile_id]))
     pet = get_object_or_404(Pet, id=pet_profile_id, owner=request.user)
 
     # 모든 보험 상품 가져오기
     products = InsuranceProduct.objects.all()
 
-    # 전체 보장항목 키(flat) 추출
-    all_coverage_keys = set()
-    for product in products:
-        all_coverage_keys.update(flatten_coverage_keys(product.coverage_details))
-    all_coverage_keys = sorted(list(all_coverage_keys), key=lambda x: str(x))
+    # 한글 key → 영문 코드 매핑
+    preference_map = {
+        '통원': 'outpatient',
+        '입원': 'inpatient',
+        '수술': 'surgery',
+        '배상책임': 'liability',
+        '슬관절': 'joint',
+        '피부병': 'skin',
+        '구강질환': 'oral',
+        '비뇨기질환': 'urinary',
+    }
 
-    # 유저의 보장 선호 벡터 (예시: 모든 항목을 선호한다고 가정)
-    user_vector = [1 for _ in all_coverage_keys]
-    # 실제로는 유저의 선호를 받아서 벡터 생성 가능
+    # all_coverage_keys를 preference_map의 key만으로 제한
+    all_coverage_keys = list(preference_map.keys())
 
-    # 각 상품의 보장항목 벡터 및 matching_score(자카드 유사도) 계산
+    # preference_fields 정의 (label, key)
+    preference_fields = [
+        ('통원치료비', 'outpatient'),
+        ('입원치료비', 'inpatient'),
+        ('수술치료비', 'surgery'),
+        ('배상책임', 'liability'),
+        ('슬관절', 'joint'),
+        ('피부병', 'skin'),
+        ('구강질환', 'oral'),
+        ('비뇨기질환', 'urinary'),
+    ]
+
+    if request.method == 'POST':
+        preference_dict = {}
+        for label, key in preference_fields:
+            preference_dict[key] = int(request.POST.get(key, 3))
+    else:
+        preference_dict = {key: 3 for label, key in preference_fields}
+
+    # user_vector를 all_coverage_keys의 한글 key를 preference_map(한글→영문)으로 변환해서 preference_dict에서 값을 가져오도록 수정
+    user_vector = []
+    for cov_key in all_coverage_keys:
+        eng_key = preference_map.get(cov_key)
+        if eng_key:
+            user_vector.append(preference_dict.get(eng_key, 0))
+        else:
+            user_vector.append(0)
+
+    # cover_type → 카테고리명 매핑
+    cover_type_to_category = {
+        1: '통원',
+        2: '입원',
+        3: '수술',
+        4: '슬관절',
+        5: '피부병',
+        6: '구강질환',
+        7: '비뇨기질환',
+        8: '배상책임',
+    }
+
+    # cover.json에서 보장 ID → cover_type 매핑 생성
+    cover_id_to_type = {}
+    cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
+    if cover_path.exists():
+        with open(cover_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                cover_id_to_type[item['pk']] = item['fields']['cover_type']
+
+    def get_category_coverage_vector(coverage_details, all_coverage_keys):
+        vector = [0 for _ in all_coverage_keys]
+        # 1. 카테고리 key가 있으면 1
+        for idx, key in enumerate(all_coverage_keys):
+            if key in coverage_details:
+                vector[idx] = 1
+        # 2. '기본보장', '특별보장'의 보장 ID로 카테고리 체크
+        for section in ['기본보장', '특별보장']:
+            for cover_id in coverage_details.get(section, []):
+                cover_type = cover_id_to_type.get(cover_id)
+                category = cover_type_to_category.get(cover_type)
+                if category and category in all_coverage_keys:
+                    idx = all_coverage_keys.index(category)
+                    vector[idx] = 1
+        # 3. 질병보장(disease) 항목도 기존대로 체크
+        disease_dict = coverage_details.get('질병보장', {})
+        for disease in disease_dict.values():
+            cover_type = disease.get('cover_type')
+            if cover_type and cover_type_to_category.get(cover_type) in all_coverage_keys:
+                idx = all_coverage_keys.index(cover_type_to_category[cover_type])
+                vector[idx] = 1
+        return vector
+
+    # cosine similarity 함수 정의
+    def cosine_similarity(a, b):
+        if norm(a) == 0 or norm(b) == 0:
+            return 0.0
+        return float(dot(a, b) / (norm(a) * norm(b)))
+
     before_ranking = []
     for product in products:
-        product_vector = get_flat_coverage_vector(product.coverage_details, all_coverage_keys)
-        matching_score = jaccard_similarity(user_vector, product_vector)
+        product_vector = get_category_coverage_vector(product.coverage_details, all_coverage_keys)
+        # product_vector: 0/1, user_vector: 1~5점
+        matching_score = cosine_similarity(user_vector, product_vector)
         temp_detail = {}
         temp_detail['product'] = product
         temp_detail['company_score'] = float(product.company.rating) if product.company and product.company.rating else 0.0
-        # price_score: InsuranceDetail이 있으면 평균값, 없으면 base_price 사용
         details = getattr(product, 'insurancedetail_set', None)
         if details and details.exists():
             price_score = float(details.aggregate(models.Avg('price_score'))['price_score__avg'] or 0)
@@ -80,11 +188,8 @@ def insurance_recommend(request, pet_profile_id):
             price_score = float(product.base_price)
         temp_detail['price_score'] = price_score
         temp_detail['matching_score'] = matching_score
-        # 보장 항목 수
         temp_detail['cover_count'] = len(flatten_coverage_keys(product.coverage_details))
-        # sure_score
         temp_detail['sure_score'] = make_sure_score(temp_detail['company_score'], price_score, matching_score)
-        # 보장항목 이름 변환
         cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
         disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
         cover_map = {}
@@ -103,21 +208,30 @@ def insurance_recommend(request, pet_profile_id):
                 product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
             else:
                 product.coverage_details_verbose[key] = value
-        # 특별혜택 이름 변환
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
             product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
         before_ranking.append(temp_detail)
 
-    # 다양한 기준으로 정렬
     sure_ranking = sorted(before_ranking, key=lambda item: -item['sure_score'])
     price_ranking = sorted(before_ranking, key=lambda item: item['price_score'])
     cover_ranking = sorted(before_ranking, key=lambda item: -item['cover_count'])
+
+    # 디버깅용 print: user_vector와 추천 결과
+    print('user_vector:', user_vector)
+    for item in sure_ranking:
+        print(getattr(item['product'], 'insurance_name', None) or getattr(item['product'], 'name', None), item['matching_score'], item['sure_score'])
+
+    print('all_coverage_keys:', all_coverage_keys)
+    if products:
+        print('샘플 coverage_details:', products[0].insurance_name, products[0].coverage_details)
 
     context = {
         'pet': pet,
         'sure_ranking': sure_ranking,
         'price_ranking': price_ranking,
         'cover_ranking': cover_ranking,
+        'preference_fields': preference_fields,
+        'preference_dict': preference_dict,
     }
     return render(request, 'insurance/recommend.html', context)
 
