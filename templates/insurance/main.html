@@ -17,7 +17,7 @@
                                 <select class="form-select" id="petSelect" required>
                                     <option value="">반려동물 선택</option>
                                     {% for pet in user_pets %}
-                                    <option value="{% url 'insurance:recommend' pet.id %}">{{ pet.name }}</option>
+                                    <option value="{% url 'insurance:recommend' pet.id %}" data-pet-id="{{ pet.id }}">{{ pet.name }}</option>
                                     {% endfor %}
                                 </select>
                                 <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#preferenceModal">
@@ -102,7 +102,30 @@ function loadPreference() {
         });
     }
 }
-document.getElementById('preferenceModal').addEventListener('show.bs.modal', loadPreference);
+document.getElementById('preferenceModal').addEventListener('show.bs.modal', function() {
+    // 현재 선택된 반려동물 id
+    var petId = $('#petSelect').find('option:selected').data('pet-id');
+    if (!petId) return;
+    $.ajax({
+        url: '/insurance/api/get_preference/' + petId + '/',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                var pref = data.preference_dict;
+                const keys = ["outpatient","inpatient","surgery","liability","joint","skin","oral","urinary"];
+                keys.forEach(function(key) {
+                    // 1. 모든 라디오 버튼 해제
+                    $("input[name='"+key+"']").prop('checked', false);
+                    // 2. 서버 값만 체크
+                    let val = pref[key] || 3;
+                    let radio = document.getElementById('modal_'+key+'_'+val);
+                    if (radio) radio.checked = true;
+                });
+            }
+        }
+    });
+});
 
 // 추천/비교 버튼 클릭 시 선호도 값 form에 추가
 function appendPreferenceToForm(form) {
@@ -164,6 +187,31 @@ function goToCompare() {
         alert('반려동물을 올바르게 선택해주세요.');
     }
 }
+
+// 반려동물 select 변경 시 선호도 동기화
+$(document).ready(function() {
+    $('#petSelect').on('change', function() {
+        var petId = $(this).find('option:selected').data('pet-id');
+        if (!petId) return;
+        $.ajax({
+            url: '/insurance/api/get_preference/' + petId + '/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    var pref = data.preference_dict;
+                    for (var key in pref) {
+                        var val = pref[key];
+                        // 해당 key의 라디오 버튼 중 value==val 인 것 체크
+                        $("input[name='"+key+"'][value='"+val+"']").prop('checked', true);
+                    }
+                }
+            }
+        });
+    });
+    // 페이지 진입 시 첫 번째 반려동물의 선호도 자동 세팅
+    $('#petSelect').trigger('change');
+});
 </script>
 
 <!-- 보험 가이드 모달 -->

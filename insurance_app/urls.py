@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/recommend/', views.api_recommend, name='api_recommend'),
     path('choose/<int:pet_profile_id>/<int:product_id>/', views.choose_insurance, name='choose'),
     path('recommend_form/<int:pet_profile_id>/', views.recommend_form, name='recommend_form'),
+    path('api/get_preference/<int:pet_profile_id>/', views.api_get_preference, name='api_get_preference'),
 ] 

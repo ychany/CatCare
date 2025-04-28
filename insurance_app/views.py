@@ -74,7 +74,13 @@ def recommend_form(request, pet_profile_id):
         ('구강질환', 'oral'),
         ('비뇨기질환', 'urinary'),
     ]
-    preference_dict = {key: 3 for label, key in preference_fields}
+    pet_profile = get_object_or_404(PetProfile, id=pet_profile_id)
+    # PetProfile에 저장된 preference_dict 불러오기 (없으면 3으로 채움)
+    preference_dict = pet_profile.preference_dict or {key: 3 for label, key in preference_fields}
+    # 혹시라도 값이 빠진 key가 있으면 3으로 채움
+    for label, key in preference_fields:
+        if key not in preference_dict:
+            preference_dict[key] = 3
     context = {
         'pet_profile_id': pet_profile_id,
         'preference_fields': preference_fields,
@@ -88,6 +94,32 @@ def insurance_recommend(request, pet_profile_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('insurance:recommend_form', args=[pet_profile_id]))
     pet = get_object_or_404(Pet, id=pet_profile_id, owner=request.user)
+    # PetProfile preference_dict 저장
+    try:
+        pet_profile = PetProfile.objects.get(id=pet_profile_id)
+    except PetProfile.DoesNotExist:
+        pet_profile = None
+    # preference_fields 정의 (label, key)
+    preference_fields = [
+        ('통원치료비', 'outpatient'),
+        ('입원치료비', 'inpatient'),
+        ('수술치료비', 'surgery'),
+        ('배상책임', 'liability'),
+        ('슬관절', 'joint'),
+        ('피부병', 'skin'),
+        ('구강질환', 'oral'),
+        ('비뇨기질환', 'urinary'),
+    ]
+    if request.method == 'POST':
+        preference_dict = {}
+        for label, key in preference_fields:
+            preference_dict[key] = int(request.POST.get(key, 3))
+        # PetProfile에 preference_dict 저장
+        if pet_profile:
+            pet_profile.preference_dict = preference_dict
+            pet_profile.save()
+    else:
+        preference_dict = {key: 3 for label, key in preference_fields}
 
     # 모든 보험 상품 가져오기
     products = InsuranceProduct.objects.all()
@@ -106,25 +138,6 @@ def insurance_recommend(request, pet_profile_id):
 
     # all_coverage_keys를 preference_map의 key만으로 제한
     all_coverage_keys = list(preference_map.keys())
-
-    # preference_fields 정의 (label, key)
-    preference_fields = [
-        ('통원치료비', 'outpatient'),
-        ('입원치료비', 'inpatient'),
-        ('수술치료비', 'surgery'),
-        ('배상책임', 'liability'),
-        ('슬관절', 'joint'),
-        ('피부병', 'skin'),
-        ('구강질환', 'oral'),
-        ('비뇨기질환', 'urinary'),
-    ]
-
-    if request.method == 'POST':
-        preference_dict = {}
-        for label, key in preference_fields:
-            preference_dict[key] = int(request.POST.get(key, 3))
-    else:
-        preference_dict = {key: 3 for label, key in preference_fields}
 
     # user_vector를 all_coverage_keys의 한글 key를 preference_map(한글→영문)으로 변환해서 preference_dict에서 값을 가져오도록 수정
     user_vector = []
@@ -187,7 +200,6 @@ def insurance_recommend(request, pet_profile_id):
     before_ranking = []
     for product in products:
         product_vector = get_category_coverage_vector(product.coverage_details, all_coverage_keys)
-        # product_vector: 0/1, user_vector: 1~5점
         matching_score = cosine_similarity(user_vector, product_vector)
         temp_detail = {}
         temp_detail['product'] = product
@@ -221,11 +233,18 @@ def insurance_recommend(request, pet_profile_id):
                 product.coverage_details_verbose[key] = value
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
             product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
+        # 추천 근거 생성
+        matching_reason = []
+        for idx, cov_key in enumerate(all_coverage_keys):
+            eng_key = preference_map.get(cov_key)
+            if eng_key and preference_dict.get(eng_key, 0) >= 4 and product_vector[idx] == 1:
+                matching_reason.append(f"'{cov_key}' 항목을 중시하셨고, 이 상품이 해당 보장을 포함합니다.")
+        temp_detail['matching_reason'] = matching_reason
         before_ranking.append(temp_detail)
 
-    sure_ranking = sorted(before_ranking, key=lambda item: -item['sure_score'])
-    price_ranking = sorted(before_ranking, key=lambda item: item['price_score'])
-    cover_ranking = sorted(before_ranking, key=lambda item: -item['cover_count'])
+    sure_ranking = sorted(before_ranking, key=lambda item: -item['sure_score'])[:6]
+    price_ranking = sorted(before_ranking, key=lambda item: item['price_score'])[:6]
+    cover_ranking = sorted(before_ranking, key=lambda item: -item['cover_count'])[:6]
 
     # 디버깅용 print: user_vector와 추천 결과
     print('user_vector:', user_vector)
@@ -504,3 +523,12 @@ def choose_insurance(request, pet_profile_id, product_id):
         'status': 'success',
         'message': '보험이 성공적으로 선택되었습니다.'
     })
+
+@login_required
+def api_get_preference(request, pet_profile_id):
+    try:
+        pet_profile = PetProfile.objects.get(id=pet_profile_id, user=request.user)
+        preference_dict = pet_profile.preference_dict or {}
+        return JsonResponse({'success': True, 'preference_dict': preference_dict})
+    except PetProfile.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'PetProfile not found'})

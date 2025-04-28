@@ -139,6 +139,7 @@ class PetProfile(models.Model):
     medical_history = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    preference_dict = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s {self.name}"
