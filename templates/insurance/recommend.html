@@ -16,11 +16,13 @@
                         </div>
                         <div class="card-body">
                             <h6 class="card-subtitle mb-3 text-muted">{{ item.product.company.name }}</h6>
-                            
+                            <!-- '보장 내용' 테이블(기본보장 등) 전체 제거 -->
+                            <!-- 카테고리별 보장 내용, 특별 혜택, 추천 근거만 남김 -->
                             <div class="mb-3">
                                 <h6>보장 내용</h6>
                                 <ul class="list-group list-group-flush">
                                     {% for key, value in item.product.coverage_details_verbose.items %}
+                                        {% if key != '기본보장' %}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             {{ key }}
                                             <span>
@@ -34,10 +36,10 @@
                                             </span>
                                             <span class="badge bg-primary rounded-pill">{{ item.product.coverage_limits|get_item:key }}</span>
                                         </li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </div>
-
                             <div class="mb-3">
                                 <h6>특별 혜택</h6>
                                 <ul class="list-group list-group-flush">
@@ -46,8 +48,6 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-
-                            <!-- 추천 근거 표시 -->
                             <div class="mb-3">
                                 <h6>추천 근거</h6>
                                 <ul class="list-group list-group-flush">
@@ -60,7 +60,6 @@
                                     {% endif %}
                                 </ul>
                             </div>
-
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <p class="mb-0">월 보험료: {{ item.product.base_price|floatformat:0 }}원</p>

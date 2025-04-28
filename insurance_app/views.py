@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import InsuranceProduct, InsuranceCompany, InsuranceInquiry, PetProfile, InsuranceChoice
 from common_app.models import Pet
-from .utils import recommend_insurance, calculate_sure_index, calculate_age, get_pred, make_sure_score, get_coverage_vector, jaccard_similarity, get_flat_coverage_vector, flatten_coverage_keys
+from .utils import recommend_insurance, calculate_sure_index, calculate_age, get_pred, make_sure_score, get_coverage_vector, jaccard_similarity, flatten_coverage_keys
 from .knn_utils import predict_insurance, update_user_choice
 import json
 from pathlib import Path
@@ -17,6 +17,7 @@ from django.db import models
 from numpy import dot
 from numpy.linalg import norm
 from django.urls import reverse
+from collections import defaultdict
 
 @login_required
 def main(request):
@@ -220,7 +221,7 @@ def insurance_recommend(request, pet_profile_id):
         if cover_path.exists():
             with open(cover_path, encoding='utf-8') as f:
                 for item in json.load(f):
-                    cover_map[item['pk']] = item['fields']['detail']
+                    cover_map[item['pk']] = item['fields']
         if disease_path.exists():
             with open(disease_path, encoding='utf-8') as f:
                 for item in json.load(f):
@@ -228,11 +229,12 @@ def insurance_recommend(request, pet_profile_id):
         product.coverage_details_verbose = {}
         for key, value in product.coverage_details.items():
             if isinstance(value, list):
-                product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
+                product.coverage_details_verbose[key] = [cover_map.get(i, {}).get('detail') or disease_map.get(i) or str(i) for i in value]
             else:
                 product.coverage_details_verbose[key] = value
+        # 특별 혜택 detail만 리스트로 변환
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
-            product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
+            product.special_benefits = [cover_map.get(i, {}).get('detail', str(i)) for i in product.special_benefits]
         # 추천 근거 생성
         matching_reason = []
         for idx, cov_key in enumerate(all_coverage_keys):
@@ -240,6 +242,15 @@ def insurance_recommend(request, pet_profile_id):
             if eng_key and preference_dict.get(eng_key, 0) >= 4 and product_vector[idx] == 1:
                 matching_reason.append(f"'{cov_key}' 항목을 중시하셨고, 이 상품이 해당 보장을 포함합니다.")
         temp_detail['matching_reason'] = matching_reason
+        # 카테고리별 보장 내용 정리 (중복 제거)
+        category_details = defaultdict(set)
+        for section in ['기본보장', '특별보장']:
+            for cover_id in product.coverage_details.get(section, []):
+                cover = cover_map.get(cover_id)
+                if cover:
+                    category = cover_type_to_category.get(cover['cover_type'], '기타')
+                    category_details[category].add(cover['detail'])
+        temp_detail['category_coverage_summary'] = {cat: list(details) for cat, details in category_details.items()}
         before_ranking.append(temp_detail)
 
     sure_ranking = sorted(before_ranking, key=lambda item: -item['sure_score'])[:6]
@@ -486,7 +497,7 @@ def insurance_detail(request, product_id):
     if cover_path.exists():
         with open(cover_path, encoding='utf-8') as f:
             for item in json.load(f):
-                cover_map[item['pk']] = item['fields']['detail']
+                cover_map[item['pk']] = item['fields']
     if disease_path.exists():
         with open(disease_path, encoding='utf-8') as f:
             for item in json.load(f):
@@ -496,18 +507,32 @@ def insurance_detail(request, product_id):
     coverage_details_verbose = {}
     for key, value in product.coverage_details.items():
         if isinstance(value, list):
-            coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
+            coverage_details_verbose[key] = [cover_map.get(i, {}).get('detail') or disease_map.get(i) or str(i) for i in value]
         else:
             coverage_details_verbose[key] = value
+    # 특별 혜택 detail만 리스트로 변환
     if not isinstance(product.special_benefits, list):
         special_benefits_verbose = []
     else:
-        special_benefits_verbose = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
-
+        special_benefits_verbose = [cover_map.get(i, {}).get('detail', str(i)) for i in product.special_benefits]
+    # 카테고리별 보장 내용 정리 (중복 제거)
+    cover_type_to_category = {
+        1: '통원', 2: '입원', 3: '수술', 4: '슬관절', 5: '피부병', 6: '구강질환', 7: '비뇨기질환', 8: '배상책임',
+    }
+    category_details = defaultdict(set)
+    for section in ['기본보장', '특별보장']:
+        for cover_id in product.coverage_details.get(section, []):
+            cover = cover_map.get(cover_id)
+            if cover:
+                category = cover_type_to_category.get(cover['cover_type'], '기타')
+                category_details[category].add(cover['detail'])
+    # set → list 변환
+    category_coverage_summary = {cat: list(details) for cat, details in category_details.items()}
     context = {
         'product': product,
         'coverage_details_verbose': coverage_details_verbose,
-        'special_benefits_verbose': special_benefits_verbose
+        'special_benefits_verbose': special_benefits_verbose,
+        'category_coverage_summary': category_coverage_summary,
     }
     return render(request, 'insurance/product_detail.html', context)
 

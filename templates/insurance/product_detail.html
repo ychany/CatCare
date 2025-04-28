@@ -26,6 +26,7 @@
                                 </thead>
                                 <tbody>
                                     {% for key, value in coverage_details_verbose.items %}
+                                        {% if key != '기본보장' %}
                                         <tr>
                                             <td>{{ key }}</td>
                                             <td>
@@ -37,6 +38,7 @@
                                             </td>
                                             <td>{{ product.coverage_limits|get_item:key }}</td>
                                         </tr>
+                                        {% endif %}
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -44,13 +46,28 @@
                     </div>
 
                     <div class="mb-4">
-                        <h5>특별 혜택</h5>
-                        <ul class="list-group">
-                            {% for benefit in special_benefits_verbose %}
+                        <h4>카테고리별 보장 내용</h4>
+                        <ul class="list-group list-group-flush">
+                            {% for category, details in category_coverage_summary.items %}
                                 <li class="list-group-item">
-                                    <i class="fas fa-check-circle text-success me-2"></i>
-                                    {{ benefit }}
+                                    <b>{{ category }}</b><br>
+                                    <ul class="mb-0 ps-3">
+                                        {% for detail in details %}
+                                            <li>{{ detail }}</li>
+                                        {% endfor %}
+                                    </ul>
                                 </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4>특별 혜택</h4>
+                        <ul class="list-group list-group-flush">
+                            {% for benefit in special_benefits_verbose %}
+                                <li class="list-group-item">{{ benefit }}</li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">특별 혜택이 없습니다.</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -64,7 +81,6 @@
                             </div>
                             <div class="col-md-6">
                                 <p><strong>적용 연령:</strong> {{ product.min_age }}세 - {{ product.max_age }}세</p>
-                                <p><strong>적용 체중:</strong> {{ product.min_weight }}kg - {{ product.max_weight }}kg</p>
                             </div>
                         </div>
                     </div>
@@ -78,8 +94,7 @@
                     <h5 class="card-title mb-0">보험사 정보</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>보험사 평점:</strong> {{ product.company.rating }}/100.0</p>
-                    <p><strong>고객 만족도:</strong> {{ product.company.customer_satisfaction }}/100.0</p>
+                    <p><strong>보험사 평점:</strong> {{ product.company.rating }}/5.0</p>
                     <p><strong>웹사이트:</strong> <a href="{{ product.company.website }}" target="_blank">{{ product.company.website }}</a></p>
                     <hr>
                     <a href="{% url 'insurance:main' %}" class="btn btn-outline-primary w-100">목록으로 돌아가기</a>
