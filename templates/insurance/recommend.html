@@ -5,30 +5,6 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">보험 추천 결과</h2>
-    <form method="post" class="mb-4">
-        {% csrf_token %}
-        <div class="card mb-3">
-            <div class="card-header bg-light"><b>우리 아이에게 필요한 보장 항목을 선택해 주세요!</b></div>
-            <div class="card-body">
-                <div class="row">
-                    {% for label, key in preference_fields %}
-                    <div class="col-md-6 mb-2">
-                        <label><b>{{ label }}</b></label>
-                        <div class="d-flex align-items-center">
-                            {% for i in "12345" %}
-                            <div class="form-check form-check-inline ms-2">
-                                <input class="form-check-input" type="radio" name="{{ key }}" value="{{ forloop.counter }}" id="{{ key }}_{{ forloop.counter }}" {% if preference_dict|get_item:key|default:3 == forloop.counter %}checked{% endif %}>
-                                <label class="form-check-label" for="{{ key }}_{{ forloop.counter }}">{{ forloop.counter }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary">선호도 반영하여 추천받기</button>
-    </form>
     {% if sure_ranking %}
         <div class="row">
             {% for item in sure_ranking %}

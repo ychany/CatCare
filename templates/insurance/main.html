@@ -230,7 +230,7 @@ function goToCompare() {
 
 <!-- 보장 선호도 설정 모달 -->
 <div class="modal fade" id="preferenceModal" tabindex="-1" aria-labelledby="preferenceModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="preferenceModalLabel">보장 선호도 설정</h5>
@@ -240,9 +240,9 @@ function goToCompare() {
         <form id="preferenceForm">
           <div class="row">
             {% for label, key in preference_fields %}
-            <div class="col-6 mb-2">
+            <div class="col-6 col-md-6 mb-2">
               <label><b>{{ label }}</b></label>
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center flex-wrap">
                 {% for i in "12345" %}
                 <div class="form-check form-check-inline ms-2">
                   <input class="form-check-input" type="radio" name="{{ key }}" value="{{ forloop.counter }}" id="modal_{{ key }}_{{ forloop.counter }}">

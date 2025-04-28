@@ -21,8 +21,19 @@ from django.urls import reverse
 @login_required
 def main(request):
     user_pets = Pet.objects.filter(owner=request.user)
+    preference_fields = [
+        ('통원치료비', 'outpatient'),
+        ('입원치료비', 'inpatient'),
+        ('수술치료비', 'surgery'),
+        ('배상책임', 'liability'),
+        ('슬관절', 'joint'),
+        ('피부병', 'skin'),
+        ('구강질환', 'oral'),
+        ('비뇨기질환', 'urinary'),
+    ]
     context = {
-        'user_pets': user_pets
+        'user_pets': user_pets,
+        'preference_fields': preference_fields,
     }
     return render(request, 'insurance/main.html', context)
 
@@ -250,7 +261,6 @@ def recommend_result(request):
 
 @login_required
 def insurance_compare(request):
-    # pet_id 쿼리파라미터로 받기
     pet_id = request.GET.get('pet_id')
     pet = None
     pet_type = 'dog'
@@ -268,10 +278,8 @@ def insurance_compare(request):
         except Pet.DoesNotExist:
             pass
 
-    # 모든 보험 상품 가져오기
     products = InsuranceProduct.objects.all()
 
-    # cover_map, disease_map 생성 (추천/상세와 동일)
     cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
     disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
     cover_map = {}
@@ -285,43 +293,98 @@ def insurance_compare(request):
             for item in json.load(f):
                 disease_map[item['pk']] = item['fields']['name']
 
-    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환 + SURE 점수 계산 (추천과 동일하게)
-    # 전체 보장항목 키(flat) 추출 (추천과 동일)
-    all_coverage_keys = set()
-    for product in products:
-        all_coverage_keys.update(flatten_coverage_keys(product.coverage_details))
-    all_coverage_keys = sorted(list(all_coverage_keys), key=lambda x: str(x))
+    # 비교에서도 선호도 기반 user_vector 생성
+    preference_fields = [
+        ('통원치료비', 'outpatient'),
+        ('입원치료비', 'inpatient'),
+        ('수술치료비', 'surgery'),
+        ('배상책임', 'liability'),
+        ('슬관절', 'joint'),
+        ('피부병', 'skin'),
+        ('구강질환', 'oral'),
+        ('비뇨기질환', 'urinary'),
+    ]
+    preference_map = {
+        '통원': 'outpatient',
+        '입원': 'inpatient',
+        '수술': 'surgery',
+        '배상책임': 'liability',
+        '슬관절': 'joint',
+        '피부병': 'skin',
+        '구강질환': 'oral',
+        '비뇨기질환': 'urinary',
+    }
+    all_coverage_keys = list(preference_map.keys())
+    # POST로 선호도 값이 오면 반영
+    if request.method == 'POST':
+        preference_dict = {}
+        for label, key in preference_fields:
+            preference_dict[key] = int(request.POST.get(key, 3))
+        user_vector = [preference_dict.get(preference_map[k], 3) for k in all_coverage_keys]
+    else:
+        user_vector = [3 for _ in all_coverage_keys]
+
+    # cover_type_to_category, cover_id_to_type 등 기존 추천과 동일하게 적용
+    cover_type_to_category = {
+        1: '통원', 2: '입원', 3: '수술', 4: '슬관절', 5: '피부병', 6: '구강질환', 7: '비뇨기질환', 8: '배상책임',
+    }
+    cover_id_to_type = {}
+    if cover_path.exists():
+        with open(cover_path, encoding='utf-8') as f:
+            for item in json.load(f):
+                cover_id_to_type[item['pk']] = item['fields']['cover_type']
+    def get_category_coverage_vector(coverage_details, all_coverage_keys):
+        vector = [0 for _ in all_coverage_keys]
+        for idx, key in enumerate(all_coverage_keys):
+            if key in coverage_details:
+                vector[idx] = 1
+        for section in ['기본보장', '특별보장']:
+            for cover_id in coverage_details.get(section, []):
+                cover_type = cover_id_to_type.get(cover_id)
+                category = cover_type_to_category.get(cover_type)
+                if category and category in all_coverage_keys:
+                    idx = all_coverage_keys.index(category)
+                    vector[idx] = 1
+        disease_dict = coverage_details.get('질병보장', {})
+        for disease in disease_dict.values():
+            cover_type = disease.get('cover_type')
+            if cover_type and cover_type_to_category.get(cover_type) in all_coverage_keys:
+                idx = all_coverage_keys.index(cover_type_to_category[cover_type])
+                vector[idx] = 1
+        return vector
+    def cosine_similarity(a, b):
+        from numpy import dot
+        from numpy.linalg import norm
+        if norm(a) == 0 or norm(b) == 0:
+            return 0.0
+        return float(dot(a, b) / (norm(a) * norm(b)))
 
     processed = []
     for product in products:
-        # 보장 항목 이름 리스트로 변환
         product.coverage_details_verbose = {}
         for key, value in product.coverage_details.items():
             if isinstance(value, list):
                 product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
             else:
                 product.coverage_details_verbose[key] = value
-        # 특별보장(특별혜택) 이름 리스트로 변환
         if not isinstance(product.special_benefits, list):
             product.special_benefits = []
         else:
             product.special_benefits = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
-        # SURE 점수 계산 (추천과 동일)
         company_score = float(product.company.rating) if product.company and product.company.rating else 0.0
         details = getattr(product, 'insurancedetail_set', None)
         if details and details.exists():
             price_score = float(details.aggregate(models.Avg('price_score'))['price_score__avg'] or 0)
         else:
             price_score = float(product.base_price)
-        user_vector = [1 for _ in all_coverage_keys]
-        product_vector = get_flat_coverage_vector(product.coverage_details, all_coverage_keys)
-        matching_score = jaccard_similarity(user_vector, product_vector)
+        product_vector = get_category_coverage_vector(product.coverage_details, all_coverage_keys)
+        matching_score = cosine_similarity(user_vector, product_vector)
         sure_score = make_sure_score(company_score, price_score, matching_score)
         processed.append((product, sure_score))
 
     context = {
         'products': processed,
-        'coverage_keys': sorted(all_coverage_keys, key=lambda x: str(x)),
+        'coverage_keys': all_coverage_keys,
         'pet': pet,
     }
     return render(request, 'insurance/compare.html', context)
