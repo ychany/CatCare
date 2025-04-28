@@ -48,6 +48,16 @@ def weight_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def weight_delete(request, pk):
+    try:
+        weight = Weight.objects.get(pk=pk, user=request.user)
+        weight.delete()
+        return Response({'status': 'success'})
+    except Weight.DoesNotExist:
+        return Response({'status': 'error', 'message': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
 def weight_tracker_view(request):
     user_pets = list(Pet.objects.filter(owner=request.user).values('id', 'name')) if request.user.is_authenticated else []
     return render(request, 'weight_tracker/index.html', {'user_pets': json.dumps(user_pets)})
