@@ -109,8 +109,10 @@
                 <div class="d-flex align-items-center top-bar-text">
                     <span id="current-date"></span>
                     <span id="current-time"></span>
-                    {% if user.pets.first %}
-                        <span class="ms-3">{{ user.pets.first.name }} 보호자님</span>
+                    {% if user.pets.exists %}
+                        <span class="ms-3">
+                            {% for pet in user.pets.all %}{{ pet.name }}{% if not forloop.last %}, {% endif %}{% endfor %} 보호자님
+                        </span>
                     {% endif %}
                     <a href="{% url 'logout' %}" class="logout-btn">로그아웃</a>
                 </div>
@@ -195,8 +197,8 @@
             const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             
-            document.getElementById('current-date').textContent = now.toLocaleDateString('ko-KR', dateOptions).replace(/\./g, '-');
-            document.getElementById('current-time').textContent = ' ' + now.toLocaleTimeString('ko-KR', timeOptions);
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ko-KR', dateOptions).replace(/\. ?/g, '-').replace(/-$/, '') + ' ';
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('ko-KR', timeOptions);
         }
 
         updateDateTime();
