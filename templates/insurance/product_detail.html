@@ -21,7 +21,6 @@
                                     <tr>
                                         <th>보장 항목</th>
                                         <th>보장 내용</th>
-                                        <th>보장 한도</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -36,7 +35,6 @@
                                                     {% endfor %}
                                                 {% else %}-{% endif %}
                                             </td>
-                                            <td>{{ product.coverage_limits|get_item:key }}</td>
                                         </tr>
                                         {% endif %}
                                     {% endfor %}

@@ -293,13 +293,13 @@ def recommend_result(request):
 def insurance_compare(request):
     pet_id = request.GET.get('pet_id')
     pet = None
-    pet_type = 'dog'
+    pet_type = 'cat'
     age = 3
     weight = None
     if pet_id:
         try:
             pet = Pet.objects.get(id=pet_id, owner=request.user)
-            pet_type = pet.pet_type if hasattr(pet, 'pet_type') else (pet.species if hasattr(pet, 'species') else 'dog')
+            pet_type = pet.pet_type if hasattr(pet, 'pet_type') else (pet.species if hasattr(pet, 'species') else 'cat')
             if hasattr(pet, 'birth_date') and pet.birth_date:
                 from .utils import calculate_age
                 age = calculate_age(pet.birth_date)

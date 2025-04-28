@@ -13,16 +13,21 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4 mb-3 d-flex align-items-center">
+                            <div class="col-md-6 mb-3 d-flex align-items-center">
                                 <select class="form-select" id="petSelect" required>
                                     <option value="">반려동물 선택</option>
                                     {% for pet in user_pets %}
                                     <option value="{% url 'insurance:recommend' pet.id %}" data-pet-id="{{ pet.id }}">{{ pet.name }}</option>
                                     {% endfor %}
                                 </select>
-                                <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#preferenceModal">
+                                <button type="button" class="btn btn-outline-secondary ms-2 flex-grow-1" style="min-width:140px;" data-bs-toggle="modal" data-bs-target="#preferenceModal">
                                     보장 선호도 설정
                                 </button>
+                            </div>
+                            <div class="col-12">
+                                <div class="alert alert-info py-2 px-3 mb-3" style="max-width:500px;">
+                                    <b>Tip!</b> 보장 선호도를 설정하면 보험 추천에 더 도움이 됩니다.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,31 +192,6 @@ function goToCompare() {
         alert('반려동물을 올바르게 선택해주세요.');
     }
 }
-
-// 반려동물 select 변경 시 선호도 동기화
-$(document).ready(function() {
-    $('#petSelect').on('change', function() {
-        var petId = $(this).find('option:selected').data('pet-id');
-        if (!petId) return;
-        $.ajax({
-            url: '/insurance/api/get_preference/' + petId + '/',
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    var pref = data.preference_dict;
-                    for (var key in pref) {
-                        var val = pref[key];
-                        // 해당 key의 라디오 버튼 중 value==val 인 것 체크
-                        $("input[name='"+key+"'][value='"+val+"']").prop('checked', true);
-                    }
-                }
-            }
-        });
-    });
-    // 페이지 진입 시 첫 번째 반려동물의 선호도 자동 세팅
-    $('#petSelect').trigger('change');
-});
 </script>
 
 <!-- 보험 가이드 모달 -->
@@ -257,9 +237,9 @@ $(document).ready(function() {
         <hr>
         <h4 class="mb-3">5. 이런 기능도 있어요!</h4>
         <ul>
-          <li>반려동물별로 <b>보장 선호도</b>를 저장해, 각 고양이 별 맞춤 추천이 가능합니다.</li>
+          <li><b>보장 선호도</b>를 지정해, 각 고양이 별 맞춤 추천이 가능합니다.</li>
           <li>구매·건강·체중 등 다양한 기록을 한 번에 관리할 수 있어요.</li>
-          <li>보험 상품별 상세 정보와 문의 기능도 제공됩니다.</li>
+          <li>보험 상품별 상세 정보가 제공됩니다.</li>
         </ul>
         <hr>
         <div class="alert alert-info mt-3">
