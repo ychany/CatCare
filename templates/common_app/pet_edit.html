@@ -68,6 +68,10 @@
               <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4">취소</a>
             </div>
           </form>
+          <form method="post" action="{% url 'pets:pet_delete' pet.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('정말로 이 고양이 정보를 삭제하시겠습니까?');">삭제</button>
+          </form>
         </div>
       </div>
     </div>

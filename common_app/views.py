@@ -107,3 +107,11 @@ def pet_register(request):
     else:
         form = PetForm()
     return render(request, 'common_app/pet_register.html', {'form': form})
+
+@login_required
+def pet_delete(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id, owner=request.user)
+    if request.method == 'POST':
+        pet.delete()
+        return redirect('index')
+    return render(request, 'common_app/pet_confirm_delete.html', {'pet': pet})
