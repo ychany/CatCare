@@ -45,6 +45,9 @@ class Pet(models.Model):
     image = models.ImageField(upload_to='pet_images/', verbose_name='프로필 사진', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    gender = models.CharField(max_length=10, choices=[('male', '수컷'), ('female', '암컷')], verbose_name='성별', default='male')
+    neutered = models.BooleanField(verbose_name='중성화 여부', default=False)
+    notes = models.CharField(max_length=255, verbose_name='특이사항', blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.get_pet_type_display()})"

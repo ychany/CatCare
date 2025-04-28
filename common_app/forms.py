@@ -41,7 +41,7 @@ class PetForm(forms.ModelForm):
 
     class Meta:
         model = Pet
-        fields = ['name', 'pet_type', 'breed', 'birth_date', 'weight', 'image']
+        fields = ['name', 'pet_type', 'breed', 'birth_date', 'gender', 'neutered', 'weight', 'notes', 'image']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
         } 

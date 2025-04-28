@@ -3,20 +3,96 @@
 {% block title %}{{ pet.name }} 정보 수정 - 고양이 정보 사이트{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <h2 class="mb-4">{{ pet.name }} 정보 수정</h2>
-        <form method="post" enctype="multipart/form-data">
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card border-0" style="box-shadow:none;">
+        <div class="card-body p-4">
+          <h2 class="mb-4 text-center fw-bold" style="letter-spacing:1px;">{{ pet.name }} 정보 수정</h2>
+          <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if pet.image %}
-                <div class="mb-3">
-                    <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="img-thumbnail" style="max-width: 200px;">
-                </div>
+              <div class="text-center mb-4">
+                <img src="{{ pet.image.url }}" alt="{{ pet.name }}" style="width:110px; height:110px; object-fit:cover; border:1px solid #ddd;">
+              </div>
             {% endif %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">수정하기</button>
-            <a href="{% url 'index' %}" class="btn btn-secondary">취소</a>
-        </form>
+            <div class="row g-2 align-items-center">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% for error in form.name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.pet_type.label }}</label>
+                {{ form.pet_type }}
+                {% for error in form.pet_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.breed.label }}</label>
+                {{ form.breed }}
+                {% for error in form.breed.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.gender.label }}</label>
+                {{ form.gender }}
+                {% for error in form.gender.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.birth_date.label }}</label>
+                {{ form.birth_date }}
+                {% for error in form.birth_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.neutered.label }}</label>
+                {{ form.neutered }}
+                {% for error in form.neutered.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.weight.label }}</label>
+                {{ form.weight }}
+                {% for error in form.weight.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% for error in form.notes.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold mb-1">{{ form.image.label }}</label>
+                {{ form.image }}
+                {% for error in form.image.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+              <button type="submit" class="btn btn-primary px-4">수정하기</button>
+              <a href="{% url 'index' %}" class="btn btn-outline-secondary px-4">취소</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<style>
+.card {
+  border-radius: 0;
+  box-shadow: none;
+}
+.simple-input {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #bbb !important;
+  background: #fff !important;
+}
+.form-label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+input[type="checkbox"].simple-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 0.3em;
+}
+</style>
 {% endblock %} 
