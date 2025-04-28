@@ -25,7 +25,9 @@
     {% endif %}
     <div class="row">
         <div class="col-md-8">
-            <div id="calendar" data-default-pet-id="{% if pets %}{{ pets.0.id }}{% endif %}"></div>
+            <div class="calendar-wrapper">
+                <div id="calendar" data-default-pet-id="{% if pets %}{{ pets.0.id }}{% endif %}"></div>
+            </div>
             <!-- 캘린더 하단 안내문구 -->
             <div class="alert alert-info mt-3" role="alert">
               <strong>사료:</strong> 개봉일부터 오늘날짜까지 <b>섭취중</b>으로 표시됩니다.<br>
@@ -37,10 +39,9 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">식사 기록 추가</h5>
                     <form id="eventForm">
                         <div class="mb-3">
-                            <label for="petSelect" class="form-label">반려동물</label>
+                            <label for="petSelect" class="form-label">고양이</label>
                             <select class="form-select" id="petSelect" required>
                                 <option value="">반려동물을 선택하세요</option>
                                 {% for pet in pets %}
@@ -110,6 +111,14 @@
     .form-label, label[for="petFilter"] { font-size: 0.97em; margin-bottom: 0; }
     #petFilter { font-size: 0.97em; height: 32px; padding: 2px 8px; min-width: 90px; max-width: 140px; }
     .d-flex.align-items-center { gap: 6px; }
+    .calendar-wrapper {
+        border: 1.5px solid #e0e0e0;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 18px 12px 12px 12px;
+        background: #fff;
+        margin-bottom: 10px;
+    }
     /* 간식 이벤트 hover 상태에서도 색 변화 방지 */
     .fc-event-snack:hover {
         background-color: #FF9800 !important;
@@ -125,6 +134,9 @@
     .fc-event-time { display: none !important; }
     .fc-event { border-radius: 4px; padding: 2px 4px; margin: 1px 0; font-size: 0.9em; }
     .fc-event:hover { cursor: pointer; }
+    #calendar {
+        height: 700px;
+    }
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -140,6 +152,14 @@ document.addEventListener('DOMContentLoaded', function() {
         locale: 'ko',
         displayEventTime: false,
         headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
+        buttonText: {
+            today: '오늘',
+            month: '월간',
+            week: '주간',
+            list: '목록',
+            prev: '이전',
+            next: '다음'
+        },
         eventDidMount: function(info) {
             info.el.title = `${info.event.extendedProps.product_name}\n${info.event.extendedProps.description || ''}`;
         },
