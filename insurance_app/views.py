@@ -9,10 +9,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import InsuranceProduct, InsuranceCompany, InsuranceInquiry, PetProfile, InsuranceChoice
 from common_app.models import Pet
-from .utils import recommend_insurance, calculate_sure_index
+from .utils import recommend_insurance, calculate_sure_index, calculate_age, get_pred, make_sure_score, get_coverage_vector, jaccard_similarity, get_flat_coverage_vector, flatten_coverage_keys
 from .knn_utils import predict_insurance, update_user_choice
 import json
 from pathlib import Path
+from django.db import models
 
 @login_required
 def main(request):
@@ -49,47 +50,74 @@ def product_detail(request, pk):
 @login_required
 def insurance_recommend(request, pet_profile_id):
     pet = get_object_or_404(Pet, id=pet_profile_id, owner=request.user)
-    
-    # 펫 정보를 기반으로 보험 추천
-    recommended_products = recommend_insurance(
-        pet_type=pet.pet_type,
-        birth_date=pet.birth_date,
-        weight=pet.weight
-    )
 
-    # --- 보장항목 id -> 이름/설명 매핑 (간단 예시, 실제로는 DB에서 가져오거나 fixture 전체를 dict로 변환 필요) ---
-    cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
-    disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
-    cover_map = {}
-    disease_map = {}
-    if cover_path.exists():
-        with open(cover_path, encoding='utf-8') as f:
-            for item in json.load(f):
-                cover_map[item['pk']] = item['fields']['detail']
-    if disease_path.exists():
-        with open(disease_path, encoding='utf-8') as f:
-            for item in json.load(f):
-                disease_map[item['pk']] = item['fields']['name']
-    # -----------------------------------------------------------------------------------
+    # 모든 보험 상품 가져오기
+    products = InsuranceProduct.objects.all()
 
-    # 추천 상품의 보장 id를 이름/설명으로 변환
-    processed = []
-    for product, sure_index in recommended_products:
-        # coverage_details: {'기본보장': [6,7,8], '특별보장': [12], ...}
+    # 전체 보장항목 키(flat) 추출
+    all_coverage_keys = set()
+    for product in products:
+        all_coverage_keys.update(flatten_coverage_keys(product.coverage_details))
+    all_coverage_keys = sorted(list(all_coverage_keys), key=lambda x: str(x))
+
+    # 유저의 보장 선호 벡터 (예시: 모든 항목을 선호한다고 가정)
+    user_vector = [1 for _ in all_coverage_keys]
+    # 실제로는 유저의 선호를 받아서 벡터 생성 가능
+
+    # 각 상품의 보장항목 벡터 및 matching_score(자카드 유사도) 계산
+    before_ranking = []
+    for product in products:
+        product_vector = get_flat_coverage_vector(product.coverage_details, all_coverage_keys)
+        matching_score = jaccard_similarity(user_vector, product_vector)
+        temp_detail = {}
+        temp_detail['product'] = product
+        temp_detail['company_score'] = float(product.company.rating) if product.company and product.company.rating else 0.0
+        # price_score: InsuranceDetail이 있으면 평균값, 없으면 base_price 사용
+        details = getattr(product, 'insurancedetail_set', None)
+        if details and details.exists():
+            price_score = float(details.aggregate(models.Avg('price_score'))['price_score__avg'] or 0)
+        else:
+            price_score = float(product.base_price)
+        temp_detail['price_score'] = price_score
+        temp_detail['matching_score'] = matching_score
+        # 보장 항목 수
+        temp_detail['cover_count'] = len(flatten_coverage_keys(product.coverage_details))
+        # sure_score
+        temp_detail['sure_score'] = make_sure_score(temp_detail['company_score'], price_score, matching_score)
+        # 보장항목 이름 변환
+        cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
+        disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
+        cover_map = {}
+        disease_map = {}
+        if cover_path.exists():
+            with open(cover_path, encoding='utf-8') as f:
+                for item in json.load(f):
+                    cover_map[item['pk']] = item['fields']['detail']
+        if disease_path.exists():
+            with open(disease_path, encoding='utf-8') as f:
+                for item in json.load(f):
+                    disease_map[item['pk']] = item['fields']['name']
         product.coverage_details_verbose = {}
         for key, value in product.coverage_details.items():
             if isinstance(value, list):
                 product.coverage_details_verbose[key] = [cover_map.get(i) or disease_map.get(i) or str(i) for i in value]
             else:
                 product.coverage_details_verbose[key] = value
-        # special_benefits(특별 혜택) 숫자 리스트를 이름 리스트로 변환
+        # 특별혜택 이름 변환
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
             product.special_benefits = [cover_map.get(i, str(i)) for i in product.special_benefits]
-        processed.append((product, sure_index))
+        before_ranking.append(temp_detail)
+
+    # 다양한 기준으로 정렬
+    sure_ranking = sorted(before_ranking, key=lambda item: -item['sure_score'])
+    price_ranking = sorted(before_ranking, key=lambda item: item['price_score'])
+    cover_ranking = sorted(before_ranking, key=lambda item: -item['cover_count'])
 
     context = {
         'pet': pet,
-        'recommended_products': processed
+        'sure_ranking': sure_ranking,
+        'price_ranking': price_ranking,
+        'cover_ranking': cover_ranking,
     }
     return render(request, 'insurance/recommend.html', context)
 
@@ -143,11 +171,15 @@ def insurance_compare(request):
             for item in json.load(f):
                 disease_map[item['pk']] = item['fields']['name']
 
-    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환 + SURE 지수 계산
-    coverage_keys = set()
+    # 보장 내용 키 추출 및 각 상품의 보장/특별보장 이름 변환 + SURE 점수 계산 (추천과 동일하게)
+    # 전체 보장항목 키(flat) 추출 (추천과 동일)
+    all_coverage_keys = set()
+    for product in products:
+        all_coverage_keys.update(flatten_coverage_keys(product.coverage_details))
+    all_coverage_keys = sorted(list(all_coverage_keys), key=lambda x: str(x))
+
     processed = []
     for product in products:
-        coverage_keys.update(product.coverage_details.keys())
         # 보장 항목 이름 리스트로 변환
         product.coverage_details_verbose = {}
         for key, value in product.coverage_details.items():
@@ -160,14 +192,22 @@ def insurance_compare(request):
             product.special_benefits = []
         else:
             product.special_benefits = [cover_map.get(i) or disease_map.get(i) or str(i) for i in product.special_benefits]
-        # SURE 지수 계산 (동물 정보 기준)
-        from .utils import calculate_sure_index
-        sure_index = calculate_sure_index(product, pet_type, age)
-        processed.append((product, sure_index))
+        # SURE 점수 계산 (추천과 동일)
+        company_score = float(product.company.rating) if product.company and product.company.rating else 0.0
+        details = getattr(product, 'insurancedetail_set', None)
+        if details and details.exists():
+            price_score = float(details.aggregate(models.Avg('price_score'))['price_score__avg'] or 0)
+        else:
+            price_score = float(product.base_price)
+        user_vector = [1 for _ in all_coverage_keys]
+        product_vector = get_flat_coverage_vector(product.coverage_details, all_coverage_keys)
+        matching_score = jaccard_similarity(user_vector, product_vector)
+        sure_score = make_sure_score(company_score, price_score, matching_score)
+        processed.append((product, sure_score))
 
     context = {
         'products': processed,
-        'coverage_keys': sorted(coverage_keys),
+        'coverage_keys': sorted(all_coverage_keys, key=lambda x: str(x)),
         'pet': pet,
     }
     return render(request, 'insurance/compare.html', context)
