@@ -33,9 +33,14 @@ const petFormTemplate = (idx) => `
       <label class="form-label">이름</label>
       <input type="text" name="pet_name_${idx}" class="form-control" required>
     </div>
-    <div class="mb-2">
-      <label class="form-label">품종</label>
-      <input type="text" name="pet_breed_${idx}" class="form-control" required>
+    <div class="mb-3">
+      <label for="pet_breed_${idx}" class="form-label">품종</label>
+      <select class="form-select" name="pet_breed_${idx}" id="pet_breed_${idx}" required>
+        <option value="">품종 선택</option>
+        {% for breed, breed_name in pet_breeds %}
+          <option value="{{ breed }}">{{ breed_name }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="mb-2">
       <label class="form-label">생년월일</label>

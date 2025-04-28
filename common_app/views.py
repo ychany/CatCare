@@ -52,7 +52,7 @@ def register(request):
             return redirect('login')
     else:
         user_form = UserRegisterForm()
-    return render(request, 'register.html', {'user_form': user_form})
+    return render(request, 'register.html', {'user_form': user_form, 'pet_breeds': Pet.CAT_BREEDS})
 
 @login_required
 def pet_edit(request, pet_id):
