@@ -3,34 +3,34 @@
 {% load insurance_tags %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">보험 추천 결과</h2>
-    {% if reason %}
-    <div class="alert alert-info fw-bold mb-4">
-        {{ reason }}
-    </div>
-    {% endif %}
-    {% if sure_ranking %}
-        <div class="row">
-            {% for item in sure_ranking %}
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ item.product.insurance_name|default:item.product.name }}</h5>
-                            <span class="badge bg-success">SURE 지수: {{ item.sure_score|floatformat:2 }}</span>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-3 text-muted">{{ item.product.company.name }}</h6>
-                            <!-- '보장 내용' 테이블(기본보장 등) 전체 제거 -->
-                            <!-- 카테고리별 보장 내용, 특별 혜택, 추천 근거만 남김 -->
-                            <div class="mb-3">
-                                <h6>보장 내용</h6>
-                                <ul class="list-group list-group-flush">
-                                    {% for key, value in item.product.coverage_details_verbose.items %}
-                                        {% if key != '기본보장' %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ key }}
-                                            <span>
+    <div class="container mt-4">
+        <h2 class="mb-4">보험 추천 결과</h2>
+        {% if reason %}
+            <div class="alert alert-info fw-bold mb-4">
+                {{ reason }}
+            </div>
+        {% endif %}
+        {% if sure_ranking %}
+            <div class="row">
+                {% for item in sure_ranking %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">{{ item.product.insurance_name|default:item.product.name }}</h5>
+                                <span class="badge bg-success">SURE 지수: {{ item.sure_score|floatformat:2 }}</span>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-3 text-muted">{{ item.product.company.name }}</h6>
+                                <!-- '보장 내용' 테이블(기본보장 등) 전체 제거 -->
+                                <!-- 카테고리별 보장 내용, 특별 혜택, 추천 근거만 남김 -->
+                                <div class="mb-3">
+                                    <h6>보장 내용</h6>
+                                    <ul class="list-group list-group-flush">
+                                        {% for key, value in item.product.coverage_details_verbose.items %}
+                                            {% if key != '기본보장' %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ key }}
+                                                    <span>
                                             {% if value %}
                                                 {% for v in value %}
                                                     {{ v }}{% if not forloop.last %}, {% endif %}
@@ -39,49 +39,49 @@
                                                 -
                                             {% endif %}
                                             </span>
-                                            <span class="badge bg-primary rounded-pill">{{ item.product.coverage_limits|get_item:key }}</span>
-                                        </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="mb-3">
-                                <h6>특별 혜택</h6>
-                                <ul class="list-group list-group-flush">
-                                    {% for benefit in item.product.special_benefits %}
-                                        <li class="list-group-item">{{ benefit }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="mb-3">
-                                <h6>추천 근거</h6>
-                                <ul class="list-group list-group-flush">
+                                                    <span class="badge bg-primary rounded-pill">{{ item.product.coverage_limits|get_item:key }}</span>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>특별 혜택</h6>
+                                    <ul class="list-group list-group-flush">
+                                        {% for benefit in item.product.special_benefits %}
+                                            <li class="list-group-item">{{ benefit }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="mb-3">
                                     {% if item.matching_reason %}
+                                        <h6>추천 근거</h6>
+                                        <ul class="list-group list-group-flush">
+
                                         {% for reason in item.matching_reason %}
                                             <li class="list-group-item">{{ reason }}</li>
                                         {% endfor %}
-                                    {% else %}
-                                        <li class="list-group-item text-muted">이용자 선호도와 보장 항목의 유사도가 높음</li>
                                     {% endif %}
-                                </ul>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="mb-0">월 보험료: {{ item.product.base_price|floatformat:0 }}원</p>
-                                    <small class="text-muted">보장기간: {{ item.product.coverage_period }}년</small>
+                                    </ul>
                                 </div>
-                                <a href="{% url 'insurance:product_detail' item.product.id %}" class="btn btn-outline-primary">상세보기</a>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-0">월 보험료: {{ item.product.base_price|floatformat:0 }}원</p>
+                                        <small class="text-muted">보장기간: {{ item.product.coverage_period }}년</small>
+                                    </div>
+                                    <a href="{% url 'insurance:product_detail' item.product.id %}"
+                                       class="btn btn-outline-primary">상세보기</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            <p>추천할 수 있는 보험 상품이 없습니다.</p>
-            <a href="{% url 'insurance:main' %}" class="btn btn-primary">메인으로 돌아가기</a>
-        </div>
-    {% endif %}
-</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>추천할 수 있는 보험 상품이 없습니다.</p>
+                <a href="{% url 'insurance:main' %}" class="btn btn-primary">메인으로 돌아가기</a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %} 

@@ -257,8 +257,7 @@ def insurance_recommend(request, pet_profile_id):
         matching_reason = []
         if highlighted:
             matching_reason.append(f"{', '.join(highlighted)} 항목을 중시하셨고, 이 상품이 해당 보장을 포함합니다.")
-        else:
-            matching_reason.append("특별히 중시한 보장 항목이 없습니다. 전체 보장 기준으로 추천합니다.")
+
         temp_detail['matching_reason'] = matching_reason
         # 카테고리별 보장 내용 정리 (중복 제거)
         category_details = defaultdict(set)
