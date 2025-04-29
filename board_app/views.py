@@ -9,7 +9,7 @@ from .forms import PostForm, CommentForm
 def post_list(request):
     pets = Pet.objects.filter(owner=request.user)
     pet_id = request.GET.get('pet')
-    posts = Post.objects.all()
+    posts = Post.objects.filter(author=request.user)
     if pet_id:
         posts = posts.filter(pet_id=pet_id)
     return render(request, 'board_app/post_list.html', {'posts': posts, 'pets': pets, 'selected_pet_id': pet_id})
