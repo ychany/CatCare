@@ -99,6 +99,7 @@
     </style>
 </head>
 <body>
+    {% block top_bar %}
     <div class="top-bar fixed-top">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center">
@@ -114,13 +115,20 @@
                             {% for pet in user.pets.all %}{{ pet.name }}{% if not forloop.last %}, {% endif %}{% endfor %} 보호자님
                         </span>
                     {% endif %}
-                    <a href="{% url 'logout' %}" class="logout-btn">로그아웃</a>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">로그아웃</button>
+                    </form>
                 </div>
+                {% else %}
+                <button class="btn btn-outline-primary ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">로그인</button>
                 {% endif %}
             </div>
         </div>
     </div>
+    {% endblock %}
 
+    {% block sidebar %}
     <div class="sidebar">
         <div class="container">
             <ul class="nav flex-column">
@@ -176,6 +184,7 @@
             </ul>
         </div>
     </div>
+    {% endblock %}
 
     <div class="main-content">
         {% if messages %}

@@ -5,9 +5,11 @@ from .forms import UserRegisterForm, PetForm
 from .models import Pet
 from board_app.models import Post
 from weight_tracker_app.models import Weight
+from django.contrib.auth import logout
 
 # Create your views here.
 
+@login_required
 def index(request):
     context = {}
     if request.user.is_authenticated:
@@ -52,7 +54,13 @@ def register(request):
             return redirect('login')
     else:
         user_form = UserRegisterForm()
-    return render(request, 'register.html', {'user_form': user_form, 'pet_breeds': Pet.CAT_BREEDS})
+    # pet_form 추가
+    pet_form = PetForm()
+    return render(request, 'register.html', {
+        'user_form': user_form,
+        'pet_form': pet_form,
+        'pet_breeds': Pet.CAT_BREEDS,
+    })
 
 @login_required
 def pet_edit(request, pet_id):
@@ -115,3 +123,8 @@ def pet_delete(request, pet_id):
         pet.delete()
         return redirect('index')
     return render(request, 'common_app/pet_confirm_delete.html', {'pet': pet})
+
+# 로그아웃 후 로그인 페이지로 리다이렉트하는 커스텀 뷰
+def custom_logout_view(request):
+    logout(request)
+    return redirect('login')

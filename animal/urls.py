@@ -19,12 +19,22 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from common_app import views
+from django.views.generic import RedirectView
+from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('register/', views.register, name='register'),
+    path('', lambda request: redirect('login', permanent=False), name='root_redirect'),
+    path('accounts/login/', auth_views.LoginView.as_view(
+        template_name='registration/login.html'
+    ), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(
+        next_page=settings.LOGIN_URL
+    ), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('home/', views.index, name='index'),
+    path('register/', views.register, name='register'),
     path('pets/', include('common_app.urls')),
     path('board/', include('board_app.urls')),
     path('calendar/', include('calendar_app.urls')),

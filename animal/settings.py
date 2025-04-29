@@ -140,9 +140,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # 로그인 관련 설정
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/home/'  # 로그인 후 리디렉트할 URL
+LOGOUT_REDIRECT_URL = '/accounts/login/'  # 로그아웃 후 리디렉트할 URL
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,103 +1,143 @@
 {% extends 'base.html' %}
 
 {% block title %}회원가입 - 고양이 정보 사이트{% endblock %}
+{% block top_bar %}{% endblock %}
+{% block sidebar %}{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <h2 class="mb-4">회원가입</h2>
-        <form method="post" enctype="multipart/form-data" id="registerForm">
-            {% csrf_token %}
-            <h4 class="mb-3">사용자 정보</h4>
-            {{ user_form.as_p }}
-            <h4 class="mb-3 mt-4">고양이 정보</h4>
-            <div id="pet-forms">
-                <!-- JS로 고양이 입력란이 반복 생성됨 -->
+<style>
+.register-full-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    background: #fff;
+    z-index: 9999;
+    display: block;
+    padding: 40px 20px;
+    overflow-y: scroll;
+}
+.register-card {
+    max-width: 800px;
+    width: 100%;
+    border-radius: 18px;
+    margin: 0 auto;
+}
+@media (max-width: 900px) {
+    .register-card { max-width: 98vw; }
+}
+</style>
+<div class="register-full-bg">
+    <div class="card shadow-lg register-card">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <span style="font-size:2.5rem;">🐱</span>
+                <h2 class="fw-bold mt-2 mb-1" style="letter-spacing:2px; color:#172852;">회원가입</h2>
+                <div class="text-muted mb-2" style="font-size:1.1rem;">기본 정보와 고양이 정보를 입력해 주세요!</div>
             </div>
-            <button type="button" class="btn btn-secondary mb-3" id="add-pet-btn">+ 고양이 추가</button>
-            <button type="submit" class="btn btn-primary mt-3">가입하기</button>
-        </form>
+            <form method="post" enctype="multipart/form-data" id="registerForm">
+                {% csrf_token %}
+                <div class="row g-4">
+                  <div class="col-md-6">
+                    <h5 class="mb-3">사용자 정보</h5>
+                    {{ user_form.as_p }}
+                  </div>
+                  <div class="col-md-6">
+                    <h5 class="mb-3">고양이 정보</h5>
+                    <div id="pet-forms"></div>
+                    <button type="button" class="btn btn-outline-secondary mb-3 w-100" id="add-pet-btn">+ 고양이 추가</button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3" style="font-size:1.1rem;">가입하기</button>
+            </form>
+            <!-- Hidden breed template -->
+            <div id="breed-template" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label" for="{{ pet_form.breed.id_for_label }}">{{ pet_form.breed.label }}</label>
+                    {{ pet_form.breed }}
+                    {% for error in pet_form.breed.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 <script>
-// 고양이 입력란 템플릿
-const petFormTemplate = (idx) => `
-<div class="card mb-3 pet-form" data-idx="${idx}">
-  <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">고양이 #${idx+1}</h5>
-      <button type="button" class="btn btn-danger btn-sm remove-pet-btn">삭제</button>
-    </div>
-    <div class="mb-2">
-      <label class="form-label">이름</label>
-      <input type="text" name="pet_name_${idx}" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label for="pet_breed_${idx}" class="form-label">품종</label>
-      <select class="form-select" name="pet_breed_${idx}" id="pet_breed_${idx}" required>
-        <option value="">품종 선택</option>
-        {% for breed, breed_name in pet_breeds %}
-          <option value="{{ breed }}">{{ breed_name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="mb-2">
-      <label class="form-label">생년월일</label>
-      <input type="date" name="pet_birth_date_${idx}" class="form-control" required>
-    </div>
-    <div class="mb-2">
-      <label class="form-label">성별</label>
-      <select name="pet_gender_${idx}" class="form-select" required>
-        <option value="male">수컷</option>
-        <option value="female">암컷</option>
-      </select>
-    </div>
-    <div class="mb-2">
-      <label class="form-label">중성화 여부</label>
-      <select name="pet_neutered_${idx}" class="form-select" required>
-        <option value="True">예</option>
-        <option value="False">아니오</option>
-      </select>
-    </div>
-    <div class="mb-2">
-      <label class="form-label">체중(kg)</label>
-      <input type="number" step="0.01" name="pet_weight_${idx}" class="form-control">
-    </div>
-    <div class="mb-2">
-      <label class="form-label">특이사항</label>
-      <input type="text" name="pet_notes_${idx}" class="form-control">
-    </div>
-    <div class="mb-2">
-      <label class="form-label">사진</label>
-      <input type="file" name="pet_image_${idx}" class="form-control">
-    </div>
-  </div>
-</div>`;
+// DOMContentLoaded 이후 실행
+document.addEventListener('DOMContentLoaded', function() {
+    const breedTemplateHTML = document.getElementById('breed-template').innerHTML;
+    const petFormsDiv = document.getElementById('pet-forms');
+    const addPetBtn = document.getElementById('add-pet-btn');
+    let petIdx = 0;
 
-let petIdx = 0;
-function renderPetForms() {
-  const petFormsDiv = document.getElementById('pet-forms');
-  petFormsDiv.innerHTML = '';
-  for (let i = 0; i < petIdx; i++) {
-    petFormsDiv.innerHTML += petFormTemplate(i);
-  }
-  // 삭제 버튼 이벤트
-  document.querySelectorAll('.remove-pet-btn').forEach(btn => {
-    btn.onclick = function() {
-      const idx = parseInt(this.closest('.pet-form').getAttribute('data-idx'));
-      petIdx--;
-      renderPetForms();
-    };
-  });
-}
+    // 고양이 폼 생성 함수
+    function createPetForm(idx) {
+        const html = breedTemplateHTML
+            .replace(/name="breed"/, `name="pet_breed_${idx}"`)
+            .replace(/id="id_breed"/, `id="pet_breed_${idx}"`)
+            .replace(/for="id_breed"/, `for="pet_breed_${idx}"`);
+        return `
+        <div class="card mb-3 pet-form" data-idx="${idx}">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">고양이 #${idx+1}</h6>
+              <button type="button" class="btn btn-danger btn-sm remove-pet-btn">삭제</button>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">이름</label>
+              <input type="text" name="pet_name_${idx}" class="form-control" required>
+            </div>
+            ${html}
+            <div class="mb-2">
+              <label class="form-label">생년월일</label>
+              <input type="date" name="pet_birth_date_${idx}" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">성별</label>
+              <select name="pet_gender_${idx}" class="form-select" required>
+                <option value="male">수컷</option>
+                <option value="female">암컷</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">중성화 여부</label>
+              <select name="pet_neutered_${idx}" class="form-select" required>
+                <option value="True">예</option>
+                <option value="False">아니오</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">체중(kg)</label>
+              <input type="number" step="0.01" name="pet_weight_${idx}" class="form-control">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">특이사항</label>
+              <input type="text" name="pet_notes_${idx}" class="form-control">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">사진</label>
+              <input type="file" name="pet_image_${idx}" class="form-control">
+            </div>
+          </div>
+        </div>`;
+    }
 
-document.getElementById('add-pet-btn').onclick = function() {
-  petIdx++;
-  renderPetForms();
-};
-// 최초 1개 입력란
-petIdx = 1;
-renderPetForms();
+    // 삭제 버튼 이벤트 위임
+    petFormsDiv.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-pet-btn')) {
+            e.target.closest('.pet-form').remove();
+        }
+    });
+
+    // 최초 1개 폼 생성
+    petFormsDiv.insertAdjacentHTML('beforeend', createPetForm(petIdx));
+    petIdx++;
+
+    // 고양이 추가 버튼 이벤트
+    addPetBtn.addEventListener('click', function() {
+        petFormsDiv.insertAdjacentHTML('beforeend', createPetForm(petIdx));
+        petIdx++;
+    });
+});
 </script>
 {% endblock %} 
