@@ -270,15 +270,6 @@ def insurance_recommend(request, pet_profile_id):
     price_ranking = sorted(before_ranking, key=lambda item: item['price_score'])[:6]
     cover_ranking = sorted(before_ranking, key=lambda item: -item['cover_count'])[:6]
 
-    # 디버깅용 print: user_vector와 추천 결과
-    print('user_vector:', user_vector)
-    for item in sure_ranking:
-        print(getattr(item['product'], 'insurance_name', None) or getattr(item['product'], 'name', None), item['matching_score'], item['sure_score'])
-
-    print('all_coverage_keys:', all_coverage_keys)
-    if products:
-        print('샘플 coverage_details:', products[0].insurance_name, products[0].coverage_details)
-
     # --- 품종별 취약 질병 보장 가산점 추천 근거 추가 ---
     breed_path = Path(__file__).parent / 'fixtures' / 'breed.json'
     disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
@@ -294,9 +285,6 @@ def insurance_recommend(request, pet_profile_id):
         breed_disease_pks = breed_name_to_disease.get(breed_name, [])
         disease_pk_to_name = {d['pk']: d['fields']['name'] for d in disease_data}
         breed_disease_names = [disease_pk_to_name.get(pk) for pk in breed_disease_pks if pk in disease_pk_to_name]
-    print(f"[DEBUG] 선택된 품종: {breed_name}")
-    print(f"[DEBUG] 취약 질병 PK: {breed_disease_pks}")
-    print(f"[DEBUG] 취약 질병명: {breed_disease_names}")
     for temp_detail in before_ranking:
         product = temp_detail['product']
         details = getattr(product, 'insurancedetail_set', None)
@@ -306,9 +294,6 @@ def insurance_recommend(request, pet_profile_id):
                 for pk in breed_disease_pks:
                     if (pk in (detail.basic or [])) or (detail.special and pk in detail.special):
                         covered_diseases.add(pk)
-        print(f"[DEBUG] 상품: {getattr(product, 'insurance_name', None) or getattr(product, 'name', None)}")
-        print(f"  보장하는 취약 질병 PK: {covered_diseases}")
-        print(f"  보장하는 취약 질병명: {[name for pk, name in zip(breed_disease_pks, breed_disease_names) if pk in covered_diseases]}")
         if covered_diseases:
             covered_names = [name for pk, name in zip(breed_disease_pks, breed_disease_names) if pk in covered_diseases]
             if covered_names:
@@ -317,8 +302,6 @@ def insurance_recommend(request, pet_profile_id):
     reason = None
     if breed_name and breed_disease_names:
         reason = f"{breed_name} 품종은 {', '.join(breed_disease_names)} 질병에 취약하여, 해당 질병이 보장내역에 포함된 상품을 추천합니다."
-
-    print(f"[DEBUG] POST 데이터: {request.POST}")
 
     context = {
         'pet': pet,
