@@ -104,6 +104,7 @@
 </div>
 {% endblock %}
 
+{% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterForm = document.querySelector('form');
@@ -161,4 +162,5 @@ document.addEventListener('DOMContentLoaded', function() {
         // (검색 버튼 클릭 시에는 기본 동작)
     });
 });
-</script> 
+</script>
+{% endblock %} 
