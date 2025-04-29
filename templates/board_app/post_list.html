@@ -5,8 +5,17 @@
 {% block content %}
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>고양이 사진 게시판</h2>
-        <a href="{% url 'board_app:create' %}" class="btn btn-primary">글쓰기</a>
+        <div>
+            <form method="get" class="d-inline-block me-2">
+                <select name="pet" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                    <option value="">전체</option>
+                    {% for pet in pets %}
+                        <option value="{{ pet.id }}" {% if selected_pet_id == pet.id|stringformat:'s' %}selected{% endif %}>{{ pet.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <a href="{% url 'board_app:create' %}" class="btn btn-primary">글쓰기</a>
+        </div>
     </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4">

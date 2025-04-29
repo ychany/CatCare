@@ -2,13 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from .models import Post, Comment
+from .models import Post, Comment, Pet
 from .forms import PostForm, CommentForm
 
 @login_required
 def post_list(request):
+    pets = Pet.objects.filter(owner=request.user)
+    pet_id = request.GET.get('pet')
     posts = Post.objects.all()
-    return render(request, 'board_app/post_list.html', {'posts': posts})
+    if pet_id:
+        posts = posts.filter(pet_id=pet_id)
+    return render(request, 'board_app/post_list.html', {'posts': posts, 'pets': pets, 'selected_pet_id': pet_id})
 
 @login_required
 def post_create(request):
