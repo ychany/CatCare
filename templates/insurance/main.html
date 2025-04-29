@@ -265,6 +265,9 @@ function goToCompare() {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <div class="alert alert-info mb-3">
+          <b>안내:</b> 4점 이상 선택 시 '중시하는 보장 항목'으로 추천 근거에 반영됩니다.
+        </div>
         <form id="preferenceForm">
           <div class="row">
             {% for label, key in preference_fields %}

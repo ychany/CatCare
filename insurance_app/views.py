@@ -248,12 +248,17 @@ def insurance_recommend(request, pet_profile_id):
         # 특별 혜택 detail만 리스트로 변환
         if hasattr(product, 'special_benefits') and isinstance(product.special_benefits, list):
             product.special_benefits = [cover_map.get(i, {}).get('detail', str(i)) for i in product.special_benefits]
-        # 추천 근거 생성
-        matching_reason = []
+        # 4점 이상(중시)로 선택한 항목 중 이 상품이 보장하는 항목만 모으기
+        highlighted = []
         for idx, cov_key in enumerate(all_coverage_keys):
             eng_key = preference_map.get(cov_key)
             if eng_key and preference_dict.get(eng_key, 0) >= 4 and product_vector[idx] == 1:
-                matching_reason.append(f"'{cov_key}' 항목을 중시하셨고, 이 상품이 해당 보장을 포함합니다.")
+                highlighted.append(f"'{cov_key}'")
+        matching_reason = []
+        if highlighted:
+            matching_reason.append(f"{', '.join(highlighted)} 항목을 중시하셨고, 이 상품이 해당 보장을 포함합니다.")
+        else:
+            matching_reason.append("특별히 중시한 보장 항목이 없습니다. 전체 보장 기준으로 추천합니다.")
         temp_detail['matching_reason'] = matching_reason
         # 카테고리별 보장 내용 정리 (중복 제거)
         category_details = defaultdict(set)
