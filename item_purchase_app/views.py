@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
@@ -105,5 +105,9 @@ class OtherPurchaseViewSet(ModelViewSet):
         }, safe=False)
 
     def perform_create(self, serializer):
-        default_cat = Pet.objects.filter(owner=self.request.user).first()
-        serializer.save(user=self.request.user, cat=default_cat)
+        pet_id = self.request.data.get('pet')
+        if pet_id:
+            pet = get_object_or_404(Pet, id=pet_id, owner=self.request.user)
+        else:
+            pet = Pet.objects.filter(owner=self.request.user).first()
+        serializer.save(user=self.request.user, cat=pet)

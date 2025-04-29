@@ -89,6 +89,14 @@
         <div class="modal-body">
           {% csrf_token %}
           <div class="mb-3">
+            <label class="form-label">반려동물</label>
+            <select name="pet" class="form-select" required>
+              {% for pet in pets %}
+                <option value="{{ pet.id }}">{{ pet.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
             <label class="form-label">구매일</label>
             <input type="date" name="purchase_date" class="form-control" required>
           </div>
