@@ -15,7 +15,15 @@ class UserRegisterForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
 
 class PetForm(forms.ModelForm):
-    breed = forms.ChoiceField(choices=[], required=True)
+    breed = forms.ChoiceField(
+        choices=[],
+        required=True,
+        label='품종',
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'required': 'required',
+        })
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

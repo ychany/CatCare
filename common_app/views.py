@@ -16,7 +16,7 @@ def index(request):
         context.update({
             'pets': pets,
             'recent_posts': recent_posts,
-            'cat_breeds': Pet.CAT_BREEDS,
+            'pet_form': PetForm(),
         })
     return render(request, 'index.html', context)
 

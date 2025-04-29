@@ -110,12 +110,9 @@
             <input type="text" name="name" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label class="form-label">품종</label>
-            <select name="breed" class="form-select" required>
-              {% for value, label in cat_breeds %}
-                <option value="{{ value }}">{{ label }}</option>
-              {% endfor %}
-            </select>
+            <label class="form-label" for="{{ pet_form.breed.id_for_label }}">{{ pet_form.breed.label }}</label>
+            {{ pet_form.breed }}
+            {% for error in pet_form.breed.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
           </div>
           <div class="mb-3">
             <label class="form-label">생년월일</label>
