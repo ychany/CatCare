@@ -3,6 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Pet
 from weight_tracker_app.models import Weight
+import os
+import json
+from pathlib import Path
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -24,6 +27,15 @@ class PetForm(forms.ModelForm):
             self.fields['breed'].choices = Pet.DOG_BREEDS
         else:
             self.fields['breed'].choices = [('', '동물 종류를 먼저 선택해주세요')]
+
+        # breed.json 경로 설정
+        breed_path = Path(__file__).resolve().parent.parent / 'insurance_app' / 'fixtures' / 'breed.json'
+        breed_choices = [('', '품종을 선택하세요')]
+        if breed_path.exists():
+            with open(breed_path, encoding='utf-8') as f:
+                breed_data = json.load(f)
+                breed_choices += [(b['fields']['name'], b['fields']['name']) for b in breed_data]
+        self.fields['breed'].choices = breed_choices
 
     def save(self, commit=True):
         instance = super().save(commit=False)

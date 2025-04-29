@@ -5,6 +5,11 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">보험 추천 결과</h2>
+    {% if reason %}
+    <div class="alert alert-info fw-bold mb-4">
+        {{ reason }}
+    </div>
+    {% endif %}
     {% if sure_ranking %}
         <div class="row">
             {% for item in sure_ranking %}

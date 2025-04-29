@@ -76,6 +76,13 @@ def recommend_form(request, pet_profile_id):
         ('비뇨기질환', 'urinary'),
     ]
     pet_profile = get_object_or_404(PetProfile, id=pet_profile_id)
+    # breed.json에서 품종명 리스트 추출
+    breed_path = Path(__file__).parent / 'fixtures' / 'breed.json'
+    breed_list = []
+    if breed_path.exists():
+        with open(breed_path, encoding='utf-8') as f:
+            breed_data = json.load(f)
+            breed_list = [b['fields']['name'] for b in breed_data]
     # PetProfile에 저장된 preference_dict 불러오기 (없으면 3으로 채움)
     preference_dict = pet_profile.preference_dict or {key: 3 for label, key in preference_fields}
     # 혹시라도 값이 빠진 key가 있으면 3으로 채움
@@ -86,6 +93,8 @@ def recommend_form(request, pet_profile_id):
         'pet_profile_id': pet_profile_id,
         'preference_fields': preference_fields,
         'preference_dict': preference_dict,
+        'breed_list': breed_list,
+        'selected_breed': pet_profile.breed,
     }
     return render(request, 'insurance/recommend_form.html', context)
 
@@ -95,6 +104,8 @@ def insurance_recommend(request, pet_profile_id):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('insurance:recommend_form', args=[pet_profile_id]))
     pet = get_object_or_404(Pet, id=pet_profile_id, owner=request.user)
+    breed_name = pet.breed  # Pet 객체에서 breed 값을 가져옴
+    
     # PetProfile preference_dict 저장
     try:
         pet_profile = PetProfile.objects.get(id=pet_profile_id)
@@ -115,8 +126,10 @@ def insurance_recommend(request, pet_profile_id):
         preference_dict = {}
         for label, key in preference_fields:
             preference_dict[key] = int(request.POST.get(key, 3))
-        # PetProfile에 preference_dict 저장
-        if pet_profile:
+        # 품종 선택값 저장
+        breed_value = request.POST.get('breed')
+        if pet_profile and breed_value:
+            pet_profile.breed = breed_value
             pet_profile.preference_dict = preference_dict
             pet_profile.save()
     else:
@@ -213,7 +226,7 @@ def insurance_recommend(request, pet_profile_id):
         temp_detail['price_score'] = price_score
         temp_detail['matching_score'] = matching_score
         temp_detail['cover_count'] = len(flatten_coverage_keys(product.coverage_details))
-        temp_detail['sure_score'] = make_sure_score(temp_detail['company_score'], price_score, matching_score)
+        temp_detail['sure_score'] = make_sure_score(temp_detail['company_score'], price_score, matching_score, breed_disease_bonus=0)
         cover_path = Path(__file__).parent / 'fixtures' / 'cover.json'
         disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
         cover_map = {}
@@ -266,6 +279,47 @@ def insurance_recommend(request, pet_profile_id):
     if products:
         print('샘플 coverage_details:', products[0].insurance_name, products[0].coverage_details)
 
+    # --- 품종별 취약 질병 보장 가산점 추천 근거 추가 ---
+    breed_path = Path(__file__).parent / 'fixtures' / 'breed.json'
+    disease_path = Path(__file__).parent / 'fixtures' / 'disease.json'
+    breed_disease_pks = []
+    breed_disease_names = []
+    if breed_path.exists() and disease_path.exists():
+        with open(breed_path, encoding='utf-8') as f:
+            breed_data = json.load(f)
+        with open(disease_path, encoding='utf-8') as f:
+            disease_data = json.load(f)
+        # 품종명 -> 질병 PK 매핑
+        breed_name_to_disease = {b['fields']['name']: b['fields']['disease'] for b in breed_data}
+        breed_disease_pks = breed_name_to_disease.get(breed_name, [])
+        disease_pk_to_name = {d['pk']: d['fields']['name'] for d in disease_data}
+        breed_disease_names = [disease_pk_to_name.get(pk) for pk in breed_disease_pks if pk in disease_pk_to_name]
+    print(f"[DEBUG] 선택된 품종: {breed_name}")
+    print(f"[DEBUG] 취약 질병 PK: {breed_disease_pks}")
+    print(f"[DEBUG] 취약 질병명: {breed_disease_names}")
+    for temp_detail in before_ranking:
+        product = temp_detail['product']
+        details = getattr(product, 'insurancedetail_set', None)
+        covered_diseases = set()
+        if details and details.exists() and breed_disease_pks:
+            for detail in details.all():
+                for pk in breed_disease_pks:
+                    if (pk in (detail.basic or [])) or (detail.special and pk in detail.special):
+                        covered_diseases.add(pk)
+        print(f"[DEBUG] 상품: {getattr(product, 'insurance_name', None) or getattr(product, 'name', None)}")
+        print(f"  보장하는 취약 질병 PK: {covered_diseases}")
+        print(f"  보장하는 취약 질병명: {[name for pk, name in zip(breed_disease_pks, breed_disease_names) if pk in covered_diseases]}")
+        if covered_diseases:
+            covered_names = [name for pk, name in zip(breed_disease_pks, breed_disease_names) if pk in covered_diseases]
+            if covered_names:
+                temp_detail['matching_reason'].insert(0, f"{breed_name} 품종은 {', '.join(covered_names)} 질병에 취약하여, 해당 질병이 보장내역에 포함된 상품을 추천합니다.")
+    # 추천 근거 reason(문구) context에 추가(상위 1개 상품 기준)
+    reason = None
+    if breed_name and breed_disease_names:
+        reason = f"{breed_name} 품종은 {', '.join(breed_disease_names)} 질병에 취약하여, 해당 질병이 보장내역에 포함된 상품을 추천합니다."
+
+    print(f"[DEBUG] POST 데이터: {request.POST}")
+
     context = {
         'pet': pet,
         'sure_ranking': sure_ranking,
@@ -273,6 +327,7 @@ def insurance_recommend(request, pet_profile_id):
         'cover_ranking': cover_ranking,
         'preference_fields': preference_fields,
         'preference_dict': preference_dict,
+        'reason': reason,
     }
     return render(request, 'insurance/recommend.html', context)
 
@@ -409,7 +464,7 @@ def insurance_compare(request):
             price_score = float(product.base_price)
         product_vector = get_category_coverage_vector(product.coverage_details, all_coverage_keys)
         matching_score = cosine_similarity(user_vector, product_vector)
-        sure_score = make_sure_score(company_score, price_score, matching_score)
+        sure_score = make_sure_score(company_score, price_score, matching_score, breed_disease_bonus=0)
         processed.append((product, sure_score))
 
     context = {
@@ -557,3 +612,7 @@ def api_get_preference(request, pet_profile_id):
         return JsonResponse({'success': True, 'preference_dict': preference_dict})
     except PetProfile.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'PetProfile not found'})
+
+def make_sure_score(company_score, price_score, matching_score, breed_disease_bonus=0):
+    base_score = (company_score * 0.3) + (price_score * 0.3) + (matching_score * 0.4)  # 합계 100%
+    return base_score + (breed_disease_bonus * 0.2)  # 최대 20% 가산점

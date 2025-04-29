@@ -9,8 +9,9 @@
       <div class="card border-0" style="box-shadow:none;">
         <div class="card-body p-4">
           <h2 class="mb-4 text-center fw-bold" style="letter-spacing:1px;">{{ pet.name }} 정보 수정</h2>
-          <form method="post" enctype="multipart/form-data">
+          <form method="post" action="{% url 'pets:pet_edit' pet.id %}" enctype="multipart/form-data">
             {% csrf_token %}
+            <input type="hidden" name="breed" value="{{ pet.breed }}">
             {% if pet.image %}
               <div class="text-center mb-4">
                 <img src="{{ pet.image.url }}" alt="{{ pet.name }}" style="width:110px; height:110px; object-fit:cover; border:1px solid #ddd;">
