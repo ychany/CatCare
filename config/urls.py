@@ -16,4 +16,10 @@ urlpatterns = [
     path('care/', include('care_calendar.urls', namespace='care_calendar')),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='/accounts/login/'), name='logout'),
+    path('', include('common_app.urls')),
+    path('weight/', include('weight_tracker_app.urls')),
+    path('insurance/', include('insurance_app.urls')),
+    path('items/', include('item_purchase_app.urls')),
+    path('food/', include('food_calendar.urls')),
+    path('community/', include('community_app.urls', namespace='community_app')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

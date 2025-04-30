@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'item_purchase_app',
     'weight_tracker_app',
     'insurance_app',
+    'community_app',
 ]
 
 MIDDLEWARE = [

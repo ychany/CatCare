@@ -43,4 +43,5 @@ urlpatterns = [
     path('items/', include('item_purchase_app.urls', namespace='item_purchase_app')),
     path('weight-tracker/', include('weight_tracker_app.urls')),
     path('insurance/', include('insurance_app.urls')),
+    path('community/', include('community_app.urls', namespace='community_app')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

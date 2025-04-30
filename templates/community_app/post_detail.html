@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ post.title }}</h2>
+            {% if user == post.author %}
+            <div>
+                <a href="{% url 'community_app:edit' post.id %}" class="btn btn-outline-primary btn-sm">수정</a>
+                <form action="{% url 'community_app:delete' post.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <span class="text-muted">작성자: {{ post.get_author_name }}</span>
+                    <span class="ms-3 text-muted">작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted">조회수: {{ post.views }}</span>
+                    <span class="ms-3 text-muted">좋아요: <span class="like-count">{{ post.likes.count }}</span></span>
+                </div>
+            </div>
+            
+            <div class="post-content mb-4">
+                {{ post.content|linebreaks }}
+            </div>
+
+            {% if post.image %}
+            <div class="mb-4 text-center">
+                <img src="{{ post.image.url }}" alt="첨부 이미지" style="max-width:400px; max-height:400px; border-radius:8px;">
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-start align-items-center mb-4">
+                <button class="btn btn-outline-primary like-button" data-post-id="{{ post.id }}">
+                    <i class="bi bi-heart{% if user in post.likes.all %}-fill{% endif %}"></i>
+                    <span class="like-text">{% if user in post.likes.all %}좋아요 취소{% else %}좋아요{% endif %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">댓글 ({{ comments.count }})</h5>
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'community_app:comment_create' post.id %}" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ comment_form.content }}
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <button type="submit" class="btn btn-primary">댓글 작성</button>
+                    <div class="form-check ms-2">
+                        {{ comment_form.is_anonymous }}
+                        <label class="form-check-label" for="{{ comment_form.is_anonymous.id_for_label }}">
+                            익명으로 작성
+                        </label>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
+
+            <div class="comment-list">
+                {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>{{ comment.get_author_name }}</strong>
+                                <small class="text-muted ms-2">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted">좋아요: <span class="comment-like-count" data-comment-id="{{ comment.id }}">{{ comment.likes.count }}</span></span>
+                                <button type="button" class="btn btn-outline-primary btn-sm comment-like-button" data-post-id="{{ post.id }}" data-comment-id="{{ comment.id }}">
+                                    <i class="bi bi-heart{% if user in comment.likes.all %}-fill{% endif %}"></i>
+                                    <span class="comment-like-text">{% if user in comment.likes.all %}좋아요 취소{% else %}좋아요{% endif %}</span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm show-reply-form" data-comment-id="{{ comment.id }}">답글</button>
+                                {% if user == comment.author %}
+                                <form action="{% url 'community_app:comment_delete' post.id comment.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <p class="mt-2 mb-0">{{ comment.content }}</p>
+                        <!-- 대댓글 목록 -->
+                        <div class="ms-4 mt-3">
+                            {% for reply in comment.replies.all %}
+                            <div class="card mb-2">
+                                <div class="card-body py-2 px-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>{{ reply.get_author_name }}</strong>
+                                            <small class="text-muted ms-2">{{ reply.created_at|date:"Y-m-d H:i" }}</small>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="text-muted">좋아요: <span class="reply-like-count" data-reply-id="{{ reply.id }}">{{ reply.likes.count }}</span></span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm reply-like-button" data-post-id="{{ post.id }}" data-comment-id="{{ comment.id }}" data-reply-id="{{ reply.id }}">
+                                                <i class="bi bi-heart{% if user in reply.likes.all %}-fill{% endif %}"></i>
+                                                <span class="reply-like-text">{% if user in reply.likes.all %}좋아요 취소{% else %}좋아요{% endif %}</span>
+                                            </button>
+                                            {% if user == reply.author %}
+                                            <form action="{% url 'community_app:reply_delete' post.id comment.id reply.id %}" method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <p class="mt-2 mb-0">{{ reply.content }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <!-- 대댓글 작성 폼 -->
+                            {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'community_app:reply_create' post.id comment.id %}" class="mt-2 d-none d-flex align-items-center gap-2 reply-form" id="reply-form-{{ comment.id }}">
+                                {% csrf_token %}
+                                <textarea name="content" rows="2" class="form-control" style="max-width:350px;" placeholder="답글을 입력하세요..."></textarea>
+                                <button type="submit" class="btn btn-secondary btn-sm">답글 작성</button>
+                                <div class="form-check ms-2">
+                                    <input type="checkbox" name="is_anonymous" class="form-check-input" id="reply-anonymous-{{ comment.id }}">
+                                    <label class="form-check-label" for="reply-anonymous-{{ comment.id }}">익명</label>
+                                </div>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 기존 게시글 좋아요
+    const likeButton = document.querySelector('.like-button');
+    const likeCount = document.querySelector('.like-count');
+    const likeText = likeButton.querySelector('.like-text');
+    const icon = likeButton.querySelector('i');
+    likeButton.addEventListener('click', function() {
+        const postId = this.dataset.postId;
+        fetch(`/community/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.liked) {
+                icon.classList.remove('bi-heart');
+                icon.classList.add('bi-heart-fill');
+                likeText.textContent = '좋아요 취소';
+            } else {
+                icon.classList.remove('bi-heart-fill');
+                icon.classList.add('bi-heart');
+                likeText.textContent = '좋아요';
+            }
+            likeCount.textContent = data.count;
+        });
+    });
+
+    // 댓글 좋아요
+    document.querySelectorAll('.comment-like-button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const commentId = this.dataset.commentId;
+            const icon = this.querySelector('i');
+            const text = this.querySelector('.comment-like-text');
+            const countSpan = document.querySelector('.comment-like-count[data-comment-id="' + commentId + '"]');
+            fetch(`/community/${postId}/comment/${commentId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    text.textContent = '좋아요 취소';
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    text.textContent = '좋아요';
+                }
+                countSpan.textContent = data.count;
+            });
+        });
+    });
+
+    // 대댓글 좋아요
+    document.querySelectorAll('.reply-like-button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const commentId = this.dataset.commentId;
+            const replyId = this.dataset.replyId;
+            const icon = this.querySelector('i');
+            const text = this.querySelector('.reply-like-text');
+            const countSpan = document.querySelector('.reply-like-count[data-reply-id="' + replyId + '"]');
+            fetch(`/community/${postId}/comment/${commentId}/reply/${replyId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    text.textContent = '좋아요 취소';
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    text.textContent = '좋아요';
+                }
+                countSpan.textContent = data.count;
+            });
+        });
+    });
+
+    // 답글 폼 토글
+    document.querySelectorAll('.show-reply-form').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const commentId = this.dataset.commentId;
+            // 모든 답글 폼 숨김
+            document.querySelectorAll('.reply-form').forEach(function(form) {
+                form.classList.add('d-none');
+            });
+            // 해당 답글 폼만 표시
+            const target = document.getElementById('reply-form-' + commentId);
+            if (target) target.classList.remove('d-none');
+        });
+    });
+});
+</script>
+{% endblock %} 
