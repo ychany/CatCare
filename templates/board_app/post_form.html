@@ -35,8 +35,19 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="{{ form.pet.id_for_label }}" class="form-label">반려동물</label>
-                            {{ form.pet }}
+                            <label for="pet" class="form-label">반려동물</label>
+                            <select name="pet" id="pet" class="form-select">
+                                <option value="">선택</option>
+                                {% for pet in pets %}
+                                    <option value="{{ pet.id }}" {% if form.pet.value|stringformat:'s' == pet.id|stringformat:'s' %}selected{% endif %}>
+                                        {{ pet.name }}
+                                    </option>
+                                {% endfor %}
+                                {% if pets|length > 1 %}
+                                    <option value="all" {% if form.pet.value|stringformat:'s' == 'all' %}selected{% endif %}>같이</option>
+                                {% endif %}
+                                <option value="etc" {% if form.pet.value|stringformat:'s' == 'etc' %}selected{% endif %}>기타</option>
+                            </select>
                             {% if form.pet.errors %}
                             <div class="alert alert-danger mt-1">
                                 {{ form.pet.errors }}

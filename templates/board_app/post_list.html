@@ -12,6 +12,10 @@
                     {% for pet in pets %}
                         <option value="{{ pet.id }}" {% if selected_pet_id == pet.id|stringformat:'s' %}selected{% endif %}>{{ pet.name }}</option>
                     {% endfor %}
+                    {% if pets|length > 1 %}
+                        <option value="all" {% if selected_pet_id == 'all' %}selected{% endif %}>같이</option>
+                    {% endif %}
+                    <option value="etc" {% if selected_pet_id == 'etc' %}selected{% endif %}>기타</option>
                 </select>
             </form>
             <a href="{% url 'board_app:create' %}" class="btn btn-primary">글쓰기</a>
