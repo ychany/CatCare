@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'animal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'catcare_db',
         'USER': 'animal_user',
         'PASSWORD': '5344', 
