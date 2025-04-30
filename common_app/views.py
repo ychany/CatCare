@@ -14,7 +14,7 @@ def index(request):
     context = {}
     if request.user.is_authenticated:
         pets = Pet.objects.filter(owner=request.user)
-        recent_posts = Post.objects.filter(image__isnull=False).order_by('-created_at')[:12]
+        recent_posts = Post.objects.filter(image__isnull=False, pet__owner=request.user).order_by('-created_at')[:12]
         context.update({
             'pets': pets,
             'recent_posts': recent_posts,
