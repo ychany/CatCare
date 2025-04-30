@@ -1,27 +1,46 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
-*$py.class
+*~
 
-# Django
-*.log
-*.pot
-*.pyc
-db.sqlite3
-media/
-
-# Virtual Environment
-.env
-.venv
-env/
+# Virtual environment
+.venv/
 venv/
 ENV/
+env/
 
-# IDE
+# Environment variables
+*.env
+
+# Django static and media
+staticfiles/
+media/
+
+db.sqlite3
+
+# Logs
+*.log
+
+# PyCharm
 .idea/
-.vscode/
-*.swp
-*.swo
+*.iml
 
-# Mac
-.DS_Store 
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Coverage
+htmlcov/
+.coverage
+
+# Testing
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# Build
+build/
+dist/
+*.egg-info/ 
