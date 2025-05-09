@@ -31,11 +31,9 @@ def get_events(request):
                 'pet_name': event.pet.name,
                 'category': event.category
             })
-        
-        print("Sending events:", event_list)  # 디버깅용 로그
+
         return JsonResponse(event_list, safe=False)
     except Exception as e:
-        print("Error in get_events:", str(e))  # 디버깅용 로그
         return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
@@ -44,7 +42,6 @@ def create_event(request):
     """새로운 케어 이벤트를 생성합니다."""
     try:
         data = json.loads(request.body)
-        print("Received data:", data)  # 디버깅용 로그
         
         # 필수 필드 확인
         if not all(k in data for k in ['pet_id', 'start', 'category']):
@@ -76,7 +73,6 @@ def create_event(request):
                 'category': event.category
             }
         }
-        print("Sending response:", response_data)  # 디버깅용 로그
         return JsonResponse(response_data)
     except json.JSONDecodeError:
         return JsonResponse({
@@ -89,7 +85,6 @@ def create_event(request):
             'message': f'날짜 형식이 잘못되었습니다: {str(e)}'
         }, status=400)
     except Exception as e:
-        print("Error in create_event:", str(e))  # 디버깅용 로그
         return JsonResponse({
             'status': 'error',
             'message': str(e)
@@ -102,8 +97,7 @@ def update_event(request, event_id):
     try:
         event = get_object_or_404(Event, id=event_id, user=request.user)
         data = json.loads(request.body)
-        print("Received update data:", data)  # 디버깅용 로그
-        
+
         # 필수 필드 확인
         if not all(k in data for k in ['pet_id', 'start', 'category']):
             return JsonResponse({
@@ -133,22 +127,18 @@ def update_event(request, event_id):
                 'category': event.category
             }
         }
-        print("Sending update response:", response_data)  # 디버깅용 로그
         return JsonResponse(response_data, status=200)
     except json.JSONDecodeError as e:
-        print("JSON decode error:", str(e))  # 디버깅용 로그
         return JsonResponse({
             'status': 'error',
             'message': '잘못된 JSON 형식입니다.'
         }, status=400)
     except ValueError as e:
-        print("Value error:", str(e))  # 디버깅용 로그
         return JsonResponse({
             'status': 'error',
             'message': f'날짜 형식이 잘못되었습니다: {str(e)}'
         }, status=400)
     except Exception as e:
-        print("Error in update_event:", str(e))  # 디버깅용 로그
         return JsonResponse({
             'status': 'error',
             'message': str(e)
@@ -166,7 +156,6 @@ def delete_event(request, event_id):
             'message': '이벤트가 삭제되었습니다.'
         })
     except Exception as e:
-        print("Error in delete_event:", str(e))  # 디버깅용 로그
         return JsonResponse({
             'status': 'error',
             'message': str(e)
@@ -176,22 +165,17 @@ def delete_event(request, event_id):
 def get_previous_care(request, pet_id, category):
     """특정 펫의 특정 카테고리 이전 케어 기록을 가져옵니다."""
     try:
-        print(f"Fetching previous care for pet_id: {pet_id}, category: {category}")
-        
         # 현재 날짜 기준으로 가장 최근 이벤트를 가져옴
         today = timezone.now().date()
-        print(f"Today's date: {today}")
         
         event = Event.objects.filter(
             pet_id=pet_id,
             category=category,
         ).order_by('-start_time').first()  # 가장 최근 날짜순으로 정렬하여 첫 번째 항목 가져오기
-        
-        print(f"Found event: {event}")
+
         
         if event:
             formatted_date = event.start_time.strftime('%Y-%m-%d')
-            print(f"Formatted date: {formatted_date}")
             
             response_data = {
                 'status': 'success',
@@ -201,16 +185,13 @@ def get_previous_care(request, pet_id, category):
                     'category': event.category
                 }
             }
-            print(f"Sending response: {response_data}")
             return JsonResponse(response_data)
         else:
-            print("No event found")
             return JsonResponse({
                 'status': 'success',
                 'previous_care': None
             })
     except Exception as e:
-        print(f"Error in get_previous_care: {str(e)}")
         return JsonResponse({
             'status': 'error',
             'message': str(e)
