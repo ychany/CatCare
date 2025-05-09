@@ -18,8 +18,9 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(next_page='/accounts/login/'), name='logout'),
     path('', include('common_app.urls')),
     path('weight/', include('weight_tracker_app.urls')),
-    path('insurance/', include('insurance_app.urls')),
+    path('insurance/', include('insurance_app.urls', namespace='insurance')),
     path('items/', include('item_purchase_app.urls')),
     path('food/', include('food_calendar.urls')),
     path('community/', include('community_app.urls', namespace='community_app')),
+    path('emergency/', include('emergency_app.urls', namespace='emergency_app')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

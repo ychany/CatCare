@@ -16,4 +16,5 @@ INSTALLED_APPS = [
     'weight_tracker_app',
     'insurance_app',
     'community_app',
+    'emergency_app',
 ] 

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .search-box {
+    display: flex;
+    margin: 32px 0 20px 0;
+    gap: 10px;
+    align-items: center;
+  }
+  .search-box input {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 999px;
+    border: 1.5px solid #bcd0ee;
+    font-size: 18px;
+    outline: none;
+    background: #f9fafc;
+    transition: border 0.2s;
+  }
+  .search-box input:focus {
+    border: 1.5px solid #3182f6;
+    background: #fff;
+  }
+  .search-box button {
+    background-color: #3182f6;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 999px;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .search-box button:hover {
+    background: #2563c6;
+  }
+  #map {
+    width: 100%;
+    height: 400px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(49,130,246,0.08);
+    margin-bottom: 24px;
+  }
+  #hospital-list {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .hospital-card {
+    background: #f9fafc;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 6px rgba(49,130,246,0.08);
+    transition: transform 0.1s, box-shadow 0.1s;
+    border: 1.5px solid #e3e8f0;
+  }
+  .hospital-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 4px 16px rgba(49,130,246,0.13);
+    border: 1.5px solid #3182f6;
+  }
+  .hospital-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #222;
+  }
+  .hospital-address {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .hospital-phone {
+    font-size: 15px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .hospital-link {
+    color: #3182f6;
+    font-size: 14px;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+  @media (max-width: 900px) {
+    #hospital-list { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container mt-4">
+  <h2 class="mb-4">24시간 동물병원 찾기</h2>
+  <div class="search-box">
+    <input type="text" id="keyword" placeholder="예: 강남구" />
+    <button onclick="searchAnimalHospitals()">🔍 검색</button>
+  </div>
+  <div id="map"></div>
+  <div id="hospital-list"></div>
+</div>
+
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=679cb0dcbdbd689c815830cfcb681150&libraries=services"></script>
+<script>
+let map = new kakao.maps.Map(document.getElementById('map'), {
+    center: new kakao.maps.LatLng(37.5665, 126.9780),
+    level: 5
+});
+const ps = new kakao.maps.services.Places();
+let markers = [];
+let infowindow = new kakao.maps.InfoWindow({zIndex:1});
+let allResults = [];
+
+function searchAnimalHospitals() {
+    allResults = [];
+    const region = document.getElementById('keyword').value.trim();
+    const keyword = region ? region + ' 동물병원' : '동물병원';
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+    infowindow.close();
+    getAllPages(keyword, 1);
+}
+
+function getAllPages(keyword, page = 1) {
+    ps.keywordSearch(keyword, function (data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+            const keywords = ['동물', '애완', '반려', '펫', '캣', 'dog', 'cat', '고양이', '강아지'];
+            const filtered = data.filter(place =>
+                keywords.some(word => place.place_name.toLowerCase().includes(word))
+            );
+            allResults = allResults.concat(filtered);
+            if (pagination.hasNextPage && page < 5) {
+                pagination.nextPage();
+            } else {
+                if (allResults.length === 0) {
+                    alert('동물병원이 검색되지 않았습니다.');
+                    document.getElementById('hospital-list').innerHTML = '<div>검색 결과가 없습니다.</div>';
+                    return;
+                }
+                renderMarkersAndList(allResults);
+            }
+        } else if (allResults.length === 0) {
+            alert('동물병원이 검색되지 않았습니다.');
+            document.getElementById('hospital-list').innerHTML = '<div>검색 결과가 없습니다.</div>';
+        }
+    }, { page });
+}
+
+function renderMarkersAndList(data) {
+    const bounds = new kakao.maps.LatLngBounds();
+    let listHtml = '';
+    data.forEach(place => {
+        const marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(place.y, place.x),
+            title: place.place_name
+        });
+        markers.push(marker);
+        kakao.maps.event.addListener(marker, 'click', function () {
+            const content = `
+              <div style="padding:10px; font-size:13px; min-width:220px;">
+                <div><b>📍 ${place.place_name}</b></div>
+                ${place.phone ? `<div>📞 ${place.phone}</div>` : ''}
+                <div>📫 ${place.road_address_name || place.address_name}</div>
+                <div>🏷 ${place.category_name}</div>
+                <a href="${place.place_url}" target="_blank" style="color:#3182f6; text-decoration:underline;">카카오맵에서 보기</a>
+              </div>
+            `;
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+        });
+        bounds.extend(new kakao.maps.LatLng(place.y, place.x));
+        listHtml += `
+          <div class="hospital-card">
+            <div class="hospital-name">📍 ${place.place_name}</div>
+            <div class="hospital-address">📫 ${place.road_address_name || place.address_name}</div>
+            ${place.phone ? `<div class="hospital-phone">📞 ${place.phone}</div>` : ''}
+            <a class="hospital-link" href="${place.place_url}" target="_blank">🔗 카카오맵에서 보기</a>
+          </div>
+        `;
+    });
+    document.getElementById('hospital-list').innerHTML = listHtml || '<div>검색 결과가 없습니다.</div>';
+    map.setBounds(bounds);
+}
+
+const input = document.getElementById('keyword');
+input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') searchAnimalHospitals();
+});
+</script>
+{% endblock %} 
