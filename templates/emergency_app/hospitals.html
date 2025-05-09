@@ -3,101 +3,228 @@
 
 {% block content %}
 <style>
-  .search-box {
-    display: flex;
-    margin: 32px 0 20px 0;
-    gap: 10px;
-    align-items: center;
-  }
-  .search-box input {
-    flex: 1;
-    padding: 16px 20px;
-    border-radius: 999px;
-    border: 1.5px solid #bcd0ee;
-    font-size: 18px;
-    outline: none;
-    background: #f9fafc;
-    transition: border 0.2s;
-  }
-  .search-box input:focus {
-    border: 1.5px solid #3182f6;
-    background: #fff;
-  }
-  .search-box button {
-    background-color: #3182f6;
-    color: white;
-    padding: 14px 28px;
-    border-radius: 999px;
-    border: none;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .search-box button:hover {
-    background: #2563c6;
-  }
-  #map {
-    width: 100%;
-    height: 400px;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(49,130,246,0.08);
-    margin-bottom: 24px;
-  }
-  #hospital-list {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-  .hospital-card {
-    background: #f9fafc;
-    border-radius: 14px;
-    padding: 18px 20px;
-    box-shadow: 0 1px 6px rgba(49,130,246,0.08);
-    transition: transform 0.1s, box-shadow 0.1s;
-    border: 1.5px solid #e3e8f0;
-  }
-  .hospital-card:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 4px 16px rgba(49,130,246,0.13);
-    border: 1.5px solid #3182f6;
-  }
-  .hospital-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #222;
-  }
-  .hospital-address {
-    font-size: 15px;
-    color: #555;
-    margin-bottom: 4px;
-  }
-  .hospital-phone {
-    font-size: 15px;
-    color: #888;
-    margin-bottom: 6px;
-  }
-  .hospital-link {
-    color: #3182f6;
-    font-size: 14px;
-    text-decoration: underline;
-    font-weight: bold;
-  }
-  @media (max-width: 900px) {
-    #hospital-list { grid-template-columns: 1fr; }
-  }
+:root {
+  --main-blue: #3182f6;
+  --light-gray: #f5f7fa;
+  --card-bg: #f9fafc;
+  --shadow: 0 4px 24px rgba(49,130,246,0.10);
+  --radius: 20px;
+  --font-main: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+body {
+  background: var(--light-gray);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+.animal-map-wrap {
+  display: flex;
+  gap: 0;
+  min-height: 700px;
+  background: var(--light-gray);
+  font-family: var(--font-main);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 0 0 0 0;
+  height: 90vh;
+  max-height: 900px;
+  overflow: hidden;
+}
+.animal-map-left {
+  width: 430px;
+  min-width: 320px;
+  background: var(--light-gray);
+  padding: 0 20px 20px 10px;
+  border-right: 2px solid #e3e8f0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: var(--radius) 0 0 var(--radius);
+  height: 100%;
+}
+.search-box {
+  position: sticky;
+  top: 0;
+  background: var(--light-gray);
+  z-index: 2;
+  padding-bottom: 2px;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-start;
+}
+.search-inner {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(49,130,246,0.13);
+  padding: 0 8px 0 0;
+  border: 2px solid #e3e8f0;
+  width: 100%;
+  max-width: 260px;
+  transition: box-shadow 0.2s, border 0.2s;
+  margin-left: 0;
+}
+.search-inner:focus-within {
+  box-shadow: 0 6px 24px rgba(49,130,246,0.18);
+  border: 2px solid var(--main-blue);
+}
+.search-inner .search-icon {
+  font-size: 22px;
+  color: var(--main-blue);
+  margin-left: 16px;
+  margin-right: 6px;
+  opacity: 0.85;
+}
+.search-inner input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 6px 6px 6px 0;
+  font-size: 16.5px;
+  border-radius: 999px;
+  font-family: var(--font-main);
+  font-weight: 500;
+  color: #222;
+}
+.search-inner input::placeholder {
+  color: #b0b8c1;
+  font-size: 15px;
+  font-weight: 400;
+}
+.search-inner button {
+  background: var(--main-blue);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  min-width: 64px;
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: bold;
+  margin-left: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(49,130,246,0.08);
+  transition: background 0.2s;
+  letter-spacing: 1px;
+}
+.search-inner button:hover {
+  background: #2563c6;
+}
+#hospital-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  max-height: calc(90vh - 120px);
+  padding-right: 2px;
+}
+.hospital-card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 18px 16px 14px 16px;
+  box-shadow: 0 2px 12px rgba(49,130,246,0.10);
+  border: none;
+  margin-bottom: 14px;
+  transition: box-shadow 0.15s, transform 0.12s;
+  font-size: 15.5px;
+  font-family: var(--font-main);
+}
+.hospital-card:last-child {
+  margin-bottom: 0;
+}
+.hospital-card:hover {
+  box-shadow: 0 8px 32px rgba(49,130,246,0.13);
+  transform: translateY(-2px) scale(1.01);
+}
+.hospital-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 7px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.hospital-address {
+  color: #555;
+  margin-bottom: 5px;
+}
+.hospital-phone {
+  color: #888;
+  margin-bottom: 7px;
+}
+.hospital-link {
+  color: var(--main-blue);
+  font-size: 15px;
+  text-decoration: underline;
+  font-weight: bold;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0 0 0;
+}
+.pagination button {
+  background: #e3e8f0;
+  color: #3182f6;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button.active,
+.pagination button:hover {
+  background: var(--main-blue);
+  color: #fff;
+}
+.animal-map-right {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  display: flex;
+  align-items: stretch;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  height: 100%;
+}
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  box-shadow: 0 2px 12px rgba(49,130,246,0.10);
+}
+@media (max-width: 1100px) {
+  .animal-map-left { width: 320px; }
+}
+@media (max-width: 900px) {
+  .animal-map-wrap { flex-direction: column; border-radius: var(--radius); height: auto; max-height: none; }
+  .animal-map-left, .animal-map-right { width: 100%; min-width: 0; border-radius: var(--radius) var(--radius) 0 0; height: auto; }
+  #map { height: 350px; min-height: 350px; border-radius: 0 0 var(--radius) var(--radius); }
+  #hospital-list { max-height: 300px; }
+  .search-box { padding-bottom: 8px; }
+}
 </style>
 
-<div class="container mt-4">
-  <h2 class="mb-4">24시간 동물병원 찾기</h2>
-  <div class="search-box">
-    <input type="text" id="keyword" placeholder="예: 강남구" />
-    <button onclick="searchAnimalHospitals()">🔍 검색</button>
+<div class="animal-map-wrap">
+  <div class="animal-map-left">
+    <div class="search-box">
+      <form class="search-inner" onsubmit="searchAnimalHospitals(1); return false;">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="keyword" placeholder="예: 강남구 동물병원" autocomplete="off" />
+        <button type="submit">검색</button>
+      </form>
+    </div>
+    <div id="hospital-list"></div>
+    <div id="pagination" class="pagination"></div>
   </div>
-  <div id="map"></div>
-  <div id="hospital-list"></div>
+  <div class="animal-map-right">
+    <div id="map"></div>
+  </div>
 </div>
 
 <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=679cb0dcbdbd689c815830cfcb681150&libraries=services"></script>
@@ -110,46 +237,58 @@ const ps = new kakao.maps.services.Places();
 let markers = [];
 let infowindow = new kakao.maps.InfoWindow({zIndex:1});
 let allResults = [];
+let lastKeyword = '';
+let lastPagination = null;
+let totalPages = 1;
+let currentPage = 1;
+const PAGE_SIZE = 15;
+const MAX_PAGES = 5;
 
-function searchAnimalHospitals() {
+function searchAnimalHospitals(page = 1) {
     allResults = [];
+    lastKeyword = '';
+    lastPagination = null;
+    totalPages = 1;
+    currentPage = 1;
+    document.getElementById('pagination').innerHTML = '';
     const region = document.getElementById('keyword').value.trim();
     const keyword = region ? region + ' 동물병원' : '동물병원';
+    lastKeyword = keyword;
     markers.forEach(m => m.setMap(null));
     markers = [];
     infowindow.close();
-    getAllPages(keyword, 1);
+    ps.keywordSearch(keyword, placesCallback, { page: 1 });
 }
 
-function getAllPages(keyword, page = 1) {
-    ps.keywordSearch(keyword, function (data, status, pagination) {
-        if (status === kakao.maps.services.Status.OK) {
-            const keywords = ['동물', '애완', '반려', '펫', '캣', 'dog', 'cat', '고양이', '강아지'];
-            const filtered = data.filter(place =>
-                keywords.some(word => place.place_name.toLowerCase().includes(word))
-            );
-            allResults = allResults.concat(filtered);
-            if (pagination.hasNextPage && page < 5) {
-                pagination.nextPage();
-            } else {
-                if (allResults.length === 0) {
-                    alert('동물병원이 검색되지 않았습니다.');
-                    document.getElementById('hospital-list').innerHTML = '<div>검색 결과가 없습니다.</div>';
-                    return;
-                }
-                renderMarkersAndList(allResults);
-            }
-        } else if (allResults.length === 0) {
-            alert('동물병원이 검색되지 않았습니다.');
-            document.getElementById('hospital-list').innerHTML = '<div>검색 결과가 없습니다.</div>';
-        }
-    }, { page });
+function placesCallback(data, status, pagination) {
+    if (status === kakao.maps.services.Status.OK) {
+        const keywords = ['동물', '애완', '반려', '펫', '캣', 'dog', 'cat', '고양이', '강아지'];
+        const filtered = data.filter(place =>
+            keywords.some(word => place.place_name.toLowerCase().includes(word))
+        );
+        allResults = allResults.concat(filtered);
+        lastPagination = pagination;
+        totalPages = Math.min(MAX_PAGES, pagination.last); // 최대 5페이지
+        renderPage(1);
+        renderPagination();
+    } else {
+        alert('동물병원이 검색되지 않았습니다.');
+        document.getElementById('hospital-list').innerHTML = '<div>검색 결과가 없습니다.</div>';
+        document.getElementById('pagination').innerHTML = '';
+    }
 }
 
-function renderMarkersAndList(data) {
+function renderPage(page) {
+    currentPage = page;
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+    infowindow.close();
+    const start = (page - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const pageData = allResults.slice(start, end);
     const bounds = new kakao.maps.LatLngBounds();
     let listHtml = '';
-    data.forEach(place => {
+    pageData.forEach((place, idx) => {
         const marker = new kakao.maps.Marker({
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x),
@@ -171,7 +310,7 @@ function renderMarkersAndList(data) {
         });
         bounds.extend(new kakao.maps.LatLng(place.y, place.x));
         listHtml += `
-          <div class="hospital-card">
+          <div class="hospital-card" data-index="${idx}">
             <div class="hospital-name">📍 ${place.place_name}</div>
             <div class="hospital-address">📫 ${place.road_address_name || place.address_name}</div>
             ${place.phone ? `<div class="hospital-phone">📞 ${place.phone}</div>` : ''}
@@ -180,12 +319,43 @@ function renderMarkersAndList(data) {
         `;
     });
     document.getElementById('hospital-list').innerHTML = listHtml || '<div>검색 결과가 없습니다.</div>';
-    map.setBounds(bounds);
+    if (pageData.length > 0) map.setBounds(bounds);
+
+    // 병원 리스트 클릭 시 해당 마커 클릭 효과 + 지도 확대/이동
+    document.querySelectorAll('.hospital-card').forEach((el, idx) => {
+        el.addEventListener('click', function() {
+            const marker = markers[idx];
+            const place = pageData[idx];
+            kakao.maps.event.trigger(marker, 'click');
+            map.setLevel(3); // 더 확대
+            map.panTo(new kakao.maps.LatLng(place.y, place.x));
+        });
+    });
+}
+
+function renderPagination() {
+    let html = '';
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    }
+    document.getElementById('pagination').innerHTML = html;
+}
+
+function goToPage(page) {
+    // 이미 받아온 데이터 내에서 페이지 이동
+    if (allResults.length >= page * PAGE_SIZE || !lastPagination || !lastPagination.hasNextPage) {
+        renderPage(page);
+        renderPagination();
+    } else {
+        // 아직 다음 페이지 데이터가 없으면 추가 요청
+        lastPagination.nextPage();
+        setTimeout(() => { goToPage(page); }, 400); // 데이터 누적 후 이동
+    }
 }
 
 const input = document.getElementById('keyword');
 input.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') searchAnimalHospitals();
+    if (e.key === 'Enter') searchAnimalHospitals(1);
 });
 </script>
 {% endblock %} 
