@@ -227,6 +227,63 @@ body {
   </div>
 </div>
 
+<div class="modal fade" id="addRecordModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="addRecordForm" method="post">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">일정 추가</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="modalPet" class="form-label">고양이</label>
+            <select class="form-select" id="modalPet" name="pet" required>
+              {% for pet in pets %}
+                <option value="{{ pet.id }}">{{ pet.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="modalDate" class="form-label">날짜</label>
+            <input type="date" class="form-control" id="modalDate" name="date" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">타입</label>
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="event_type" id="modalVacc" value="vacc" checked>
+              <label class="btn btn-outline-primary" for="modalVacc">예방접종</label>
+              <input type="radio" class="btn-check" name="event_type" id="modalMed" value="med">
+              <label class="btn btn-outline-success" for="modalMed">진료기록</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="modalDescription" class="form-label">설명</label>
+            <textarea class="form-control" id="modalDescription" name="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="modalNotes" class="form-label">메모</label>
+            <textarea class="form-control" id="modalNotes" name="notes" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="modalHospital" class="form-label">병원명</label>
+            <input type="text" class="form-control" id="modalHospital" name="hospital" readonly>
+          </div>
+          <div class="mb-3" id="modalNextDateContainer">
+            <label for="modalNextDate" class="form-label">다음 접종일</label>
+            <input type="date" class="form-control" id="modalNextDate" name="next_date">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">저장</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=679cb0dcbdbd689c815830cfcb681150&libraries=services"></script>
 <script>
 let map = new kakao.maps.Map(document.getElementById('map'), {
@@ -315,6 +372,11 @@ function renderPage(page) {
             <div class="hospital-address">📫 ${place.road_address_name || place.address_name}</div>
             ${place.phone ? `<div class="hospital-phone">📞 ${place.phone}</div>` : ''}
             <a class="hospital-link" href="${place.place_url}" target="_blank">🔗 카카오맵에서 보기</a>
+            <button class="btn btn-sm btn-outline-primary add-record-btn" 
+              data-hospital="${place.place_name.replace(/"/g, '&quot;')}"
+              data-address="${(place.road_address_name || place.address_name).replace(/"/g, '&quot;')}">
+              기록 추가
+            </button>
           </div>
         `;
     });
@@ -357,5 +419,75 @@ const input = document.getElementById('keyword');
 input.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') searchAnimalHospitals(1);
 });
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('add-record-btn')) {
+    const hospitalName = e.target.getAttribute('data-hospital');
+    document.getElementById('addRecordForm').reset();
+    document.getElementById('modalHospital').value = hospitalName;
+    document.getElementById('modalNextDateContainer').style.display = 'block';
+    const modal = new bootstrap.Modal(document.getElementById('addRecordModal'));
+    modal.show();
+  }
+});
+
+['modalVacc','modalMed'].forEach(function(id) {
+  document.getElementById(id).addEventListener('change', function() {
+    document.getElementById('modalNextDateContainer').style.display =
+      document.getElementById('modalVacc').checked ? 'block' : 'none';
+  });
+});
+
+if(document.getElementById('addRecordForm')){
+  document.getElementById('addRecordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {
+      pet: formData.get('pet'),
+      event_type: formData.get('event_type'),
+      date: formData.get('date'),
+      description: formData.get('description'),
+      notes: formData.get('notes'),
+      next_date: formData.get('next_date') || null,
+      hospital: formData.get('hospital') || null
+    };
+    fetch('/calendar/api/events/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => Promise.reject(err));
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert('기록이 저장되었습니다!');
+      bootstrap.Modal.getInstance(document.getElementById('addRecordModal')).hide();
+    })
+    .catch(error => {
+      alert('저장 중 오류가 발생했습니다.');
+    });
+  });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 {% endblock %} 
