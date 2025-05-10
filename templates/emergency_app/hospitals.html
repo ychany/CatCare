@@ -252,10 +252,10 @@ body {
           <div class="mb-3">
             <label class="form-label">타입</label>
             <div class="btn-group w-100" role="group">
-              <input type="radio" class="btn-check" name="event_type" id="modalVacc" value="vacc" checked>
-              <label class="btn btn-outline-primary" for="modalVacc">예방접종</label>
-              <input type="radio" class="btn-check" name="event_type" id="modalMed" value="med">
+              <input type="radio" class="btn-check" name="event_type" id="modalMed" value="med" checked>
               <label class="btn btn-outline-success" for="modalMed">진료기록</label>
+              <input type="radio" class="btn-check" name="event_type" id="modalVacc" value="vacc">
+              <label class="btn btn-outline-primary" for="modalVacc">예방접종</label>
             </div>
           </div>
           <div class="mb-3">
@@ -425,7 +425,9 @@ document.addEventListener('click', function(e) {
     const hospitalName = e.target.getAttribute('data-hospital');
     document.getElementById('addRecordForm').reset();
     document.getElementById('modalHospital').value = hospitalName;
-    document.getElementById('modalNextDateContainer').style.display = 'block';
+    document.getElementById('modalMed').checked = true;
+    document.getElementById('modalVacc').checked = false;
+    document.getElementById('modalNextDateContainer').style.display = 'none';
     const modal = new bootstrap.Modal(document.getElementById('addRecordModal'));
     modal.show();
   }

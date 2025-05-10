@@ -17,11 +17,62 @@
                                     <option value="{{ pet.id }}">{{ pet.name }}</option>
                                 {% endfor %}
                             </select>
+                            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#vaccinationModal">
+                                <i class="fas fa-calendar-check"></i> 예방접종 일정
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 예방접종 일정 모달 -->
+        <div class="modal fade" id="vaccinationModal" tabindex="-1" aria-labelledby="vaccinationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center" id="vaccinationModalLabel">
+                            다가오는 예방접종 일정
+                            <select class="form-select form-select-sm ms-3" id="modalPetFilter" style="width:auto; display:inline-block; min-width:90px; max-width:140px;">
+                                <option value="all">전체</option>
+                                {% for pet in pets %}
+                                    <option value="{{ pet.name }}">{{ pet.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="vaccinationListContainer">
+                        {% if next_vacc_list %}
+                            <div class="vaccination-list">
+                                {% for item in next_vacc_list %}
+                                    <div class="vaccination-item mb-2" data-pet="{{ item.pet_name }}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="pet-name fw-bold">{{ item.pet_name }}</span>
+                                            <span class="badge {% if item.days_left == 0 %}bg-danger{% elif item.days_left <= 7 %}bg-warning{% else %}bg-primary{% endif %}">
+                                                {% if item.days_left > 0 %}
+                                                    {{ item.days_left }}일 남음
+                                                {% elif item.days_left == 0 %}
+                                                    접종 당일
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="vaccination-date text-muted">
+                                            {{ item.next_date|date:"Y년 m월 d일" }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-center text-muted">다가오는 예방접종 일정이 없습니다.</p>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <!-- 좌측 달력 영역 -->
             <div class="col-md-8">
@@ -56,12 +107,11 @@
                             <div class="mb-3">
                                 <label class="form-label">타입</label>
                                 <div class="btn-group w-100" role="group">
-                                    <input type="radio" class="btn-check" name="event_type" id="vacc" value="vacc"
-                                           checked>
-                                    <label class="btn btn-outline-primary" for="vacc">예방접종</label>
-
-                                    <input type="radio" class="btn-check" name="event_type" id="med" value="med">
+                                    <input type="radio" class="btn-check" name="event_type" id="med" value="med" checked>
                                     <label class="btn btn-outline-success" for="med">진료기록</label>
+
+                                    <input type="radio" class="btn-check" name="event_type" id="vacc" value="vacc">
+                                    <label class="btn btn-outline-primary" for="vacc">예방접종</label>
                                 </div>
                             </div>
 
@@ -233,6 +283,29 @@
         .hospital-item:last-child {
             border-bottom: none;
         }
+
+        .vaccination-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .vaccination-item {
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .vaccination-item:hover {
+            background-color: #e9ecef;
+        }
+        .pet-name {
+            color: #3182f6;
+        }
+        .vaccination-date {
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .modal-dialog {
+            margin-top: 100px !important;  /* 원하는 만큼 숫자 조절 (예: 100px) */
+        }
     </style>
 
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=679cb0dcbdbd689c815830cfcb681150&libraries=services"></script>
@@ -287,6 +360,10 @@
                 dateClick: function (info) {
                     resetForm();
                     document.getElementById('date').value = info.dateStr;
+                    // 현재 선택된 event_type에 따라 다음 접종일 필드 표시/숨김
+                    const selectedType = document.querySelector('input[name="event_type"]:checked').value;
+                    document.getElementById('nextDateContainer').style.display =
+                        selectedType === 'vacc' ? 'block' : 'none';
                 }
             });
             calendar.render();
@@ -460,6 +537,21 @@
                     hospitalList.style.display = 'none';
                 }
             });
+
+            // 예방접종 모달 고양이 필터링
+            const modalPetFilter = document.getElementById('modalPetFilter');
+            if (modalPetFilter) {
+                modalPetFilter.addEventListener('change', function() {
+                    const selected = this.value;
+                    document.querySelectorAll('#vaccinationListContainer .vaccination-item').forEach(function(item) {
+                        if (selected === 'all' || item.getAttribute('data-pet') === selected) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
         });
     </script>
 {% endblock %} 

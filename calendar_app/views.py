@@ -6,6 +6,8 @@ from .serializers import EventSerializer
 from common_app.models import Pet
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils import timezone
+from datetime import date
 
 # Create your views here.
 
@@ -37,7 +39,21 @@ class EventViewSet(viewsets.ModelViewSet):
 @login_required
 def calendar_view(request):
     pets = Pet.objects.filter(owner=request.user)
-    # 각 반려동물별 최신 이벤트(진료/접종) 조회
+    next_vacc_list = []
+    today = date.today()
+    for pet in pets:
+        # 미래의 모든 next_date
+        next_vaccs = Event.objects.filter(
+            pet=pet, event_type='vacc', next_date__isnull=False, next_date__gte=today
+        ).order_by('next_date')
+        for next_vacc in next_vaccs:
+            days_left = (next_vacc.next_date - today).days
+            next_vacc_list.append({
+                'pet_name': pet.name,
+                'next_date': next_vacc.next_date,
+                'days_left': days_left
+            })
+    # 기존 last_events도 유지
     last_events = []
     for pet in pets:
         event = Event.objects.filter(pet=pet).order_by('-date').first()
@@ -48,4 +64,8 @@ def calendar_view(request):
                 'event_type': event.get_event_type_display(),
                 'description': event.description
             })
-    return render(request, 'calendar_app/calendar.html', {'pets': pets, 'last_events': last_events})
+    return render(request, 'calendar_app/calendar.html', {
+        'pets': pets,
+        'last_events': last_events,
+        'next_vacc_list': next_vacc_list,
+    })
