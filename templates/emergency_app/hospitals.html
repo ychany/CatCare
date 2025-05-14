@@ -308,33 +308,47 @@ let totalPages = 1;
 let currentPage = 1;
 const PAGE_SIZE = 15;
 const MAX_PAGES = 5;
+let isLoading = false;
 
 function searchAnimalHospitals(page = 1) {
-    allResults = [];
-    lastKeyword = '';
-    lastPagination = null;
-    totalPages = 1;
-    currentPage = 1;
-    document.getElementById('pagination').innerHTML = '';
+    if (isLoading) return;
+    isLoading = true;
+    
     const region = document.getElementById('keyword').value.trim();
     const keyword = region ? region + ' 동물병원' : '동물병원';
-    lastKeyword = keyword;
+    
+    // 새로운 검색인 경우 초기화
+    if (page === 1) {
+        allResults = [];
+        lastKeyword = keyword;
+        lastPagination = null;
+        totalPages = 1;
+        currentPage = 1;
+        document.getElementById('pagination').innerHTML = '';
+    }
+    
     markers.forEach(m => m.setMap(null));
     markers = [];
     infowindow.close();
-    ps.keywordSearch(keyword, placesCallback, { page: 1 });
+    
+    ps.keywordSearch(keyword, placesCallback, { page: page });
 }
 
 function placesCallback(data, status, pagination) {
+    isLoading = false;
+    
     if (status === kakao.maps.services.Status.OK) {
         const keywords = ['동물', '애완', '반려', '펫', '캣', 'dog', 'cat', '고양이', '강아지'];
         const filtered = data.filter(place =>
             keywords.some(word => place.place_name.toLowerCase().includes(word))
         );
-        allResults = allResults.concat(filtered);
+        
+        // 현재 페이지의 데이터만 저장
+        allResults = filtered;
         lastPagination = pagination;
-        totalPages = Math.min(MAX_PAGES, pagination.last); // 최대 5페이지
-        renderPage(1);
+        totalPages = Math.min(MAX_PAGES, pagination.last);
+        
+        renderPage(currentPage);
         renderPagination();
     } else {
         alert('동물병원이 검색되지 않았습니다.');
@@ -348,18 +362,18 @@ function renderPage(page) {
     markers.forEach(m => m.setMap(null));
     markers = [];
     infowindow.close();
-    const start = (page - 1) * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    const pageData = allResults.slice(start, end);
+    
     const bounds = new kakao.maps.LatLngBounds();
     let listHtml = '';
-    pageData.forEach((place, idx) => {
+    
+    allResults.forEach((place, idx) => {
         const marker = new kakao.maps.Marker({
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x),
             title: place.place_name
         });
         markers.push(marker);
+        
         kakao.maps.event.addListener(marker, 'click', function () {
             const content = `
               <div style="padding:10px; font-size:13px; min-width:220px;">
@@ -373,6 +387,7 @@ function renderPage(page) {
             infowindow.setContent(content);
             infowindow.open(map, marker);
         });
+        
         bounds.extend(new kakao.maps.LatLng(place.y, place.x));
         listHtml += `
           <div class="hospital-card" data-index="${idx}">
@@ -388,16 +403,17 @@ function renderPage(page) {
           </div>
         `;
     });
+    
     document.getElementById('hospital-list').innerHTML = listHtml || '<div>검색 결과가 없습니다.</div>';
-    if (pageData.length > 0) map.setBounds(bounds);
+    if (allResults.length > 0) map.setBounds(bounds);
 
-    // 병원 리스트 클릭 시 해당 마커 클릭 효과 + 지도 확대/이동
+    // 병원 리스트 클릭 이벤트
     document.querySelectorAll('.hospital-card').forEach((el, idx) => {
         el.addEventListener('click', function() {
             const marker = markers[idx];
-            const place = pageData[idx];
+            const place = allResults[idx];
             kakao.maps.event.trigger(marker, 'click');
-            map.setLevel(3); // 더 확대
+            map.setLevel(3);
             map.panTo(new kakao.maps.LatLng(place.y, place.x));
         });
     });
@@ -412,15 +428,11 @@ function renderPagination() {
 }
 
 function goToPage(page) {
-    // 이미 받아온 데이터 내에서 페이지 이동
-    if (allResults.length >= page * PAGE_SIZE || !lastPagination || !lastPagination.hasNextPage) {
-        renderPage(page);
-        renderPagination();
-    } else {
-        // 아직 다음 페이지 데이터가 없으면 추가 요청
-        lastPagination.nextPage();
-        setTimeout(() => { goToPage(page); }, 400); // 데이터 누적 후 이동
-    }
+    if (isLoading) return;
+    if (page === currentPage) return;
+    
+    currentPage = page;
+    searchAnimalHospitals(page);
 }
 
 const input = document.getElementById('keyword');
