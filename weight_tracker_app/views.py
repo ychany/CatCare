@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from common_app.models import Pet
 import json
+from collections import defaultdict
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -20,25 +21,28 @@ def weight_list(request):
         weights = Weight.objects.filter(user=request.user)
         if pet_id:
             weights = weights.filter(pet_id=pet_id)
-        weights = weights.order_by('-date')
+        weights = weights.order_by('-pet_id', '-date')
         data = []
-        for i, weight in enumerate(weights):
-            weight_data = {
-                'id': weight.id,
-                'pet': weight.pet_id,
-                'pet_name': weight.pet.name if weight.pet else '',
-                'date': weight.date,
-                'weight': float(weight.weight),
-                'change': None,
-                'days_since_last': None
-            }
-            
-            if i < len(weights) - 1:
-                prev_weight = weights[i + 1]
-                weight_data['change'] = float(weight.weight) - float(prev_weight.weight)
-                weight_data['days_since_last'] = (weight.date - prev_weight.date).days
-            
-            data.append(weight_data)
+        pet_weights = defaultdict(list)
+        for weight in weights:
+            pet_weights[weight.pet_id].append(weight)
+        for pet_id, weight_list in pet_weights.items():
+            for i, weight in enumerate(weight_list):
+                weight_data = {
+                    'id': weight.id,
+                    'pet': weight.pet_id,
+                    'pet_name': weight.pet.name if weight.pet else '',
+                    'date': weight.date,
+                    'weight': float(weight.weight),
+                    'change': None,
+                    'days_since_last': None
+                }
+                if i < len(weight_list) - 1:
+                    prev_weight = weight_list[i + 1]
+                    weight_data['change'] = float(weight.weight) - float(prev_weight.weight)
+                    weight_data['days_since_last'] = (weight.date - prev_weight.date).days
+                data.append(weight_data)
+        data.sort(key=lambda x: (x['pet'], x['date']), reverse=True)
         return Response(data)
     
     elif request.method == 'POST':
