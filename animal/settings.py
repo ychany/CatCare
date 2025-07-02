@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.humanize',
     'common_app',
-    'board_app',
+    'photo_board_app',
     'calendar_app',
     'care_calendar',
     'food_calendar',

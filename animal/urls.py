@@ -36,7 +36,7 @@ urlpatterns = [
     path('home/', views.index, name='index'),
     path('register/', views.register, name='register'),
     path('pets/', include('common_app.urls')),
-    path('board/', include('board_app.urls')),
+    path('board/', include('photo_board_app.urls')),
     path('calendar/', include('calendar_app.urls')),
     path('care/', include('care_calendar.urls', namespace='care_calendar')),
     path('food/', include('food_calendar.urls')),

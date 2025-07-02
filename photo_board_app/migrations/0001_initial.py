@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='작성일')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='수정일')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='작성자')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='board_app.post', verbose_name='게시글')),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='photo_board_app.post', verbose_name='게시글')),
             ],
             options={
                 'verbose_name': '댓글',

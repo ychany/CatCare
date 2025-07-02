@@ -26,7 +26,7 @@ def post_list(request):
                 models.Q(pets__id=pet_id)
             ).distinct()
     
-    return render(request, 'board_app/post_list.html', {'post_list': posts, 'pets': pets, 'selected_pet_id': pet_id})
+    return render(request, 'photo_board_app/post_list.html', {'post_list': posts, 'pets': pets, 'selected_pet_id': pet_id})
 
 @login_required
 def post_create(request):
@@ -51,7 +51,7 @@ def post_create(request):
             # 나머지 반려동물들을 pets 필드에 추가
             post.pets.set(pets)
             messages.success(request, '여러 고양이에 대한 게시글이 작성되었습니다.')
-            return redirect('board_app:list')
+            return redirect('photo_board_app:list')
         # '기타' 선택 시
         elif selected_pet == 'etc':
             title = request.POST.get('title')
@@ -68,7 +68,7 @@ def post_create(request):
                 is_etc=True
             )
             messages.success(request, '기타 게시글이 작성되었습니다.')
-            return redirect('board_app:list')
+            return redirect('photo_board_app:list')
         # 단일 고양이 선택 시 기존 폼 처리
         form = PostForm(request.POST, request.FILES)
         form.fields['pet'].queryset = pets
@@ -79,18 +79,18 @@ def post_create(request):
             post.is_etc = False
             post.save()
             messages.success(request, '게시글이 작성되었습니다.')
-            return redirect('board_app:detail', post_id=post.id)
+            return redirect('photo_board_app:detail', post_id=post.id)
     else:
         form = PostForm()
         form.fields['pet'].queryset = pets
-    return render(request, 'board_app/post_form.html', {'form': form, 'pets': pets})
+    return render(request, 'photo_board_app/post_form.html', {'form': form, 'pets': pets})
 
 @login_required
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id, pet__owner=request.user)
     comments = post.comments.all()
     comment_form = CommentForm()
-    return render(request, 'board_app/post_detail.html', {
+    return render(request, 'photo_board_app/post_detail.html', {
         'post': post,
         'comments': comments,
         'comment_form': comment_form
@@ -110,19 +110,19 @@ def post_edit(request, post_id):
         if form.is_valid():
             form.save()
             messages.success(request, '게시글이 수정되었습니다.')
-            return redirect('board_app:detail', post_id=post.id)
+            return redirect('photo_board_app:detail', post_id=post.id)
     else:
         form = PostForm(instance=post)
         form.fields['pet'].queryset = Pet.objects.filter(owner=request.user)
     pets = Pet.objects.filter(owner=request.user)
-    return render(request, 'board_app/post_form.html', {'form': form, 'post': post, 'pets': pets})
+    return render(request, 'photo_board_app/post_form.html', {'form': form, 'post': post, 'pets': pets})
 
 @login_required
 def post_delete(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
     post.delete()
     messages.success(request, '게시글이 삭제되었습니다.')
-    return redirect('board_app:list')
+    return redirect('photo_board_app:list')
 
 @login_required
 def comment_create(request, post_id):
@@ -135,7 +135,7 @@ def comment_create(request, post_id):
             comment.author = request.user
             comment.save()
             messages.success(request, '댓글이 작성되었습니다.')
-    return redirect('board_app:detail', post_id=post.id)
+    return redirect('photo_board_app:detail', post_id=post.id)
 
 @login_required
 def comment_delete(request, post_id, comment_id):
@@ -143,7 +143,7 @@ def comment_delete(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, post=post, author=request.user)
     comment.delete()
     messages.success(request, '댓글이 삭제되었습니다.')
-    return redirect('board_app:detail', post_id=post.id)
+    return redirect('photo_board_app:detail', post_id=post.id)
 
 @login_required
 def post_like(request, post_id):

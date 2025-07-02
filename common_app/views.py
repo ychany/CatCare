@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm, PetForm
 from .models import Pet
-from board_app.models import Post
+from photo_board_app.models import Post
 from weight_tracker_app.models import Weight
 from django.contrib.auth import logout
 

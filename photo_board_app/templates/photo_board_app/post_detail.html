@@ -9,8 +9,8 @@
             <h2 class="mb-0">{{ post.title }}</h2>
             {% if user == post.author %}
             <div>
-                <a href="{% url 'board_app:edit' post.id %}" class="btn btn-outline-primary btn-sm">수정</a>
-                <form action="{% url 'board_app:delete' post.id %}" method="post" class="d-inline">
+                <a href="{% url 'photo_board_app:edit' post.id %}" class="btn btn-outline-primary btn-sm">수정</a>
+                <form action="{% url 'photo_board_app:delete' post.id %}" method="post" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
@@ -39,7 +39,7 @@
                 <div>
                     {% comment %}AJAX 처리용 버튼만 남김{% endcomment %}
                     <button type="button" id="like-button" class="btn btn-outline-primary btn-sm"
-                        data-url="{% url 'board_app:like' post.id %}">
+                        data-url="{% url 'photo_board_app:like' post.id %}">
                         {% if user in post.likes.all %}좋아요 취소{% else %}좋아요{% endif %} ({{ post.likes.count }})
                     </button>
                 </div>
@@ -52,7 +52,7 @@
         <h4>댓글 ({{ post.comments.count }})</h4>
         
         {% if user.is_authenticated %}
-        <form action="{% url 'board_app:comment_create' post.id %}" method="post" class="mb-4">
+        <form action="{% url 'photo_board_app:comment_create' post.id %}" method="post" class="mb-4">
             {% csrf_token %}
             {{ comment_form.as_p }}
             <button type="submit" class="btn btn-primary">댓글 작성</button>
@@ -71,7 +71,7 @@
                 <p class="card-text">{{ comment.content }}</p>
                 {% if user == comment.author %}
                 <div class="text-end">
-                    <form action="{% url 'board_app:comment_delete' post.id comment.id %}" method="post" class="d-inline">
+                    <form action="{% url 'photo_board_app:comment_delete' post.id comment.id %}" method="post" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('댓글을 삭제하시겠습니까?')">삭제</button>
                     </form>

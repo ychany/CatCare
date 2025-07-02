@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board_app', '0003_post_pets'),
+        ('photo_board_app', '0003_post_pets'),
     ]
 
     operations = [

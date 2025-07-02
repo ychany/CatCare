@@ -10,7 +10,7 @@
             냐옹노트 게시판 
             <span class="cat-emoji">🐾</span>
         </h2>
-        <a href="{% url 'board_app:create' %}" class="btn btn-create">
+        <a href="{% url 'photo_board_app:create' %}" class="btn btn-create">
             <span class="cat-emoji">✨</span> 새 글 쓰기
         </a>
     </div>
@@ -116,20 +116,20 @@
             {% for post in post_list %}
                 <div class="col-md-4">
                     <div class="post-card">
-                        <a href="{% url 'board_app:detail' post.id %}">
+                        <a href="{% url 'photo_board_app:detail' post.id %}">
                             {% if post.image %}
                                 <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
                             {% endif %}
                         </a>
                         <div class="post-content">
                             <h3 class="post-title">
-                                <a href="{% url 'board_app:detail' post.id %}" style="color: #5ba3b0; text-decoration: none;">
+                                <a href="{% url 'photo_board_app:detail' post.id %}" style="color: #5ba3b0; text-decoration: none;">
                                     {{ post.title }}
                                 </a>
                             </h3>
                             <p class="post-text">{{ post.content|truncatechars:100 }}</p>
                             <div class="post-info">
-                                <span>🧑‍💻 {{ post.author }}</span>
+                                <span>🐱 {{ post.author }}</span>
                                 <span class="ms-2 likes-count">❤️ {{ post.likes.count }}</span>
                                 <span class="ms-2">📅 {{ post.created_at|date:"Y.m.d" }}</span>
                             </div>

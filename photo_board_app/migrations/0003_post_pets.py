@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board_app', '0002_post_is_together'),
+        ('photo_board_app', '0002_post_is_together'),
         ('common_app', '0005_pet_gender_pet_neutered_pet_notes'),
     ]
 
