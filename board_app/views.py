@@ -26,7 +26,7 @@ def post_list(request):
                 models.Q(pets__id=pet_id)
             ).distinct()
     
-    return render(request, 'board_app/post_list.html', {'posts': posts, 'pets': pets, 'selected_pet_id': pet_id})
+    return render(request, 'board_app/post_list.html', {'post_list': posts, 'pets': pets, 'selected_pet_id': pet_id})
 
 @login_required
 def post_create(request):

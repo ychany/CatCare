@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'common_app/base.html' %}
 
 {% block title %}게시판 - 냐옹노트{% endblock %}
 
@@ -116,11 +116,17 @@
             {% for post in post_list %}
                 <div class="col-md-4">
                     <div class="post-card">
-                        {% if post.image %}
-                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
-                        {% endif %}
+                        <a href="{% url 'board_app:detail' post.id %}">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
+                            {% endif %}
+                        </a>
                         <div class="post-content">
-                            <h3 class="post-title">{{ post.title }}</h3>
+                            <h3 class="post-title">
+                                <a href="{% url 'board_app:detail' post.id %}" style="color: #5ba3b0; text-decoration: none;">
+                                    {{ post.title }}
+                                </a>
+                            </h3>
                             <p class="post-text">{{ post.content|truncatechars:100 }}</p>
                             <div class="post-info">
                                 <span>🧑‍💻 {{ post.author }}</span>

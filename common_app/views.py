@@ -20,7 +20,7 @@ def index(request):
             'recent_posts': recent_posts,
             'pet_form': PetForm(),
         })
-    return render(request, 'index.html', context)
+    return render(request, 'common_app/index.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -56,7 +56,7 @@ def register(request):
         user_form = UserRegisterForm()
     # pet_form 추가
     pet_form = PetForm()
-    return render(request, 'register.html', {
+    return render(request, 'common_app/register.html', {
         'user_form': user_form,
         'pet_form': pet_form,
         'pet_breeds': Pet.CAT_BREEDS,
