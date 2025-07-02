@@ -152,3 +152,8 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'  # 로그아웃 후 리디렉트할 URL
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF 및 세션 쿠키 개발환경 옵션
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
