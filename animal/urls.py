@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda request: redirect('login', permanent=False), name='root_redirect'),
     path('accounts/login/', auth_views.LoginView.as_view(
-        template_name='registration/login.html'
+        template_name='common_app/login.html'
     ), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(
         next_page=settings.LOGIN_URL
